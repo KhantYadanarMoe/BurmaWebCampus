@@ -13,7 +13,7 @@ export default function Hero() {
                     Start your journey in web development with our carefully
                     crafted online courses, from beginner to advanced levels.
                 </p>
-                <div className="flex gap-2 items center justify-center mt-4">
+                {/* <div className="flex gap-2 items center justify-center mt-4">
                     <span className="text-xs md:text-base px-2 py-1 rounded-lg border border-gray-800">
                         Frontend Dev
                     </span>
@@ -23,7 +23,7 @@ export default function Hero() {
                     <span className="text-xs md:text-base px-2 py-1 rounded-lg border border-gray-800">
                         Fullstack Dev
                     </span>
-                </div>
+                </div> */}
             </div>
             <hr className="border-t-gray-500 mb-6" />
         </div>
