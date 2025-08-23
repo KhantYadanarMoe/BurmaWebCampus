@@ -3,6 +3,7 @@ import Layout from "./Layouts/Layout";
 import Home from "./Pages/Home";
 import Courses from "./Pages/Courses";
 import Blogs from "./Pages/Blogs";
+import Blog from "./Components/Blog/Blog";
 
 const routes = createBrowserRouter([
     {
@@ -20,6 +21,10 @@ const routes = createBrowserRouter([
             {
                 path: "/blogs",
                 element: <Blogs />,
+            },
+            {
+                path: "/blog",
+                element: <Blog />,
             },
         ],
     },
