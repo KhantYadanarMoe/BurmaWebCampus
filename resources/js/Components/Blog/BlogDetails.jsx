@@ -1,7 +1,7 @@
 import React from "react";
 import BlogImg from "../../../assets/Blog.jpg";
 
-export default function Blog() {
+export default function BlogDetails() {
     return (
         <div className="px-4 md:px-5 lg:px-8 w-full md:w-[90%] lg:w-[80%] flex flex-col items-start mx-auto">
             <span className="px-2 py-1  border border-gray-700 rounded-lg">

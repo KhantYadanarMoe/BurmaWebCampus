@@ -3,7 +3,7 @@ import Layout from "./Layouts/Layout";
 import Home from "./Pages/Home";
 import Courses from "./Pages/Courses";
 import Blogs from "./Pages/Blogs";
-import Blog from "./Components/Blog/Blog";
+import Blog from "./Pages/Blog";
 
 const routes = createBrowserRouter([
     {
