@@ -13,28 +13,50 @@ import CoursesImg from "../../../assets/Courses.jpg";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "../ui/button";
 import { Clock, Users } from "lucide-react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export default function AllCourses() {
     return (
         <div className="px-5 lg:px-8">
-            <div>
-                <h2 className="text-xl md:text-2xl font-medium mb-1 relative inline-block">
-                    All Courses
-                </h2>
-                <div className="flex items-center">
-                    <div className="w-10 md:w-20 h-[2px] bg-accentRed"></div>
-                    <div className="w-1 h-1 bg-accentRed rounded-full ml-2"></div>
+            <div className="flex items-center justify-between mb-6">
+                <div>
+                    <h2 className="text-xl md:text-2xl font-medium relative inline-block">
+                        All Courses
+                    </h2>
+                    <div className="flex items-center">
+                        <div className="w-10 md:w-20 h-[2px] bg-accentRed"></div>
+                        <div className="w-1 h-1 bg-accentRed rounded-full ml-2"></div>
+                    </div>
                 </div>
+                <Select>
+                    <SelectTrigger className="w-[180px] border-gray-700">
+                        <SelectValue placeholder="Filter By Categories" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="frontend">Frontend</SelectItem>
+                        <SelectItem value="backend">Backend</SelectItem>
+                        <SelectItem value="fullstack">Fullstack</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                <Card className="my-4 relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-4">
                         <div>
                             <img
                                 src={CoursesImg}
                                 alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                             />
+                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                Frontend
+                            </span>
                             <h1 className="my-3 font-medium text-lg">
                                 Fluent in Javascript and its framework, ReactJS
                             </h1>
@@ -55,14 +77,17 @@ export default function AllCourses() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="my-4 relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-4">
                         <div>
                             <img
                                 src={CoursesImg}
                                 alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                             />
+                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                Frontend
+                            </span>
                             <h1 className="my-3 font-medium text-lg">
                                 Fluent in Javascript and its framework, ReactJS
                             </h1>
@@ -83,14 +108,17 @@ export default function AllCourses() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="my-4 relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-4">
                         <div>
                             <img
                                 src={CoursesImg}
                                 alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                             />
+                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                Frontend
+                            </span>
                             <h1 className="my-3 font-medium text-lg">
                                 Fluent in Javascript and its framework, ReactJS
                             </h1>
@@ -111,14 +139,17 @@ export default function AllCourses() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="my-4 relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-4">
                         <div>
                             <img
                                 src={CoursesImg}
                                 alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                             />
+                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                Frontend
+                            </span>
                             <h1 className="my-3 font-medium text-lg">
                                 Fluent in Javascript and its framework, ReactJS
                             </h1>
@@ -139,14 +170,17 @@ export default function AllCourses() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="my-4 relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-4">
                         <div>
                             <img
                                 src={CoursesImg}
                                 alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                             />
+                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                Frontend
+                            </span>
                             <h1 className="my-3 font-medium text-lg">
                                 Fluent in Javascript and its framework, ReactJS
                             </h1>
@@ -167,14 +201,17 @@ export default function AllCourses() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="my-4 relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-4">
                         <div>
                             <img
                                 src={CoursesImg}
                                 alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                             />
+                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                Frontend
+                            </span>
                             <h1 className="my-3 font-medium text-lg">
                                 Fluent in Javascript and its framework, ReactJS
                             </h1>

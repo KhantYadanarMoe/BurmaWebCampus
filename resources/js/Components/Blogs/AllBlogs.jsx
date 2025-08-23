@@ -11,18 +11,37 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import BlogImg from "../../../assets/Blog.jpg";
 import { Link } from "react-router-dom";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export default function AllBlogs() {
     return (
         <div className="px-5 lg:px-8">
-            <div>
-                <h2 className="text-xl md:text-2xl font-medium mb-1 relative inline-block">
-                    All Blogs
-                </h2>
-                <div className="flex items-center">
-                    <div className="w-10 md:w-20 h-[2px] bg-accentRed"></div>
-                    <div className="w-1 h-1 bg-accentRed rounded-full ml-2"></div>
+            <div className="flex items-center justify-between mb-2 md:mb-0">
+                <div>
+                    <h2 className="text-xl md:text-2xl font-medium relative inline-block">
+                        All Blogs
+                    </h2>
+                    <div className="flex items-center">
+                        <div className="w-10 md:w-20 h-[2px] bg-accentRed"></div>
+                        <div className="w-1 h-1 bg-accentRed rounded-full ml-2"></div>
+                    </div>
                 </div>
+                <Select>
+                    <SelectTrigger className="w-[180px] border-gray-700">
+                        <SelectValue placeholder="Filter By Categories" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="frontend">Frontend</SelectItem>
+                        <SelectItem value="backend">Backend</SelectItem>
+                        <SelectItem value="fullstack">Fullstack</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                 <div className="p-1 mt-4 md:mt-8">

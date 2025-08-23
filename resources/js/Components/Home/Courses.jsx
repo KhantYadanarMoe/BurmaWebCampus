@@ -9,7 +9,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, ArrowRight, Clock, Users } from "lucide-react";
+import { Clock, Users } from "lucide-react";
 import CoursesImg from "../../../assets/Courses.jpg";
 
 export default function Courses() {
@@ -42,8 +42,11 @@ export default function Courses() {
                                                 <img
                                                     src={CoursesImg}
                                                     alt=""
-                                                    className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                                                 />
+                                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                    Frontend
+                                                </span>
                                                 <h1 className="my-3 font-medium text-lg">
                                                     Fluent in Javascript and its
                                                     framework, ReactJS
@@ -86,8 +89,11 @@ export default function Courses() {
                                                 <img
                                                     src={CoursesImg}
                                                     alt=""
-                                                    className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                                                 />
+                                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                    Frontend
+                                                </span>
                                                 <h1 className="my-3 font-medium text-lg">
                                                     Fluent in Javascript and its
                                                     framework, ReactJS
@@ -130,8 +136,11 @@ export default function Courses() {
                                                 <img
                                                     src={CoursesImg}
                                                     alt=""
-                                                    className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                                                 />
+                                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                    Frontend
+                                                </span>
                                                 <h1 className="my-3 font-medium text-lg">
                                                     Fluent in Javascript and its
                                                     framework, ReactJS
@@ -174,8 +183,11 @@ export default function Courses() {
                                                 <img
                                                     src={CoursesImg}
                                                     alt=""
-                                                    className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                                                 />
+                                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                    Frontend
+                                                </span>
                                                 <h1 className="my-3 font-medium text-lg">
                                                     Fluent in Javascript and its
                                                     framework, ReactJS
@@ -218,8 +230,11 @@ export default function Courses() {
                                                 <img
                                                     src={CoursesImg}
                                                     alt=""
-                                                    className="w-full h-40 lg:h-36 object-cover rounded-md"
+                                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                                                 />
+                                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                    Frontend
+                                                </span>
                                                 <h1 className="my-3 font-medium text-lg">
                                                     Fluent in Javascript and its
                                                     framework, ReactJS
