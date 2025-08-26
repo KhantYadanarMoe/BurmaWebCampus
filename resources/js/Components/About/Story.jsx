@@ -5,7 +5,7 @@ import Story3 from "../../../assets/Story3.jpg";
 
 export default function Story() {
     return (
-        <div className="px-5 lg:px-8 py-6 lg:w-[95%] mx-auto">
+        <div className="px-5 lg:px-8 pt-6 lg:w-[95%] mx-auto">
             <div className="text-center">
                 <h2 className="text-3xl font-semibold mb-1 relative inline-block">
                     Our Story
@@ -54,6 +54,7 @@ export default function Story() {
                     </div>
                 </div>
             </div>
+            <hr className="border-t-gray-500" />
         </div>
     );
 }
