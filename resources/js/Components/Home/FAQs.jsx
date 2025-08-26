@@ -9,7 +9,7 @@ import { MessageCircleQuestionMark } from "lucide-react";
 
 export default function FAQs() {
     return (
-        <div className="mx-auto py-12">
+        <div className="mx-auto py-12 md:py-20">
             <h1 className="text-xl md:text-3xl font-medium flex items-center gap-2 md:gap-3 justify-center">
                 Frequently Asked Questions{" "}
                 <MessageCircleQuestionMark className="w-5 h-5 md:w-8 md:h-8" />
