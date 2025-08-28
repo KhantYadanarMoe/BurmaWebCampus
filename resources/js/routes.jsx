@@ -6,6 +6,7 @@ import Blogs from "./Pages/Blogs";
 import Blog from "./Pages/Blog";
 import About from "./Pages/About";
 import Checkout from "./Pages/Checkout";
+import CourseOverview from "./Pages/CourseOverview";
 
 const routes = createBrowserRouter([
     {
@@ -35,6 +36,10 @@ const routes = createBrowserRouter([
             {
                 path: "/checkout",
                 element: <Checkout />,
+            },
+            {
+                path: "/course", //it should be course name
+                element: <CourseOverview />,
             },
         ],
     },
