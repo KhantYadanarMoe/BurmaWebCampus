@@ -20,9 +20,12 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 import { useState } from "react";
+import { Textarea } from "../ui/textarea";
+import Pf from "../../../assets/Profile.jpg";
 
 export default function Details() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [showReply, setShowReply] = useState(false);
     return (
         <div className="px-5 lg:px-8">
             <div className="pb-12 flex gap-3">
@@ -134,16 +137,175 @@ export default function Details() {
                         </ul>
                     </div>
                     <hr className="mt-7 border-t-gray-500" />
+                    <div className="my-3">
+                        <h1 className="text-lg font-medium mb-3">Comments</h1>
+                        <div className="my-3 px-3 md:px-4 py-3 md:py-4 border border-gray-300 rounded-md shadow-lg">
+                            <Textarea
+                                className="border-gray-500 h-32"
+                                placeholder="Write Here..."
+                            />
+                            <div className="flex justify-end items-end mt-3">
+                                <Button>Submit</Button>
+                            </div>
+                        </div>
+                        <div className="my-5">
+                            <hr className="mt-5 mb-2 border-t-gray-500" />
+                            <div className="px-3 py-3">
+                                <div className="flex gap-2 items-center">
+                                    <img
+                                        src={Pf}
+                                        alt="profile picture"
+                                        className="rounded-full w-10 h-10 object-cover"
+                                    />
+                                    <div>
+                                        <h1 className="text-base font-medium">
+                                            Khant Yadanar Moe
+                                        </h1>
+                                        <p className="text-sm text-gray-700">
+                                            6 hours ago
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-800 mt-3">
+                                    Lorem ipsum dolor sit amet consectetur
+                                    adipisicing elit. Ad ipsa numquam ex
+                                    voluptate, fugit nostrum mollitia ullam
+                                    culpa a ab earum laborum quos aperiam aut ut
+                                    dolore vero optio perferendis vitae. Quidem.
+                                </p>
+                                <div className="flex gap-1 items-center justify-end mt-6">
+                                    <Button
+                                        className="text-white"
+                                        onClick={() => setShowReply(!showReply)}
+                                    >
+                                        Reply
+                                    </Button>
+                                </div>
+                                {showReply && (
+                                    <div className="pl-3 md:pl-4 py-4 md:py-8">
+                                        <Textarea
+                                            placeholder="Type your reply here..."
+                                            className="w-full border-gray-500 h-32"
+                                            name="message"
+                                        />
+                                        <div className="flex justify-end mt-3">
+                                            <Button className="mt-2 text-white">
+                                                Send
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <hr className="my-2 border-t-gray-500" />
+                            <div className="px-3 py-3">
+                                <div className="flex gap-2 items-center">
+                                    <img
+                                        src={Pf}
+                                        alt="profile picture"
+                                        className="rounded-full w-10 h-10 object-cover"
+                                    />
+                                    <div>
+                                        <h1 className="text-base font-medium">
+                                            Khant Yadanar Moe
+                                        </h1>
+                                        <p className="text-sm text-gray-700">
+                                            6 hours ago
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-800 mt-3">
+                                    Lorem ipsum dolor sit amet consectetur
+                                    adipisicing elit. Ad ipsa numquam ex
+                                    voluptate, fugit nostrum mollitia ullam
+                                    culpa a ab earum laborum quos aperiam aut ut
+                                    dolore vero optio perferendis vitae. Quidem.
+                                </p>
+                                <div className="flex gap-1 items-center justify-end mt-6">
+                                    <Button
+                                        className="text-white"
+                                        onClick={() => setShowReply(!showReply)}
+                                    >
+                                        Reply
+                                    </Button>
+                                </div>
+                                {showReply && (
+                                    <div className="pl-3 md:pl-4 py-4 md:py-8">
+                                        <Textarea
+                                            placeholder="Type your reply here..."
+                                            className="w-full border-gray-500 h-32"
+                                            name="message"
+                                        />
+                                        <div className="flex justify-end mt-3">
+                                            <Button className="mt-2 text-white">
+                                                Send
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <hr className="my-2 border-t-gray-500" />
+                            <div className="px-3 py-3">
+                                <div className="flex gap-2 items-center">
+                                    <img
+                                        src={Pf}
+                                        alt="profile picture"
+                                        className="rounded-full w-10 h-10 object-cover"
+                                    />
+                                    <div>
+                                        <h1 className="text-base font-medium">
+                                            Khant Yadanar Moe
+                                        </h1>
+                                        <p className="text-sm text-gray-700">
+                                            6 hours ago
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-800 mt-3">
+                                    Lorem ipsum dolor sit amet consectetur
+                                    adipisicing elit. Ad ipsa numquam ex
+                                    voluptate, fugit nostrum mollitia ullam
+                                    culpa a ab earum laborum quos aperiam aut ut
+                                    dolore vero optio perferendis vitae. Quidem.
+                                </p>
+                                <div className="flex gap-1 items-center justify-end mt-6">
+                                    <Button
+                                        className="text-white"
+                                        onClick={() => setShowReply(!showReply)}
+                                    >
+                                        Reply
+                                    </Button>
+                                </div>
+                                {showReply && (
+                                    <div className="pl-3 md:pl-4 py-4 md:py-8">
+                                        <Textarea
+                                            placeholder="Type your reply here..."
+                                            className="w-full border-gray-500 h-32"
+                                            name="message"
+                                        />
+                                        <div className="flex justify-end mt-3">
+                                            <Button className="mt-2 text-white">
+                                                Send
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {isSidebarOpen && (
                     <div
                         className={`
                            fixed right-0 h-screen w-full z-[100] bg-white shadow-lg
-    flex flex-col pt-6 px-4 lg:px-0 pr-0 lg:pr-3
-    transform transition-transform duration-300 ease-in-out
-    ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
-    lg:static lg:w-1/3 lg:translate-x-0
-    scrollbar-hover   
+                           flex flex-col pt-6 px-4 lg:px-0  lg:pr-3
+                           transform transition-transform duration-300 ease-in-out
+                           ${
+                               isSidebarOpen
+                                   ? "translate-x-0"
+                                   : "translate-x-full"
+                           }
+                           lg:static lg:w-1/3 lg:translate-x-0
+                           scrollbar-hover   
             `}
                     >
                         <div className="flex justify-between items-center">
