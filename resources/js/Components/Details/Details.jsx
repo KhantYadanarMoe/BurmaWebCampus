@@ -57,7 +57,7 @@ export default function Details() {
                     <div className="md:flex justify-between items-start">
                         <div>
                             <h1 className="text-xl md:text-2xl font-medium mb-1">
-                                Full-Stack Web Development Pathway
+                                How backend works in real life
                             </h1>
                             <p className="text-sm text-gray-600">
                                 18th Jun 2025, 6:35 PM
@@ -85,24 +85,55 @@ export default function Details() {
                         alt=""
                         className="w-full h-64 md:h-96 object-cover my-5"
                     />
-                    <ul className="flex text-gray-800 space-x-5">
-                        <li class="flex items-center justify-center">
-                            <Link
-                                to=""
-                                class="relative text-black cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-black before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-black after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]"
-                            >
-                                <span>Comments</span>
-                            </Link>
-                        </li>
-                        <li class="flex items-center justify-center">
-                            <Link
-                                to=""
-                                class="relative text-black cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-black before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-black after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]"
-                            >
-                                <span>Resources</span>
-                            </Link>
-                        </li>
-                    </ul>
+                    <div className="my-3">
+                        <h1 className="text-lg font-medium">Resources</h1>
+                        <ul className="list-disc my-3">
+                            <li className="ml-4 my-2">
+                                <Link
+                                    to="https://genovotechnology.com/backend-development/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm md:text-base hover:underline"
+                                >
+                                    A Comprehensive Guide to understanding
+                                    website development
+                                </Link>
+                            </li>
+                            <li className="ml-4 my-2">
+                                <Link
+                                    to="https://genovotechnology.com/backend-development/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm md:text-base hover:underline"
+                                >
+                                    What Is Backend Development?
+                                </Link>
+                            </li>
+                            <li className="ml-4 my-2">
+                                <Link
+                                    to="https://genovotechnology.com/backend-development/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm md:text-base hover:underline"
+                                >
+                                    What Is Back-End Development? (Definition,
+                                    Features)
+                                </Link>
+                            </li>
+                            <li className="ml-4 my-2">
+                                <Link
+                                    to="https://genovotechnology.com/backend-development/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm md:text-base hover:underline"
+                                >
+                                    Backend Development: Ultimate Guide (2025) -
+                                    Mastering Backend
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                    <hr className="mt-7 border-t-gray-500" />
                 </div>
                 {isSidebarOpen && (
                     <div
