@@ -296,17 +296,27 @@ export default function Details() {
                 {isSidebarOpen && (
                     <div
                         className={`
-                           fixed right-0 h-screen w-full z-[100] bg-white shadow-lg
-                           flex flex-col pt-6 px-4 lg:px-0  lg:pr-3
-                           transform transition-transform duration-300 ease-in-out
-                           ${
-                               isSidebarOpen
-                                   ? "translate-x-0"
-                                   : "translate-x-full"
-                           }
-                           lg:static lg:w-1/3 lg:translate-x-0
-                           scrollbar-hover   
+                           w-full lg:w-1/3
+      z-40 bg-white
+      flex flex-col pt-3 px-4 lg:px-0 lg:pr-3
+      transform transition-transform duration-300 ease-in-out
+      ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
+
+       right-0 h-[calc(100vh-75px)] md:h-[calc(100vh-110px)] lg:h-[80vh]
+
+      /* Large = sidebar fixed height & scrollable internally */
+      lg:sticky lg:top-32
+      scrollbar-hover
             `}
+
+                        // right-0 h-[80vh]  /* fits under navbar */
+
+                        // /* Sticky for large screens */
+                        // lg:sticky lg:top-32
+
+                        // /* Scroll inside the sidebar */
+                        // overflow-y-auto
+                        // scrollbar-hover
                     >
                         <div className="flex justify-between items-center">
                             <h1 className="text-base md:text-lg font-medium mb-1">

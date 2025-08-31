@@ -5,15 +5,12 @@ import Footer from "@/Components/Footer";
 
 export default function Layout() {
     return (
-        <div className="relative">
-            <div className="p-4 md:-6">
+        <>
+            <div className="pb-20 md:pb-28 lg:pb-32">
                 <Navbar />
             </div>
-
-            <div className="pt-6">
-                <Outlet />
-            </div>
+            <Outlet />
             <Footer />
-        </div>
+        </>
     );
 }
