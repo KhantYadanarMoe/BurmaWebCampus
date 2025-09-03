@@ -300,7 +300,7 @@ export default function Details() {
       z-40 bg-white
       flex flex-col pt-3 px-4 lg:px-0 lg:pr-3
       transform transition-transform duration-300 ease-in-out
-      ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
+       ${isSidebarOpen ? "translate-x-0" : "translate-x-full"} 
 
        right-0 h-[calc(100vh-75px)] md:h-[calc(100vh-110px)] lg:h-[80vh]
 

@@ -1,0 +1,25 @@
+import React from "react";
+import Pf from "../../../assets/Profile.jpg";
+
+export default function UserInfo() {
+    return (
+        <div className="px-5 lg:px-8">
+            <div className="py-12 flex gap-3 items-center">
+                <img
+                    src={Pf}
+                    alt=""
+                    className="w-24 md:w-32 h-24 md:h-32 object-cover rounded-full border p-1 border-gray-700"
+                />
+                <div>
+                    <h1 className="text-xl md:text-2xl font-medium">
+                        Khant Yadanar Moe
+                    </h1>
+                    <p className="text-gray-500 text-sm md:text-base">
+                        ID: STU2025-001
+                    </p>
+                </div>
+            </div>
+            <hr className="border-t-gray-300" />
+        </div>
+    );
+}

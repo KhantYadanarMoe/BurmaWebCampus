@@ -8,6 +8,8 @@ import About from "./Pages/About";
 import Checkout from "./Pages/Checkout";
 import CourseOverview from "./Pages/CourseOverview";
 import CourseDetails from "./Pages/CourseDetails";
+import Profile from "./Pages/Profile";
+import UserLayout from "./Layouts/UserLayout";
 
 const routes = createBrowserRouter([
     {
@@ -47,6 +49,16 @@ const routes = createBrowserRouter([
                 element: <CourseDetails />,
             },
         ],
+    },
+    {
+        path: "/user", //it should be username
+        element: <UserLayout />,
+        // children: [
+        //     {
+        //         path: "/",
+        //         element: <Home />,
+        //     },
+        // ],
     },
 ]);
 
