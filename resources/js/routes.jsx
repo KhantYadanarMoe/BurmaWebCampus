@@ -53,12 +53,12 @@ const routes = createBrowserRouter([
     {
         path: "/user", //it should be username
         element: <UserLayout />,
-        // children: [
-        //     {
-        //         path: "/",
-        //         element: <Home />,
-        //     },
-        // ],
+        children: [
+            {
+                path: "/user",
+                element: <Profile />,
+            },
+        ],
     },
 ]);
 

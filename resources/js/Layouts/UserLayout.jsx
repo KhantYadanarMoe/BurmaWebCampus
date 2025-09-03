@@ -2,6 +2,7 @@ import Navbar from "@/Components/Navbar";
 import ProfileNav from "@/Components/Profile/ProfileNav";
 import UserInfo from "@/Components/Profile/UserInfo";
 import React from "react";
+import { Outlet } from "react-router-dom";
 
 export default function UserLayout() {
     return (
@@ -11,6 +12,7 @@ export default function UserLayout() {
             </div>
             <UserInfo />
             <ProfileNav />
+            <Outlet />
         </>
     );
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function ProfileNav() {
     return (
-        <div className="px-5 lg:px-8">
+        <div className="px-5 md:px-10 lg:px-12">
             <ul className="flex space-x-4 md:space-x-6">
                 <li class="flex items-center justify-center py-3">
                     <Link

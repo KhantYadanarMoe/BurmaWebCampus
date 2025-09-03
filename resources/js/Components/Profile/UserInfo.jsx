@@ -3,8 +3,8 @@ import Pf from "../../../assets/Profile.jpg";
 
 export default function UserInfo() {
     return (
-        <div className="px-5 lg:px-8">
-            <div className="py-12 flex gap-3 items-center">
+        <div className="px-5 md:px-10 lg:px-12">
+            <div className="pt-9 pb-12 flex gap-3 items-center">
                 <img
                     src={Pf}
                     alt=""
