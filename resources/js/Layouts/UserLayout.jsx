@@ -1,3 +1,4 @@
+import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 import ProfileNav from "@/Components/Profile/ProfileNav";
 import UserInfo from "@/Components/Profile/UserInfo";
@@ -13,6 +14,7 @@ export default function UserLayout() {
             <UserInfo />
             <ProfileNav />
             <Outlet />
+            <Footer />
         </>
     );
 }
