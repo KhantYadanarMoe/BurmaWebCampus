@@ -12,6 +12,7 @@ import Profile from "./Pages/Profile";
 import UserLayout from "./Layouts/UserLayout";
 import YourCourses from "./Components/Profile/YourCourses";
 import YourCertificates from "./Components/Profile/YourCertificates";
+import BillingHistories from "./Components/Profile/BillingHistories";
 
 const routes = createBrowserRouter([
     {
@@ -67,6 +68,10 @@ const routes = createBrowserRouter([
             {
                 path: "/user/certificates",
                 element: <YourCertificates />,
+            },
+            {
+                path: "/user/billing",
+                element: <BillingHistories />,
             },
         ],
     },
