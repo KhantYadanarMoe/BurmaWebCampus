@@ -52,9 +52,9 @@ export default function AdminSidebar() {
             className="flex gap-3"
         >
             <div
-                className={`w-[80%] md:w-[50%] xl:w-[24%] bg-white flex flex-col pt-10 h-screen fixed top-0 transition-all duration-300 z-50 ${
-                    isSidebarOpen ? "left-0" : "-left-[100%]"
-                } xl:left-0 z-50`}
+                className={`w-[80%] md:w-[50%] xl:w-[24%] bg-white flex flex-col pt-10 h-screen fixed top-0 transition-all duration-300 z-50
+    ${isSidebarOpen ? "left-0" : "-left-[100%]"} 
+  `}
             >
                 <div className="flex justify-between items-center px-6 pb-6">
                     <img src={Logo} alt="Logo" className="w-20" />
@@ -164,14 +164,19 @@ export default function AdminSidebar() {
                 ></div>
             )}
 
-            <nav className="px-6 py-3 md:py-4 mt-0 xl:mt-4 xl:w-[76%] fixed top-0 w-full xl:ml-[24%] flex items-center justify-between shadow-md xl:shadow-none z-40">
+            <nav
+                className={`px-6 py-3 md:py-4 mt-0 xl:mt-4 fixed top-0 w-full flex items-center justify-between shadow-md xl:shadow-none z-40
+    ${isSidebarOpen ? "xl:w-[76%] xl:ml-[24%]" : "xl:w-full xl:ml-0"}`}
+            >
                 <div className="flex items-center flex-1">
-                    <button
-                        onClick={() => setIsSidebarOpen(true)}
-                        className="xl:hidden mr-2 text-black focus:outline-none"
-                    >
-                        <Menu size={20} />
-                    </button>
+                    {!isSidebarOpen && (
+                        <button
+                            onClick={() => setIsSidebarOpen(true)}
+                            className="mr-2 text-black focus:outline-none"
+                        >
+                            <Menu size={20} />
+                        </button>
+                    )}
 
                     <div className="relative hidden md:block flex-1 max-w-xs ml-3 xl:ml-0">
                         <Search
