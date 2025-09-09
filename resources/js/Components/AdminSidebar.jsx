@@ -41,9 +41,7 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-export default function AdminSidebar() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
     return (
         <motion.div
             initial={{ x: -100, opacity: 0 }}
@@ -53,8 +51,8 @@ export default function AdminSidebar() {
         >
             <div
                 className={`w-[80%] md:w-[50%] xl:w-[24%] bg-white flex flex-col pt-10 h-screen fixed top-0 transition-all duration-300 z-50
-    ${isSidebarOpen ? "left-0" : "-left-[100%]"} 
-  `}
+                ${isSidebarOpen ? "left-0" : "-left-[100%]"} 
+            `}
             >
                 <div className="flex justify-between items-center px-6 pb-6">
                     <img src={Logo} alt="Logo" className="w-20" />
@@ -165,8 +163,12 @@ export default function AdminSidebar() {
             )}
 
             <nav
-                className={`px-6 py-3 md:py-4 mt-0 xl:mt-4 fixed top-0 w-full flex items-center justify-between shadow-md xl:shadow-none z-40
-    ${isSidebarOpen ? "xl:w-[76%] xl:ml-[24%]" : "xl:w-full xl:ml-0"}`}
+                className={`px-6 py-3 md:py-4 pt-4 xl:pt-8 bg-white fixed top-0 w-full flex items-center justify-between shadow-md xl:shadow-none z-40
+                ${
+                    isSidebarOpen
+                        ? "xl:w-[76%] xl:ml-[24%]"
+                        : "xl:w-full xl:ml-0"
+                }`}
             >
                 <div className="flex items-center flex-1">
                     {!isSidebarOpen && (

@@ -14,6 +14,7 @@ import YourCourses from "./Components/Profile/YourCourses";
 import YourCertificates from "./Components/Profile/YourCertificates";
 import BillingHistories from "./Components/Profile/BillingHistories";
 import AdminLayout from "./Layouts/AdminLayout";
+import BlogsList from "./Components/Admin/BlogsList";
 
 const routes = createBrowserRouter([
     {
@@ -79,6 +80,12 @@ const routes = createBrowserRouter([
     {
         path: "/admin",
         element: <AdminLayout />,
+        children: [
+            {
+                path: "/admin/blogs",
+                element: <BlogsList />,
+            },
+        ],
     },
 ]);
 
