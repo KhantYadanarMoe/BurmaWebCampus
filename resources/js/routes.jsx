@@ -13,6 +13,7 @@ import UserLayout from "./Layouts/UserLayout";
 import YourCourses from "./Components/Profile/YourCourses";
 import YourCertificates from "./Components/Profile/YourCertificates";
 import BillingHistories from "./Components/Profile/BillingHistories";
+import AdminLayout from "./Layouts/AdminLayout";
 
 const routes = createBrowserRouter([
     {
@@ -74,6 +75,10 @@ const routes = createBrowserRouter([
                 element: <BillingHistories />,
             },
         ],
+    },
+    {
+        path: "/admin",
+        element: <AdminLayout />,
     },
 ]);
 
