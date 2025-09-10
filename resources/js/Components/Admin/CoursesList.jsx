@@ -1,0 +1,405 @@
+import React from "react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../ui/select";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "../ui/pagination";
+import { Button } from "../ui/button";
+import CourseImg from "../../../assets/Courses.jpg";
+import { Ellipsis, GraduationCap, Plus, Users } from "lucide-react";
+import BlogImg from "../../../assets/Blogs.jpg";
+import { Link } from "react-router-dom";
+
+export default function CoursesList() {
+    return (
+        <div>
+            <h1 className="text-xl font-medium">Courses</h1>
+            <div className="flex flex-col md:flex-row justify-between my-4">
+                <div className="flex items-center gap-2">
+                    <Link to="">
+                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
+                            Frontend
+                        </span>
+                    </Link>
+                    <Link to="">
+                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
+                            Backend
+                        </span>
+                    </Link>
+                    <Link to="">
+                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
+                            Fullstack
+                        </span>
+                    </Link>
+                </div>
+                <div className="flex items-center justify-end md:justify-normal gap-2">
+                    <div className="hidden md:block">
+                        <Select>
+                            <SelectTrigger className="w-[180px] border-gray-700">
+                                <SelectValue placeholder="Filter " />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="newest">
+                                    Filter By Newest
+                                </SelectItem>
+                                <SelectItem value="oldest">
+                                    Filter By Oldest
+                                </SelectItem>
+                                <SelectItem value="a-z">
+                                    Filter By A-Z
+                                </SelectItem>
+                                <SelectItem value="z-a">
+                                    Filter By Z-A
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
+                        <Plus />
+                        Create
+                    </Button>
+                </div>
+            </div>
+            <div className="overflow-x-auto w-full">
+                <div className="min-w-[920px]">
+                    <ul className="flex items-center px-3 py-4 border-b border-b-gray-700 my-3">
+                        <li className="basis-[5%]">ID</li>
+                        <li className="basis-[33%]">Course Name</li>
+                        <li className="basis-[13%] pl-2">Category</li>
+                        <li className="basis-[14%]">Price</li>
+                        <li className="basis-[10%]">Enrolled</li>
+                        <li className="basis-[10%]">Certified</li>
+                        <li className="basis-[10%]">Time</li>
+                        <li className="basis-[5%]"></li>
+                    </ul>
+                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <li className="basis-[5%]">1</li>
+                        <li className="basis-[33%] flex items-center gap-2">
+                            <img
+                                src={CourseImg}
+                                alt=""
+                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                            />
+                            <p className="text-sm font-medium">
+                                Full-Stack Web Development Pathway
+                            </p>
+                        </li>
+                        <li className="basis-[13%] pl-2">
+                            <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
+                                Frontend
+                            </span>
+                        </li>
+                        <li className="basis-[14%]">300,000 MMK</li>
+                        <li className="basis-[10%]">76</li>
+                        <li className="basis-[10%]">42</li>
+                        <li className="basis-[10%]">18 hours</li>
+                        <li className="basis-[5%]">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <Ellipsis size={20} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <Link to="">
+                                        <DropdownMenuItem className="text-accentGreen">
+                                            View Details
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </li>
+                    </ul>
+                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <li className="basis-[5%]">1</li>
+                        <li className="basis-[33%] flex items-center gap-2">
+                            <img
+                                src={CourseImg}
+                                alt=""
+                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                            />
+                            <p className="text-sm font-medium">
+                                Full-Stack Web Development Pathway
+                            </p>
+                        </li>
+                        <li className="basis-[13%] pl-2">
+                            <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
+                                Frontend
+                            </span>
+                        </li>
+                        <li className="basis-[14%]">300,000 MMK</li>
+                        <li className="basis-[10%]">76</li>
+                        <li className="basis-[10%]">42</li>
+                        <li className="basis-[10%]">18 hours</li>
+                        <li className="basis-[5%]">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <Ellipsis size={20} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <Link to="">
+                                        <DropdownMenuItem className="text-accentGreen">
+                                            View Details
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </li>
+                    </ul>
+                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <li className="basis-[5%]">1</li>
+                        <li className="basis-[33%] flex items-center gap-2">
+                            <img
+                                src={CourseImg}
+                                alt=""
+                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                            />
+                            <p className="text-sm font-medium">
+                                Full-Stack Web Development Pathway
+                            </p>
+                        </li>
+                        <li className="basis-[13%] pl-2">
+                            <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
+                                Frontend
+                            </span>
+                        </li>
+                        <li className="basis-[14%]">300,000 MMK</li>
+                        <li className="basis-[10%]">76</li>
+                        <li className="basis-[10%]">42</li>
+                        <li className="basis-[10%]">18 hours</li>
+                        <li className="basis-[5%]">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <Ellipsis size={20} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <Link to="">
+                                        <DropdownMenuItem className="text-accentGreen">
+                                            View Details
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </li>
+                    </ul>
+                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <li className="basis-[5%]">1</li>
+                        <li className="basis-[33%] flex items-center gap-2">
+                            <img
+                                src={CourseImg}
+                                alt=""
+                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                            />
+                            <p className="text-sm font-medium">
+                                Full-Stack Web Development Pathway
+                            </p>
+                        </li>
+                        <li className="basis-[13%] pl-2">
+                            <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
+                                Frontend
+                            </span>
+                        </li>
+                        <li className="basis-[14%]">300,000 MMK</li>
+                        <li className="basis-[10%]">76</li>
+                        <li className="basis-[10%]">42</li>
+                        <li className="basis-[10%]">18 hours</li>
+                        <li className="basis-[5%]">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <Ellipsis size={20} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <Link to="">
+                                        <DropdownMenuItem className="text-accentGreen">
+                                            View Details
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </li>
+                    </ul>
+                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <li className="basis-[5%]">1</li>
+                        <li className="basis-[33%] flex items-center gap-2">
+                            <img
+                                src={CourseImg}
+                                alt=""
+                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                            />
+                            <p className="text-sm font-medium">
+                                Full-Stack Web Development Pathway
+                            </p>
+                        </li>
+                        <li className="basis-[13%] pl-2">
+                            <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
+                                Frontend
+                            </span>
+                        </li>
+                        <li className="basis-[14%]">300,000 MMK</li>
+                        <li className="basis-[10%]">76</li>
+                        <li className="basis-[10%]">42</li>
+                        <li className="basis-[10%]">18 hours</li>
+                        <li className="basis-[5%]">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <Ellipsis size={20} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <Link to="">
+                                        <DropdownMenuItem className="text-accentGreen">
+                                            View Details
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </li>
+                    </ul>
+                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <li className="basis-[5%]">1</li>
+                        <li className="basis-[33%] flex items-center gap-2">
+                            <img
+                                src={CourseImg}
+                                alt=""
+                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                            />
+                            <p className="text-sm font-medium">
+                                Full-Stack Web Development Pathway
+                            </p>
+                        </li>
+                        <li className="basis-[13%] pl-2">
+                            <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
+                                Frontend
+                            </span>
+                        </li>
+                        <li className="basis-[14%]">300,000 MMK</li>
+                        <li className="basis-[10%]">76</li>
+                        <li className="basis-[10%]">42</li>
+                        <li className="basis-[10%]">18 hours</li>
+                        <li className="basis-[5%]">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <Ellipsis size={20} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <Link to="">
+                                        <DropdownMenuItem className="text-accentGreen">
+                                            View Details
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </li>
+                    </ul>
+                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <li className="basis-[5%]">1</li>
+                        <li className="basis-[33%] flex items-center gap-2">
+                            <img
+                                src={CourseImg}
+                                alt=""
+                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                            />
+                            <p className="text-sm font-medium">
+                                Full-Stack Web Development Pathway
+                            </p>
+                        </li>
+                        <li className="basis-[13%] pl-2">
+                            <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
+                                Frontend
+                            </span>
+                        </li>
+                        <li className="basis-[14%]">300,000 MMK</li>
+                        <li className="basis-[10%]">76</li>
+                        <li className="basis-[10%]">42</li>
+                        <li className="basis-[10%]">18 hours</li>
+                        <li className="basis-[5%]">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <Ellipsis size={20} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <Link to="">
+                                        <DropdownMenuItem className="text-accentGreen">
+                                            View Details
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div className="mt-8 flex">
+                <div className="ml-auto">
+                    <Pagination className="text-accentRed">
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious />
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink>1</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink>2</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink>3</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationNext />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
+            </div>
+        </div>
+    );
+}
