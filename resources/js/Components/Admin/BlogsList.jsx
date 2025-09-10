@@ -681,6 +681,29 @@ export default function BlogsList() {
                     </ul>
                 </div>
             </div>
+            <div className="mt-8 flex">
+                <div className="ml-auto">
+                    <Pagination className="text-accentRed">
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious />
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink>1</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink>2</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink>3</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationNext />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
+            </div>
         </div>
     );
 }
