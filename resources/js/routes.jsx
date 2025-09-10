@@ -15,6 +15,7 @@ import YourCertificates from "./Components/Profile/YourCertificates";
 import BillingHistories from "./Components/Profile/BillingHistories";
 import AdminLayout from "./Layouts/AdminLayout";
 import BlogsList from "./Components/Admin/BlogsList";
+import UsersList from "./Components/Admin/UsersList";
 
 const routes = createBrowserRouter([
     {
@@ -84,6 +85,10 @@ const routes = createBrowserRouter([
             {
                 path: "/admin/blogs",
                 element: <BlogsList />,
+            },
+            {
+                path: "/admin/users",
+                element: <UsersList />,
             },
         ],
     },

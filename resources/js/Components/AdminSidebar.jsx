@@ -122,25 +122,13 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                         </Link>
                     </div>
 
-                    {/* User Section */}
+                    {/* Other Links */}
                     <div className="mb-6 ml-3">
-                        <h2 className="text-xs font-semibold text-gray-900 uppercase mb-2">
-                            Users
-                        </h2>
                         <Link to="/admin/users">
                             <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
                                 <Users size={20} /> Users
                             </div>
                         </Link>
-                        <Link to="/admin/students">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
-                                <GraduationCap size={20} /> Students
-                            </div>
-                        </Link>
-                    </div>
-
-                    {/* Other Links */}
-                    <div className="mb-6 ml-3">
                         <Link to="/admin/reviews">
                             <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
                                 <MessageCircle size={20} /> Reviews
