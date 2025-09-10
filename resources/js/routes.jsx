@@ -16,6 +16,7 @@ import BillingHistories from "./Components/Profile/BillingHistories";
 import AdminLayout from "./Layouts/AdminLayout";
 import BlogsList from "./Components/Admin/BlogsList";
 import UsersList from "./Components/Admin/UsersList";
+import Purchase from "./Components/Admin/Purchase";
 
 const routes = createBrowserRouter([
     {
@@ -82,6 +83,10 @@ const routes = createBrowserRouter([
         path: "/admin",
         element: <AdminLayout />,
         children: [
+            {
+                path: "/admin/purchase",
+                element: <Purchase />,
+            },
             {
                 path: "/admin/blogs",
                 element: <BlogsList />,
