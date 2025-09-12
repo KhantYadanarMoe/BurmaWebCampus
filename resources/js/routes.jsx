@@ -18,6 +18,7 @@ import BlogsList from "./Components/Admin/BlogsList";
 import UsersList from "./Components/Admin/UsersList";
 import Purchase from "./Components/Admin/Purchase";
 import CoursesList from "./Components/Admin/CoursesList";
+import BlogForm from "./Components/Admin/BlogForm";
 
 const routes = createBrowserRouter([
     {
@@ -95,6 +96,10 @@ const routes = createBrowserRouter([
             {
                 path: "/admin/blogs",
                 element: <BlogsList />,
+            },
+            {
+                path: "/admin/blogs/create",
+                element: <BlogForm />,
             },
             {
                 path: "/admin/users",
