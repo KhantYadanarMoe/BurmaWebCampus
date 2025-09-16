@@ -19,6 +19,7 @@ import UsersList from "./Components/Admin/UsersList";
 import Purchase from "./Components/Admin/Purchase";
 import CoursesList from "./Components/Admin/CoursesList";
 import BlogForm from "./Components/Admin/BlogForm";
+import ContactMessage from "./Components/Admin/ContactMessage";
 
 const routes = createBrowserRouter([
     {
@@ -104,6 +105,10 @@ const routes = createBrowserRouter([
             {
                 path: "/admin/users",
                 element: <UsersList />,
+            },
+            {
+                path: "/admin/contacts",
+                element: <ContactMessage />,
             },
         ],
     },

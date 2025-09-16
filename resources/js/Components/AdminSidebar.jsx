@@ -93,7 +93,7 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                                 <TagIcon size={20} /> Categories
                             </div>
                         </Link>
-                        <Link to="/admin/courses/list">
+                        <Link to="/admin/courses">
                             <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
                                 <BookOpen size={20} /> Courses
                             </div>
@@ -105,7 +105,7 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                         <h2 className="text-xs font-semibold text-gray-900 uppercase mb-2">
                             Blog
                         </h2>
-                        <Link to="/admin/blog/add">
+                        <Link to="/admin/blogs/create">
                             <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
                                 <Plus size={20} /> Create Blog
                             </div>
@@ -115,7 +115,7 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                                 <TagIcon size={20} /> Categories
                             </div>
                         </Link>
-                        <Link to="/admin/blog/list">
+                        <Link to="/admin/blogs">
                             <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
                                 <Newspaper size={20} /> Blogs
                             </div>
