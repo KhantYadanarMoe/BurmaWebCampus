@@ -22,6 +22,7 @@ import BlogForm from "./Components/Admin/BlogForm";
 import ContactMessage from "./Components/Admin/ContactMessage";
 import CourseBasicForm from "./Components/Admin/CourseBasicForm";
 import CourseDetailsForm from "./Components/Admin/CourseDetailsForm";
+import Reviews from "./Components/Admin/Reviews";
 
 const routes = createBrowserRouter([
     {
@@ -115,6 +116,10 @@ const routes = createBrowserRouter([
             {
                 path: "/admin/users",
                 element: <UsersList />,
+            },
+            {
+                path: "/admin/reviews",
+                element: <Reviews />,
             },
             {
                 path: "/admin/contacts",
