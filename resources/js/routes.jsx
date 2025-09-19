@@ -26,6 +26,7 @@ import Reviews from "./Components/Admin/Reviews";
 import CoursesCategory from "./Components/Admin/CoursesCategory";
 import BlogsCategory from "./Components/Admin/BlogsCategory";
 import AdminProfile from "./Components/Admin/AdminProfile";
+import UserDetails from "./Components/Admin/UserDetails";
 
 const routes = createBrowserRouter([
     {
@@ -131,6 +132,10 @@ const routes = createBrowserRouter([
             {
                 path: "/admin/users",
                 element: <UsersList />,
+            },
+            {
+                path: "/admin/user/details",
+                element: <UserDetails />,
             },
             {
                 path: "/admin/reviews",
