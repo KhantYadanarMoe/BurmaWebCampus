@@ -53,7 +53,7 @@ export default function UsersList() {
                     <h1 className="text-lg font-medium mb-9">
                         Personal Information
                     </h1>
-                    <div className="w-[75%]">
+                    <div className="w-full md:w-[75%]">
                         <div className="flex justify-between my-7">
                             <div className="w-1/2">
                                 <h1 className="font-medium">First Name</h1>
@@ -66,14 +66,14 @@ export default function UsersList() {
                                 <p className="text-gray-800 text-sm">Moe</p>
                             </div>
                         </div>
-                        <div className="flex justify-between my-7">
-                            <div className="w-1/2">
+                        <div className="md:flex justify-between my-7">
+                            <div className="md:w-1/2 my-7 md:my-0">
                                 <h1 className="font-medium">Email</h1>
                                 <p className="text-gray-800 text-sm">
                                     khantyadanarmoe@gmail.com
                                 </p>
                             </div>
-                            <div className="w-1/2">
+                            <div className="md:w-1/2 my-7 md:my-0">
                                 <h1 className="font-medium">Phone</h1>
                                 <p className="text-gray-800 text-sm">
                                     +959 123 456 789
@@ -117,7 +117,7 @@ export default function UsersList() {
                         <img
                             src={CourseImg}
                             alt="course image"
-                            className="w-24 h-24 object-cover rounded-lg"
+                            className="hidden md:block w-24 h-24 object-cover rounded-lg"
                         />
                         <div className="flex-1">
                             <div>
@@ -144,7 +144,7 @@ export default function UsersList() {
                         <img
                             src={CourseImg}
                             alt="course image"
-                            className="w-24 h-24 object-cover rounded-lg"
+                            className="hidden md:block w-24 h-24 object-cover rounded-lg"
                         />
                         <div className="flex-1">
                             <div>
@@ -171,7 +171,7 @@ export default function UsersList() {
                         <img
                             src={CourseImg}
                             alt="course image"
-                            className="w-24 h-24 object-cover rounded-lg"
+                            className="hidden md:block w-24 h-24 object-cover rounded-lg"
                         />
                         <div className="flex-1">
                             <div>
