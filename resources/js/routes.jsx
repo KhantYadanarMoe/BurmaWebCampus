@@ -25,6 +25,7 @@ import CourseDetailsForm from "./Components/Admin/CourseDetailsForm";
 import Reviews from "./Components/Admin/Reviews";
 import CoursesCategory from "./Components/Admin/CoursesCategory";
 import BlogsCategory from "./Components/Admin/BlogsCategory";
+import AdminProfile from "./Components/Admin/AdminProfile";
 
 const routes = createBrowserRouter([
     {
@@ -91,6 +92,10 @@ const routes = createBrowserRouter([
         path: "/admin",
         element: <AdminLayout />,
         children: [
+            {
+                path: "/admin/profile",
+                element: <AdminProfile />,
+            },
             {
                 path: "/admin/purchase",
                 element: <Purchase />,
