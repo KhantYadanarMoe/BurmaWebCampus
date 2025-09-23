@@ -6,7 +6,6 @@ export default function AdminLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
 
-    // Check if current path is /admin/contacts
     const isContactPage = location.pathname === "/admin/contacts";
 
     return (

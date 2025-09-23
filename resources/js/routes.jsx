@@ -27,6 +27,7 @@ import CoursesCategory from "./Components/Admin/CoursesCategory";
 import BlogsCategory from "./Components/Admin/BlogsCategory";
 import AdminProfile from "./Components/Admin/AdminProfile";
 import UserDetails from "./Components/Admin/UserDetails";
+import Settings from "./Components/Admin/Settings";
 
 const routes = createBrowserRouter([
     {
@@ -144,6 +145,10 @@ const routes = createBrowserRouter([
             {
                 path: "/admin/contacts",
                 element: <ContactMessage />,
+            },
+            {
+                path: "/admin/settings",
+                element: <Settings />,
             },
         ],
     },

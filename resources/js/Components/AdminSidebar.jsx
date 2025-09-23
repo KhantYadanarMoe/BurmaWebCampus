@@ -183,7 +183,9 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
 
                 <div className="flex items-center md:gap-6 gap-3">
                     <MoonStar size={20} className="text-gray-800" />
-                    <Settings size={20} className="text-gray-800" />
+                    <Link to="/admin/settings">
+                        <Settings size={20} className="text-gray-800" />
+                    </Link>
                     <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden cursor-pointer flex-shrink-0">

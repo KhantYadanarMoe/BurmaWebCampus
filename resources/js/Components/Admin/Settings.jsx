@@ -1,0 +1,318 @@
+import React from "react";
+import Pf from "../../../assets/Profile.jpg";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import {
+    BellRing,
+    BookText,
+    ChevronLeft,
+    ChevronRight,
+    Flag,
+    MessageCircleMore,
+    Settings2,
+    Shield,
+    Trash,
+    X,
+} from "lucide-react";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
+
+export default function Settings() {
+    const [open, setOpen] = useState(false);
+    const [showReply, setShowReply] = useState(false);
+    return (
+        <div>
+            <h1 className="text-2xl font-medium">Settings</h1>
+            <p className="text-sm text-gray-700 mt-1 mb-6">
+                Manage your website settings.
+            </p>
+            <hr className="my-3 border-t-gray-400" />
+            <ul className="flex space-x-2 overflow-x-scroll overflow-y-hidden no-scrollbar items-center bg-gray-100 rounded-md py-1 px-1">
+                <li>
+                    <Link
+                        to=""
+                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                    >
+                        Site info
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        to=""
+                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                    >
+                        Appearance
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        to=""
+                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                    >
+                        Localization
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        to=""
+                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                    >
+                        Notifications
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        to=""
+                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                    >
+                        Security
+                    </Link>
+                </li>
+            </ul>
+            <div className="my-8">
+                <div className="flex justify-between">
+                    <div className="mb-5">
+                        <h1 className="text-lg font-medium">Site Info</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update the general information of the site.
+                        </p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline">Cancel</Button>
+                        <Button>Save Changes</Button>
+                    </div>
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Site Name</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update your site name here.
+                        </p>
+                    </div>
+                    <Input
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="Enter your site name"
+                    />
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Logo</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update your site logo image here.
+                        </p>
+                    </div>
+                    <Input
+                        type="file"
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="Choose one"
+                    />
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Header</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update your site hero header here.
+                        </p>
+                    </div>
+                    <Input
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="Enter hero header"
+                    />
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Description</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update your site hero desc here.
+                        </p>
+                    </div>
+                    <Textarea
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="Enter hero description"
+                    ></Textarea>
+                </div>
+            </div>
+            <hr className="border-t-gray-700 my-8" />
+            <div className="my-8">
+                <div className="flex justify-between">
+                    <div className="mb-5">
+                        <h1 className="text-lg font-medium">Appearance</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update the appearance of the website.
+                        </p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline">Cancel</Button>
+                        <Button>Save Changes</Button>
+                    </div>
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Theme Color</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update the theme color of the website.
+                        </p>
+                    </div>
+                    <Input
+                        type="color"
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="Enter your site name"
+                    />
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Font style</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update the font style of the website.
+                        </p>
+                    </div>
+                    <div className="md:w-1/2">
+                        <Input
+                            className="border-gray-400 mt-2 md:mt-0"
+                            placeholder="https://"
+                        />
+                        <p className="text-sm text-gray-600 mt-1 ml-1">
+                            Enter google font link here.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <hr className="border-t-gray-700 my-8" />
+            <div className="my-8">
+                <div className="flex justify-between">
+                    <div className="mb-5">
+                        <h1 className="text-lg font-medium">Localization</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Set localization for better experience.
+                        </p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline">Cancel</Button>
+                        <Button>Save Changes</Button>
+                    </div>
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Default Language</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Choose the default language for your website.
+                        </p>
+                    </div>
+                    <div className="md:w-1/2 mt-2 md:mt-0">
+                        <Select>
+                            <SelectTrigger
+                                id="role"
+                                name="role"
+                                className="mt-1 border-gray-400"
+                            >
+                                <span>Choose a language</span>{" "}
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="english">English</SelectItem>
+                                <SelectItem value="burmese">Burmese</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+            </div>
+            <hr className="border-t-gray-700 my-8" />
+            <div className="my-8">
+                <div className="flex justify-between">
+                    <div className="mb-5">
+                        <h1 className="text-lg font-medium">
+                            Email & Notification
+                        </h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Update email and notification settings.
+                        </p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline">Cancel</Button>
+                        <Button>Save Changes</Button>
+                    </div>
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Admin Email</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Enter the email to get the update of this website.
+                        </p>
+                    </div>
+                    <Input
+                        type="email"
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="Enter your email"
+                    />
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Sender Name</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            The name which will display in the emails send to
+                            students.
+                        </p>
+                    </div>
+                    <Input
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="e.g: Burma Web Campus"
+                    />
+                </div>
+            </div>
+            <hr className="border-t-gray-700 my-8" />
+            <div className="my-8">
+                <div className="flex justify-between">
+                    <div className="mb-5">
+                        <h1 className="text-lg font-medium">Security</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Set security for this website.
+                        </p>
+                    </div>
+                    <div className="md:flex gap-2">
+                        <Button variant="outline">Cancel</Button>
+                        <Button>Save Changes</Button>
+                    </div>
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">Password length (min)</h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Set min-length of password for login.
+                        </p>
+                    </div>
+                    <Input
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="Enter the length of password"
+                    />
+                </div>
+                <hr className="border-t-gray-300" />
+                <div className="md:flex gap-3 my-4 md:my-6">
+                    <div className="md:w-1/2">
+                        <h1 className="font-medium">
+                            Session Timeout Duration (sec)
+                        </h1>
+                        <p className="hidden md:block text-sm text-gray-800">
+                            Set auto-logout time.
+                        </p>
+                    </div>
+                    <Input
+                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
+                        placeholder="Enter time for session timeout"
+                    />
+                </div>
+            </div>
+        </div>
+    );
+}

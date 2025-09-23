@@ -117,3 +117,13 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #353535; /* Darker red on hover */
 }
+
+/* Hide scrollbar everywhere */
+.no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+}
