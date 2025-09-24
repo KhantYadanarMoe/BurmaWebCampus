@@ -28,6 +28,7 @@ import BlogsCategory from "./Components/Admin/BlogsCategory";
 import AdminProfile from "./Components/Admin/AdminProfile";
 import UserDetails from "./Components/Admin/UserDetails";
 import Settings from "./Components/Admin/Settings";
+import Login from "./Pages/Login";
 
 const routes = createBrowserRouter([
     {
@@ -67,6 +68,10 @@ const routes = createBrowserRouter([
                 element: <CourseDetails />,
             },
         ],
+    },
+    {
+        path: "/login",
+        element: <Login />,
     },
     {
         path: "/user", //it should be username
