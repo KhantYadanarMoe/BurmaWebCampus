@@ -29,6 +29,7 @@ import AdminProfile from "./Components/Admin/AdminProfile";
 import UserDetails from "./Components/Admin/UserDetails";
 import Settings from "./Components/Admin/Settings";
 import Login from "./Pages/Login";
+import Register from "./Pages/Register";
 
 const routes = createBrowserRouter([
     {
@@ -68,6 +69,10 @@ const routes = createBrowserRouter([
                 element: <CourseDetails />,
             },
         ],
+    },
+    {
+        path: "/register",
+        element: <Register />,
     },
     {
         path: "/login",
