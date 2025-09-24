@@ -31,6 +31,9 @@ export default function Footer() {
                             <Link>Home</Link>
                         </li>
                         <li>
+                            <Link>About</Link>
+                        </li>
+                        <li>
                             <Link>Courses</Link>
                         </li>
                         <li>
