@@ -31,6 +31,7 @@ import Settings from "./Components/Admin/Settings";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Subscribers from "./Components/Admin/Subscribers";
+import UserProfile from "./Pages/UserProfile";
 
 const routes = createBrowserRouter([
     {
@@ -68,6 +69,10 @@ const routes = createBrowserRouter([
             {
                 path: "/details", //it should be course name with user (John/frontendDev)
                 element: <CourseDetails />,
+            },
+            {
+                path: "/user/profile", //user must be the name and it is user's pf from other's pov
+                element: <UserProfile />,
             },
         ],
     },
