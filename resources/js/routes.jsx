@@ -30,6 +30,7 @@ import UserDetails from "./Components/Admin/UserDetails";
 import Settings from "./Components/Admin/Settings";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
+import Subscribers from "./Components/Admin/Subscribers";
 
 const routes = createBrowserRouter([
     {
@@ -143,6 +144,10 @@ const routes = createBrowserRouter([
             {
                 path: "/admin/users",
                 element: <UsersList />,
+            },
+            {
+                path: "/admin/subscribers",
+                element: <Subscribers />,
             },
             {
                 path: "/admin/user/details",
