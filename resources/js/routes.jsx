@@ -32,6 +32,7 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Subscribers from "./Components/Admin/Subscribers";
 import UserProfile from "./Pages/UserProfile";
+import CreateQuiz from "./Components/Admin/CreateQuiz";
 
 const routes = createBrowserRouter([
     {
@@ -125,6 +126,10 @@ const routes = createBrowserRouter([
             {
                 path: "/admin/courses/create/details",
                 element: <CourseDetailsForm />,
+            },
+            {
+                path: "/admin/courses/create/quiz",
+                element: <CreateQuiz />,
             },
             {
                 path: "/admin/courses/category",
