@@ -33,6 +33,7 @@ import Register from "./Pages/Register";
 import Subscribers from "./Components/Admin/Subscribers";
 import UserProfile from "./Pages/UserProfile";
 import CreateQuiz from "./Components/Admin/CreateQuiz";
+import Quiz from "./Pages/Quiz";
 
 const routes = createBrowserRouter([
     {
@@ -74,6 +75,10 @@ const routes = createBrowserRouter([
             {
                 path: "/user/profile", //user must be the name and it is user's pf from other's pov
                 element: <UserProfile />,
+            },
+            {
+                path: "/course/quiz", //it should be course name
+                element: <Quiz />,
             },
         ],
     },
