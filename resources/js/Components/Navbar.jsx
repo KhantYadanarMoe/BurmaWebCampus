@@ -7,6 +7,7 @@ import { Input } from "./ui/input";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [searchBox, setSearchBox] = useState(false);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -52,8 +53,31 @@ export default function Navbar() {
                             </li>
                         </ul>
 
-                        <div className="hidden md:flex items-center justify-center space-x-4">
-                            <Search size={19} className="cursor-pointer" />
+                        <div className="hidden md:flex items-center justify-center gap-4">
+                            <Search
+                                size={19}
+                                className="cursor-pointer"
+                                onClick={() => setSearchBox(true)}
+                            />
+                            {searchBox && (
+                                <div
+                                    className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50"
+                                    onClick={() => setSearchBox(false)}
+                                >
+                                    <div
+                                        className="relative mt-24 w-full max-w-lg bg-white h-[75vh] rounded-xl shadow-lg p-4"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <Input
+                                            type="text"
+                                            placeholder="Search..."
+                                            className="border-gray-400 w-full"
+                                            autoFocus
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
                             <Link to="/">
                                 <Button
                                     variant="outline"
