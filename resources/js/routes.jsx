@@ -34,6 +34,7 @@ import Subscribers from "./Components/Admin/Subscribers";
 import UserProfile from "./Pages/UserProfile";
 import CreateQuiz from "./Components/Admin/CreateQuiz";
 import Quiz from "./Pages/Quiz";
+import Dashboard from "./Components/Admin/Dashboard";
 
 const routes = createBrowserRouter([
     {
@@ -116,6 +117,10 @@ const routes = createBrowserRouter([
         path: "/admin",
         element: <AdminLayout />,
         children: [
+            {
+                path: "/admin",
+                element: <Dashboard />,
+            },
             {
                 path: "/admin/profile",
                 element: <AdminProfile />,
