@@ -50,6 +50,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../ui/dialog";
+import { useRef } from "react";
 
 export default function BlogsCategory() {
     // prepare state to store form data
@@ -59,6 +60,7 @@ export default function BlogsCategory() {
     });
     const [image, setImage] = useState(null);
     const [refreshFlag, setRefreshFlag] = useState(false);
+    const fileInputRef = useRef(null);
     const uploadImg = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -128,7 +130,11 @@ export default function BlogsCategory() {
                 res.data.message === "Blog Category created successfully." ||
                 res.data.message === "Blog Category updated successfully."
             ) {
-                setForm({ icon: "", name: "" });
+                setForm({ icon: null, name: "" });
+                setImage(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = null;
+                }
                 setErrors({});
                 setRefreshFlag((prev) => !prev);
                 // await getCategories();
@@ -292,6 +298,7 @@ export default function BlogsCategory() {
                             id="icon"
                             name="icon"
                             onChange={uploadImg}
+                            ref={fileInputRef}
                             className="border-gray-400 mt-1"
                         />
                         <p className="text-xs text-gray-500 mt-1">
