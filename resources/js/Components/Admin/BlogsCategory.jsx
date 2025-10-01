@@ -41,6 +41,15 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "../ui/dialog";
 
 export default function BlogsCategory() {
     // prepare state to store form data
@@ -63,6 +72,9 @@ export default function BlogsCategory() {
     // state to store categories to show all of the categories data
     let [categories, setCategories] = useState([]);
 
+    // state to control edit category dialog
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+
     // state for pagination
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -71,6 +83,8 @@ export default function BlogsCategory() {
 
     // state to store id to use in edit feature
     const [editId, setEditId] = useState(null);
+
+    const [visibility, setVisibility] = useState({});
 
     const submit = async (e) => {
         e.preventDefault();
@@ -119,12 +133,12 @@ export default function BlogsCategory() {
                 setRefreshFlag((prev) => !prev);
                 // await getCategories();
 
-                // if (isEditing) {
-                //     setEditDialogOpen(false);
-                //     setEditId(null);
-                // } else {
-                //     setOpen(false);
-                // }
+                if (isEditing) {
+                    setEditDialogOpen(false);
+                    setEditId(null);
+                } else {
+                    setOpen(false);
+                }
             }
         } catch (error) {
             console.error("Error creating blog category:", error);
@@ -143,12 +157,12 @@ export default function BlogsCategory() {
             let data = res.data;
             setCategories(data.categories);
 
-            // const visibilityMap = {};
-            // data.categories.forEach((cat) => {
-            //     visibilityMap[cat.id] = !!+cat.visibility;
-            // });
+            const visibilityMap = {};
+            data.categories.forEach((cat) => {
+                visibilityMap[cat.id] = !!+cat.is_visible;
+            });
 
-            // setVisibility(visibilityMap);
+            setVisibility(visibilityMap);
         } catch (error) {
             console.error("Failed to fetch categories:", error);
         }
@@ -160,70 +174,66 @@ export default function BlogsCategory() {
     }, [refreshFlag]);
 
     // rows to show in a page
-    // const rowsPerPage = 10;
+    const rowsPerPage = 10;
 
-    // const filteredCategories = categories.filter((category) =>
-    //     category.category?.toLowerCase().includes(query.toLowerCase())
-    // );
+    const filteredCategories = categories.filter((category) =>
+        category.category?.toLowerCase().includes(query.toLowerCase())
+    );
 
     // // calculate the last items, first items and set menus to show
-    // const indexOfLastCategory = currentPage * rowsPerPage;
-    // const indexOfFirstCategory = indexOfLastCategory - rowsPerPage;
-    // const currentCategories = filteredCategories.slice(
-    //     indexOfFirstCategory,
-    //     indexOfLastCategory
-    // );
+    const indexOfLastCategory = currentPage * rowsPerPage;
+    const indexOfFirstCategory = indexOfLastCategory - rowsPerPage;
+    const currentCategories = filteredCategories.slice(
+        indexOfFirstCategory,
+        indexOfLastCategory
+    );
 
-    // const totalPages = Math.ceil(filteredCategories.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredCategories.length / rowsPerPage);
 
-    // const handlePageChange = (page) => {
-    //     if (page >= 1 && page <= totalPages) {
-    //         setCurrentPage(page);
-    //     }
-    // };
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
-    // // setting format for created_at date
-    // dayjs.extend(relativeTime);
+    // fetch data to show prev data in input fields
+    let getDetails = async (id) => {
+        let res = await fetch("/api/blog/category/" + id);
+        let data = await res.json();
+        setCategoryDetails(data.category);
+    };
 
-    // // fetch data to show prev data in input fields
-    // let getDetails = async (id) => {
-    //     let res = await fetch("/api/category/" + id);
-    //     let data = await res.json();
-    //     setCategoryDetails(data.category);
-    // };
+    // call data fetching function depend on id changes
+    useEffect(() => {
+        if (editId !== null) {
+            getDetails(editId);
+        }
+    }, [editId]);
 
-    // // call data fetching function depend on id changes
-    // useEffect(() => {
-    //     if (editId !== null) {
-    //         getDetails(editId);
-    //     }
-    // }, [editId]);
+    // add prev data sent from backend in the form state
+    useEffect(() => {
+        if (categoryDetail) {
+            setForm({
+                icon: categoryDetail.icon,
+                name: categoryDetail.name,
+            });
+        }
+    }, [categoryDetail]);
 
-    // // add prev data sent from backend in the form state
-    // useEffect(() => {
-    //     if (categoryDetail) {
-    //         setForm({
-    //             category: categoryDetail.category,
-    //         });
-    //     }
-    // }, [categoryDetail]);
+    const toggleVisibility = (categoryId, checked) => {
+        setVisibility((prev) => ({
+            ...prev,
+            [categoryId]: checked,
+        }));
 
-    // const [visibility, setVisibility] = useState({});
-
-    // const toggleVisibility = (categoryId, checked) => {
-    //     setVisibility((prev) => ({
-    //         ...prev,
-    //         [categoryId]: checked,
-    //     }));
-
-    //     axios
-    //         .put(`/api/category/${categoryId}/visibility`, {
-    //             visibility: checked,
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error updating visibility:", error);
-    //         });
-    // };
+        axios
+            .put(`/api/blog/category/${categoryId}/visibility`, {
+                is_visible: checked,
+            })
+            .catch((error) => {
+                console.error("Error updating visibility:", error);
+            });
+    };
 
     // delete function
     let deleteCategory = async (id) => {
@@ -264,6 +274,11 @@ export default function BlogsCategory() {
                         <p className="text-xs text-gray-500 mt-1">
                             Upload an icon (PNG, JPG, or SVG)
                         </p>
+                        {errors.icon && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.icon[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="mt-3 mb-1 md:w-1/2">
                         <Label>Category Name</Label>
@@ -280,6 +295,11 @@ export default function BlogsCategory() {
                             className="border-gray-400 mt-1"
                             placeholder="Write the title of this blog"
                         />
+                        {errors.name && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.name[0]}
+                            </p>
+                        )}
                     </div>
                 </div>
                 <div className="flex justify-end mt-5 md:mt-0">
@@ -327,7 +347,16 @@ export default function BlogsCategory() {
                             </li>
                             <li className="basis-[30%]">27</li>
                             <li className="basis-[20%]">
-                                <Switch />
+                                <Switch
+                                    checked={
+                                        visibility.hasOwnProperty(category.id)
+                                            ? visibility[category.id]
+                                            : false
+                                    }
+                                    onCheckedChange={(checked) =>
+                                        toggleVisibility(category.id, checked)
+                                    }
+                                />
                             </li>
                             <li className="basis-[5%]">
                                 <DropdownMenu modal={false}>
@@ -340,13 +369,109 @@ export default function BlogsCategory() {
                                         align="end"
                                         className="w-40"
                                     >
-                                        <DropdownMenuItem className="text-accentYellow">
-                                            <Link to="">Edit</Link>
-                                        </DropdownMenuItem>
+                                        <Dialog
+                                            open={editDialogOpen}
+                                            onOpenChange={(isOpen) => {
+                                                setEditDialogOpen(isOpen);
+                                                if (isOpen) {
+                                                    setEditId(category.id);
+                                                } else {
+                                                    setEditId(null);
+                                                    setErrors({});
+                                                    setForm({
+                                                        icon: "",
+                                                        name: "",
+                                                    }); // reset when dialog closes
+                                                }
+                                            }}
+                                        >
+                                            <DialogTrigger asChild>
+                                                <Button className="text-accentYellow px-2 py-0 bg-white shadow-none hover:bg-white">
+                                                    Edit
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>
+                                                        Edit Category
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        Update the category of
+                                                        blog below.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <div className="flex flex-col gap-4 py-4">
+                                                    <div>
+                                                        <Label>
+                                                            Category Icon
+                                                        </Label>
+                                                        <div className="flex items-center gap-1 mt-1">
+                                                            <img
+                                                                src={`/storage/${category.icon}`}
+                                                                alt=""
+                                                                className="w-9 h-9 object-cover rounded-md"
+                                                            />
+                                                            <Input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                id="icon"
+                                                                name="icon"
+                                                                onChange={
+                                                                    uploadImg
+                                                                }
+                                                                className="border-gray-400 mt-1"
+                                                            />
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            Upload an icon (PNG,
+                                                            JPG, or SVG)
+                                                        </p>
+                                                        {errors.icon && (
+                                                            <p className="text-red-500 mt-1 text-sm">
+                                                                {errors.icon[0]}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <Label>
+                                                            Category Name
+                                                        </Label>
+                                                        <Input
+                                                            id="name"
+                                                            name="name"
+                                                            value={form.name}
+                                                            onChange={(e) =>
+                                                                setForm({
+                                                                    ...form,
+                                                                    name: e
+                                                                        .target
+                                                                        .value,
+                                                                })
+                                                            }
+                                                            className="border-gray-400 mt-1"
+                                                            placeholder="Write category name"
+                                                        />
+                                                        {errors.name && (
+                                                            <p className="text-red-500 mt-1 text-sm">
+                                                                {errors.name[0]}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <DialogFooter>
+                                                    <Button variant="secondary">
+                                                        Cancel
+                                                    </Button>
+                                                    <Button onClick={submit}>
+                                                        Update
+                                                    </Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
                                         <DropdownMenuItem asChild>
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
-                                                    <button className="text-accentRed bg-white w-full text-left px-2 py-2">
+                                                    <button className="text-red-600 bg-white w-full text-left px-2 py-2">
                                                         Delete
                                                     </button>
                                                 </AlertDialogTrigger>
@@ -391,19 +516,55 @@ export default function BlogsCategory() {
                     <Pagination className="text-accentRed">
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious />
+                                <PaginationPrevious
+                                    onClick={() =>
+                                        handlePageChange(currentPage - 1)
+                                    }
+                                    disabled={currentPage === 1}
+                                    className={`cursor-pointer ${
+                                        currentPage === 1
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                />
                             </PaginationItem>
+                            {Array.from(
+                                {
+                                    length: Math.ceil(
+                                        categories.length / rowsPerPage
+                                    ),
+                                },
+                                (_, index) => (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink
+                                            onClick={() =>
+                                                handlePageChange(index + 1)
+                                            }
+                                            isActive={currentPage === index + 1}
+                                            className="cursor-pointer"
+                                        >
+                                            {index + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                )
+                            )}
                             <PaginationItem>
-                                <PaginationLink>1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>2</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext />
+                                <PaginationNext
+                                    onClick={() =>
+                                        handlePageChange(currentPage + 1)
+                                    }
+                                    className={`cursor-pointer ${
+                                        currentPage === totalPages
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    disabled={
+                                        currentPage ===
+                                        Math.ceil(
+                                            categories.length / rowsPerPage
+                                        )
+                                    }
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>

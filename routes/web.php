@@ -31,6 +31,9 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);
+ Route::put('/api/blog/category/{id}/visibility', [BlogCategoryController::class, 'updateVisibility']);
+Route::get('/api/blog/category/{id}', [BlogCategoryController::class, 'show']);
+Route::put('/api/blog/category/{category}', [BlogCategoryController::class, 'update']);
 Route::delete('/api/blog/category/{category}', [BlogCategoryController::class, 'delete']);
 
 require __DIR__.'/auth.php';
