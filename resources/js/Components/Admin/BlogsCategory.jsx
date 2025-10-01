@@ -25,7 +25,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
+import { ChevronDown, Ellipsis } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
     AlertDialog,
@@ -235,6 +235,29 @@ export default function BlogsCategory() {
             });
     };
 
+    const [selectedFilter, setSelectedFilter] = useState("newest");
+
+    const handleFilterChange = (filterValue) => {
+        setSelectedFilter(filterValue);
+
+        axios
+            .get(`/api/blog/categories?sort=${filterValue}`)
+            .then((response) => {
+                const data = response.data;
+                if (data.categories) {
+                    setCategories(data.categories);
+                    console.log(data.message);
+                }
+            })
+            .catch((error) => {
+                console.error("Axios request failed:", error);
+            });
+    };
+
+    useEffect(() => {
+        handleFilterChange("newest"); // initial load
+    }, []);
+
     // delete function
     let deleteCategory = async (id) => {
         try {
@@ -309,17 +332,52 @@ export default function BlogsCategory() {
             <hr className="my-5 border-t-gray-400" />
             <div className="flex justify-between my-5">
                 <h1 className="text-lg font-medium">Category</h1>
-                <Select>
-                    <SelectTrigger className="w-[180px] border-gray-700">
-                        <SelectValue placeholder="Filter " />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="newest">Filter By Newest</SelectItem>
-                        <SelectItem value="oldest">Filter By Oldest</SelectItem>
-                        <SelectItem value="a-z">Filter By A-Z</SelectItem>
-                        <SelectItem value="z-a">Filter By Z-A</SelectItem>
-                    </SelectContent>
-                </Select>
+                <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                        <button className="flex gap-1 items-center px-2 py-1 border border-gray-800 rounded-md">
+                            {
+                                {
+                                    newest: "Filter By Newest",
+                                    oldest: "Filter By Oldest",
+                                    "a-z": "Filter By A-Z",
+                                    "z-a": "Filter By Z-A",
+                                }[selectedFilter]
+                            }
+                            <ChevronDown size={16} />
+                        </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent
+                        align="end"
+                        className="w-40"
+                        avoidCollisions={false}
+                    >
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("newest")}
+                            className="cursor-pointer"
+                        >
+                            Filter By Newest
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("oldest")}
+                            className="cursor-pointer"
+                        >
+                            Filter By Oldest
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("a-z")}
+                            className="cursor-pointer"
+                        >
+                            Filter By A-Z
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("z-a")}
+                            className="cursor-pointer"
+                        >
+                            Filter By Z-A
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             <div className="overflow-x-auto w-full">
                 <div className="min-w-[920px]">

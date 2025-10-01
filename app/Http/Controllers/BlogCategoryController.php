@@ -47,9 +47,29 @@ class BlogCategoryController extends Controller
         ]);
     }
     
-    public function index(){
-        // take data from backend database
-        $categories = BlogCategory::latest()->get();
+    public function index(Request $request){
+        $sort = $request->query('sort', 'newest'); // Default to 'newest' if no sort is provided
+        $query = BlogCategory::query();
+
+        // Apply sorting based on the requested sort option
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // Retrieve the users based on the sorting logic
+        $categories = $query->get();
 
         // send data to frontend
         return response()->json([
