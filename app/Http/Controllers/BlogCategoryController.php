@@ -24,7 +24,7 @@ class BlogCategoryController extends Controller
             ], 422);
         }
 
-        // store image
+        // store icon
         $iconPath = null;
         if (request()->hasFile('icon')) {
             $icon = request()->file('icon');
@@ -48,7 +48,7 @@ class BlogCategoryController extends Controller
     }
     
     public function index(Request $request){
-        $sort = $request->query('sort', 'newest'); // Default to 'newest' if no sort is provided
+        $sort = $request->query('sort', 'newest'); // Default to 'newest' if no data is provided
         $query = BlogCategory::query();
 
         // Apply sorting based on the requested sort option
@@ -68,7 +68,6 @@ class BlogCategoryController extends Controller
                 break;
         }
 
-        // Retrieve the users based on the sorting logic
         $categories = $query->get();
 
         // send data to frontend

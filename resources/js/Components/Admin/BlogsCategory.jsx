@@ -3,14 +3,6 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select";
-import Icon from "../../../assets/FrontendIcon.jpg";
-import {
     Pagination,
     PaginationContent,
     PaginationItem,
@@ -53,20 +45,20 @@ import {
 import { useRef } from "react";
 
 export default function BlogsCategory() {
-    // prepare state to store form data
+    // form state to store data before sending to backend
     const [form, setForm] = useState({
         icon: "",
         name: "",
     });
+
+    //img state to store icon
     const [image, setImage] = useState(null);
+
+    //state to control refresh after creating a category
     const [refreshFlag, setRefreshFlag] = useState(false);
+
+    //to remove input data of icon after creating a category
     const fileInputRef = useRef(null);
-    const uploadImg = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImage(file);
-        }
-    };
 
     // store errors state
     const [errors, setErrors] = useState({});
@@ -86,8 +78,21 @@ export default function BlogsCategory() {
     // state to store id to use in edit feature
     const [editId, setEditId] = useState(null);
 
+    //state to store data for visibility
     const [visibility, setVisibility] = useState({});
 
+    //state to control filter
+    const [selectedFilter, setSelectedFilter] = useState("newest");
+
+    //handle icon input
+    const uploadImg = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+        }
+    };
+
+    //handle create and edit features
     const submit = async (e) => {
         e.preventDefault();
 
@@ -137,7 +142,6 @@ export default function BlogsCategory() {
                 }
                 setErrors({});
                 setRefreshFlag((prev) => !prev);
-                // await getCategories();
 
                 if (isEditing) {
                     setEditDialogOpen(false);
@@ -182,6 +186,7 @@ export default function BlogsCategory() {
     // rows to show in a page
     const rowsPerPage = 10;
 
+    // for pagination
     const filteredCategories = categories.filter((category) =>
         category.category?.toLowerCase().includes(query.toLowerCase())
     );
@@ -226,6 +231,7 @@ export default function BlogsCategory() {
         }
     }, [categoryDetail]);
 
+    // function to control visibility
     const toggleVisibility = (categoryId, checked) => {
         setVisibility((prev) => ({
             ...prev,
@@ -241,8 +247,7 @@ export default function BlogsCategory() {
             });
     };
 
-    const [selectedFilter, setSelectedFilter] = useState("newest");
-
+    //function to handle filtering
     const handleFilterChange = (filterValue) => {
         setSelectedFilter(filterValue);
 
@@ -252,7 +257,6 @@ export default function BlogsCategory() {
                 const data = response.data;
                 if (data.categories) {
                     setCategories(data.categories);
-                    console.log(data.message);
                 }
             })
             .catch((error) => {
@@ -323,7 +327,7 @@ export default function BlogsCategory() {
                                 })
                             }
                             className="border-gray-400 mt-1"
-                            placeholder="Write the title of this blog"
+                            placeholder="Write category name"
                         />
                         {errors.name && (
                             <p className="text-red-500 mt-1 text-sm">
@@ -396,7 +400,10 @@ export default function BlogsCategory() {
                         <li className="basis-[5%]"></li>
                     </ul>
                     {categories.map((category) => (
-                        <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <ul
+                            key={category.id}
+                            className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2"
+                        >
                             <li className="basis-[5%]">{category.id}</li>
                             <li className="basis-[40%]">
                                 <div className="flex gap-2 items-center">
