@@ -62,6 +62,13 @@ export default function AllBlogs() {
         tmp.innerHTML = html;
         return tmp.textContent || tmp.innerText || "";
     }
+
+    function getReadingTime(content) {
+        const wordsPerMinute = 200;
+        const words = content.trim().split(/\s+/).length;
+        const minutes = Math.ceil(words / wordsPerMinute);
+        return `${minutes} min${minutes > 1 ? "s" : ""} read`;
+    }
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-2 md:mb-0">
@@ -104,7 +111,9 @@ export default function AllBlogs() {
                                                 {blog.category.name}
                                             </span>
                                             <p className="text-sm text-gray-600">
-                                                3 mins read
+                                                {getReadingTime(
+                                                    blog?.paragraph
+                                                )}
                                             </p>
                                         </div>
                                         <h1 className="my-2 font-medium text-lg">
