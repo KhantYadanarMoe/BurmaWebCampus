@@ -171,7 +171,7 @@ export default function BlogsList() {
                                         align="end"
                                         className="w-40"
                                     >
-                                        <Link to="">
+                                        <Link to={`/blog/${blog.id}`}>
                                             <DropdownMenuItem className="text-accentGreen">
                                                 Read
                                             </DropdownMenuItem>

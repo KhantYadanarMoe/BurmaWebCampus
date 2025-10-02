@@ -18,8 +18,50 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
+import axios from "axios";
+import { useEffect } from "react";
 
 export default function AllBlogs() {
+    const [blogs, setBlogs] = useState([]);
+
+    // state for pagination
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // rows to show in a page
+    const rowsPerPage = 6;
+
+    // Fetch blogs from backend
+    const getBlogs = async () => {
+        try {
+            const res = await axios.get("/api/blogs");
+            setBlogs(res.data.blogs);
+        } catch (error) {
+            console.error("Failed to fetch blogs:", error);
+        }
+    };
+
+    useEffect(() => {
+        getBlogs();
+    }, []);
+
+    const indexOfLastBlog = currentPage * rowsPerPage;
+    const indexOfFirstBlog = indexOfLastBlog - rowsPerPage;
+
+    const currentBlogs = blogs.slice(indexOfFirstBlog, indexOfLastBlog);
+    const totalPages = Math.ceil(blogs.length / rowsPerPage);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    function stripHtml(html) {
+        const tmp = document.createElement("div");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    }
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-2 md:mb-0">
@@ -44,252 +86,89 @@ export default function AllBlogs() {
                 </Select>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                <div className="p-1 mt-4 md:mt-8">
-                    <img
-                        src={BlogImg}
-                        alt=""
-                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                    />
-                    <Link>
-                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-4">
-                                <div>
-                                    <div className="flex justify-between">
-                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                            Frontend
-                                        </span>
-                                        <p className="text-sm text-gray-600">
-                                            3 mins read
-                                        </p>
+                {currentBlogs.map((blog) => (
+                    <div className="p-1 mt-4 md:mt-8">
+                        {blog.cover && (
+                            <img
+                                src={`/storage/${blog.cover}`}
+                                alt={blog.title}
+                                className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
+                            />
+                        )}
+                        <Link to={`/blog/${blog.id}`}>
+                            <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
+                                <CardContent className="p-4">
+                                    <div>
+                                        <div className="flex justify-between">
+                                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                {blog.category.name}
+                                            </span>
+                                            <p className="text-sm text-gray-600">
+                                                3 mins read
+                                            </p>
+                                        </div>
+                                        <h1 className="my-2 font-medium text-lg">
+                                            {blog.title}
+                                        </h1>
+                                        <div className="text-sm line-clamp-4">
+                                            {stripHtml(blog.paragraph)}
+                                        </div>
                                     </div>
-                                    <h1 className="my-2 font-medium text-lg">
-                                        Learning Paths for Website Developers -
-                                        2025 Edition
-                                    </h1>
-                                    <p className="text-sm line-clamp-3">
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Natus iusto, voluptate
-                                        eius beatae, illum laudantium libero
-                                        debitis veritatis ullam tempora,
-                                        recusandae odit itaque! Eveniet
-                                        reiciendis excepturi perspiciatis.
-                                        Tempora fugit a obcaecati odit
-                                        similique? Accusantium reprehenderit
-                                        facilis quidem maiores!
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                </div>
-                <div className="p-1 mt-4 md:mt-8">
-                    <img
-                        src={BlogImg}
-                        alt=""
-                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                    />
-                    <Link>
-                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-4">
-                                <div>
-                                    <div className="flex justify-between">
-                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                            Frontend
-                                        </span>
-                                        <p className="text-sm text-gray-600">
-                                            3 mins read
-                                        </p>
-                                    </div>
-                                    <h1 className="my-2 font-medium text-lg">
-                                        Learning Paths for Website Developers -
-                                        2025 Edition
-                                    </h1>
-                                    <p className="text-sm line-clamp-3">
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Natus iusto, voluptate
-                                        eius beatae, illum laudantium libero
-                                        debitis veritatis ullam tempora,
-                                        recusandae odit itaque! Eveniet
-                                        reiciendis excepturi perspiciatis.
-                                        Tempora fugit a obcaecati odit
-                                        similique? Accusantium reprehenderit
-                                        facilis quidem maiores!
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                </div>
-                <div className="p-1 mt-4 md:mt-8">
-                    <img
-                        src={BlogImg}
-                        alt=""
-                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                    />
-                    <Link>
-                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-4">
-                                <div>
-                                    <div className="flex justify-between">
-                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                            Frontend
-                                        </span>
-                                        <p className="text-sm text-gray-600">
-                                            3 mins read
-                                        </p>
-                                    </div>
-                                    <h1 className="my-2 font-medium text-lg">
-                                        Learning Paths for Website Developers -
-                                        2025 Edition
-                                    </h1>
-                                    <p className="text-sm line-clamp-3">
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Natus iusto, voluptate
-                                        eius beatae, illum laudantium libero
-                                        debitis veritatis ullam tempora,
-                                        recusandae odit itaque! Eveniet
-                                        reiciendis excepturi perspiciatis.
-                                        Tempora fugit a obcaecati odit
-                                        similique? Accusantium reprehenderit
-                                        facilis quidem maiores!
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                </div>
-                <div className="p-1 mt-4 md:mt-8">
-                    <img
-                        src={BlogImg}
-                        alt=""
-                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                    />
-                    <Link>
-                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-4">
-                                <div>
-                                    <div className="flex justify-between">
-                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                            Frontend
-                                        </span>
-                                        <p className="text-sm text-gray-600">
-                                            3 mins read
-                                        </p>
-                                    </div>
-                                    <h1 className="my-2 font-medium text-lg">
-                                        Learning Paths for Website Developers -
-                                        2025 Edition
-                                    </h1>
-                                    <p className="text-sm line-clamp-3">
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Natus iusto, voluptate
-                                        eius beatae, illum laudantium libero
-                                        debitis veritatis ullam tempora,
-                                        recusandae odit itaque! Eveniet
-                                        reiciendis excepturi perspiciatis.
-                                        Tempora fugit a obcaecati odit
-                                        similique? Accusantium reprehenderit
-                                        facilis quidem maiores!
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                </div>
-                <div className="p-1 mt-4 md:mt-8">
-                    <img
-                        src={BlogImg}
-                        alt=""
-                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                    />
-                    <Link>
-                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-4">
-                                <div>
-                                    <div className="flex justify-between">
-                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                            Frontend
-                                        </span>
-                                        <p className="text-sm text-gray-600">
-                                            3 mins read
-                                        </p>
-                                    </div>
-                                    <h1 className="my-2 font-medium text-lg">
-                                        Learning Paths for Website Developers -
-                                        2025 Edition
-                                    </h1>
-                                    <p className="text-sm line-clamp-3">
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Natus iusto, voluptate
-                                        eius beatae, illum laudantium libero
-                                        debitis veritatis ullam tempora,
-                                        recusandae odit itaque! Eveniet
-                                        reiciendis excepturi perspiciatis.
-                                        Tempora fugit a obcaecati odit
-                                        similique? Accusantium reprehenderit
-                                        facilis quidem maiores!
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                </div>
-                <div className="p-1 mt-4 md:mt-8">
-                    <img
-                        src={BlogImg}
-                        alt=""
-                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                    />
-                    <Link>
-                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-4">
-                                <div>
-                                    <div className="flex justify-between">
-                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                            Frontend
-                                        </span>
-                                        <p className="text-sm text-gray-600">
-                                            3 mins read
-                                        </p>
-                                    </div>
-                                    <h1 className="my-2 font-medium text-lg">
-                                        Learning Paths for Website Developers -
-                                        2025 Edition
-                                    </h1>
-                                    <p className="text-sm line-clamp-3">
-                                        Lorem ipsum dolor sit amet consectetur,
-                                        adipisicing elit. Natus iusto, voluptate
-                                        eius beatae, illum laudantium libero
-                                        debitis veritatis ullam tempora,
-                                        recusandae odit itaque! Eveniet
-                                        reiciendis excepturi perspiciatis.
-                                        Tempora fugit a obcaecati odit
-                                        similique? Accusantium reprehenderit
-                                        facilis quidem maiores!
-                                    </p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                </div>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    </div>
+                ))}
             </div>
             <div className="my-4">
-                <Pagination>
+                <Pagination className="text-accentRed">
                     <PaginationContent>
                         <PaginationItem>
-                            <PaginationPrevious href="#" />
+                            <PaginationPrevious
+                                onClick={() =>
+                                    handlePageChange(currentPage - 1)
+                                }
+                                disabled={currentPage === 1}
+                                className={`cursor-pointer ${
+                                    currentPage === 1
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                }`}
+                            />
                         </PaginationItem>
+                        {Array.from(
+                            {
+                                length: Math.ceil(blogs.length / rowsPerPage),
+                            },
+                            (_, index) => (
+                                <PaginationItem key={index}>
+                                    <PaginationLink
+                                        onClick={() =>
+                                            handlePageChange(index + 1)
+                                        }
+                                        isActive={currentPage === index + 1}
+                                        className="cursor-pointer"
+                                    >
+                                        {index + 1}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            )
+                        )}
                         <PaginationItem>
-                            <PaginationLink href="#">1</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#">2</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#">3</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationNext href="#" />
+                            <PaginationNext
+                                onClick={() =>
+                                    handlePageChange(currentPage + 1)
+                                }
+                                className={`cursor-pointer ${
+                                    currentPage === totalPages
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                }`}
+                                disabled={
+                                    currentPage ===
+                                    Math.ceil(blogs.length / rowsPerPage)
+                                }
+                            />
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>

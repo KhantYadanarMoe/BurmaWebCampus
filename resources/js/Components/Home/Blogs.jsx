@@ -18,8 +18,33 @@ import {
 } from "lucide-react";
 import BlogImg from "../../../assets/Blogs.jpg";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
 
 export default function Blogs() {
+    const [blogs, setBlogs] = useState([]);
+
+    // Fetch blogs from backend
+    const getBlogs = async () => {
+        try {
+            const res = await axios.get("/api/blogs");
+            setBlogs(res.data.blogs); // assuming backend sends { blogs: [...] }
+        } catch (error) {
+            console.error("Failed to fetch blogs:", error);
+        }
+    };
+
+    useEffect(() => {
+        getBlogs();
+    }, []);
+
+    function stripHtml(html) {
+        const tmp = document.createElement("div");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    }
+
     return (
         <div className="px-3 md:px-5 lg:px-8">
             <div className="pb-12">
@@ -39,288 +64,47 @@ export default function Blogs() {
                     </div>
                     <div>
                         <CarouselContent>
-                            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 mt-4 md:mt-8">
-                                    <img
-                                        src={BlogImg}
-                                        alt=""
-                                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                                    />
-                                    <Link>
-                                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                                            <CardContent className="p-4">
-                                                <div>
-                                                    <div className="flex justify-between">
-                                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                                            Frontend
-                                                        </span>
-                                                        <p className="text-sm text-gray-600">
-                                                            3 mins read
-                                                        </p>
+                            {blogs.map((blog) => (
+                                <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                                    <div className="p-1 mt-4 md:mt-8">
+                                        {blog.cover && (
+                                            <img
+                                                src={`/storage/${blog.cover}`}
+                                                alt={blog.title}
+                                                className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
+                                            />
+                                        )}
+                                        <Link to={`/blog/${blog.id}`}>
+                                            <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
+                                                <CardContent className="p-4">
+                                                    <div>
+                                                        <div className="flex justify-between">
+                                                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                                {
+                                                                    blog
+                                                                        .category
+                                                                        .name
+                                                                }
+                                                            </span>
+                                                            <p className="text-sm text-gray-600">
+                                                                3 mins read
+                                                            </p>
+                                                        </div>
+                                                        <h1 className="my-2 font-medium text-lg">
+                                                            {blog.title}
+                                                        </h1>
+                                                        <div className="text-sm line-clamp-4">
+                                                            {stripHtml(
+                                                                blog.paragraph
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                    <h1 className="my-2 font-medium text-lg">
-                                                        Learning Paths for
-                                                        Website Developers -
-                                                        2025 Edition
-                                                    </h1>
-                                                    <p className="text-sm line-clamp-3">
-                                                        Lorem ipsum dolor sit
-                                                        amet consectetur,
-                                                        adipisicing elit. Natus
-                                                        iusto, voluptate eius
-                                                        beatae, illum laudantium
-                                                        libero debitis veritatis
-                                                        ullam tempora,
-                                                        recusandae odit itaque!
-                                                        Eveniet reiciendis
-                                                        excepturi perspiciatis.
-                                                        Tempora fugit a
-                                                        obcaecati odit
-                                                        similique? Accusantium
-                                                        reprehenderit facilis
-                                                        quidem maiores!
-                                                    </p>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </div>
-                            </CarouselItem>
-                            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 mt-4 md:mt-8">
-                                    <img
-                                        src={BlogImg}
-                                        alt=""
-                                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                                    />
-                                    <Link>
-                                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                                            <CardContent className="p-4">
-                                                <div>
-                                                    <div className="flex justify-between">
-                                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                                            Frontend
-                                                        </span>
-                                                        <p className="text-sm text-gray-600">
-                                                            3 mins read
-                                                        </p>
-                                                    </div>
-                                                    <h1 className="my-2 font-medium text-lg">
-                                                        Learning Paths for
-                                                        Website Developers -
-                                                        2025 Edition
-                                                    </h1>
-                                                    <p className="text-sm line-clamp-3">
-                                                        Lorem ipsum dolor sit
-                                                        amet consectetur,
-                                                        adipisicing elit. Natus
-                                                        iusto, voluptate eius
-                                                        beatae, illum laudantium
-                                                        libero debitis veritatis
-                                                        ullam tempora,
-                                                        recusandae odit itaque!
-                                                        Eveniet reiciendis
-                                                        excepturi perspiciatis.
-                                                        Tempora fugit a
-                                                        obcaecati odit
-                                                        similique? Accusantium
-                                                        reprehenderit facilis
-                                                        quidem maiores!
-                                                    </p>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </div>
-                            </CarouselItem>
-                            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 mt-4 md:mt-8">
-                                    <img
-                                        src={BlogImg}
-                                        alt=""
-                                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                                    />
-                                    <Link>
-                                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                                            <CardContent className="p-4">
-                                                <div>
-                                                    <div className="flex justify-between">
-                                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                                            Frontend
-                                                        </span>
-                                                        <p className="text-sm text-gray-600">
-                                                            3 mins read
-                                                        </p>
-                                                    </div>
-                                                    <h1 className="my-2 font-medium text-lg">
-                                                        Learning Paths for
-                                                        Website Developers -
-                                                        2025 Edition
-                                                    </h1>
-                                                    <p className="text-sm line-clamp-3">
-                                                        Lorem ipsum dolor sit
-                                                        amet consectetur,
-                                                        adipisicing elit. Natus
-                                                        iusto, voluptate eius
-                                                        beatae, illum laudantium
-                                                        libero debitis veritatis
-                                                        ullam tempora,
-                                                        recusandae odit itaque!
-                                                        Eveniet reiciendis
-                                                        excepturi perspiciatis.
-                                                        Tempora fugit a
-                                                        obcaecati odit
-                                                        similique? Accusantium
-                                                        reprehenderit facilis
-                                                        quidem maiores!
-                                                    </p>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </div>
-                            </CarouselItem>
-                            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 mt-4 md:mt-8">
-                                    <img
-                                        src={BlogImg}
-                                        alt=""
-                                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                                    />
-                                    <Link>
-                                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                                            <CardContent className="p-4">
-                                                <div>
-                                                    <div className="flex justify-between">
-                                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                                            Frontend
-                                                        </span>
-                                                        <p className="text-sm text-gray-600">
-                                                            3 mins read
-                                                        </p>
-                                                    </div>
-                                                    <h1 className="my-2 font-medium text-lg">
-                                                        Learning Paths for
-                                                        Website Developers -
-                                                        2025 Edition
-                                                    </h1>
-                                                    <p className="text-sm line-clamp-3">
-                                                        Lorem ipsum dolor sit
-                                                        amet consectetur,
-                                                        adipisicing elit. Natus
-                                                        iusto, voluptate eius
-                                                        beatae, illum laudantium
-                                                        libero debitis veritatis
-                                                        ullam tempora,
-                                                        recusandae odit itaque!
-                                                        Eveniet reiciendis
-                                                        excepturi perspiciatis.
-                                                        Tempora fugit a
-                                                        obcaecati odit
-                                                        similique? Accusantium
-                                                        reprehenderit facilis
-                                                        quidem maiores!
-                                                    </p>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </div>
-                            </CarouselItem>
-                            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 mt-4 md:mt-8">
-                                    <img
-                                        src={BlogImg}
-                                        alt=""
-                                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                                    />
-                                    <Link>
-                                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                                            <CardContent className="p-4">
-                                                <div>
-                                                    <div className="flex justify-between">
-                                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                                            Frontend
-                                                        </span>
-                                                        <p className="text-sm text-gray-600">
-                                                            3 mins read
-                                                        </p>
-                                                    </div>
-                                                    <h1 className="my-2 font-medium text-lg">
-                                                        Learning Paths for
-                                                        Website Developers -
-                                                        2025 Edition
-                                                    </h1>
-                                                    <p className="text-sm line-clamp-3">
-                                                        Lorem ipsum dolor sit
-                                                        amet consectetur,
-                                                        adipisicing elit. Natus
-                                                        iusto, voluptate eius
-                                                        beatae, illum laudantium
-                                                        libero debitis veritatis
-                                                        ullam tempora,
-                                                        recusandae odit itaque!
-                                                        Eveniet reiciendis
-                                                        excepturi perspiciatis.
-                                                        Tempora fugit a
-                                                        obcaecati odit
-                                                        similique? Accusantium
-                                                        reprehenderit facilis
-                                                        quidem maiores!
-                                                    </p>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </div>
-                            </CarouselItem>
-                            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                                <div className="p-1 mt-4 md:mt-8">
-                                    <img
-                                        src={BlogImg}
-                                        alt=""
-                                        className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                                    />
-                                    <Link>
-                                        <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                                            <CardContent className="p-4">
-                                                <div>
-                                                    <div className="flex justify-between">
-                                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                                            Frontend
-                                                        </span>
-                                                        <p className="text-sm text-gray-600">
-                                                            3 mins read
-                                                        </p>
-                                                    </div>
-                                                    <h1 className="my-2 font-medium text-lg">
-                                                        Learning Paths for
-                                                        Website Developers -
-                                                        2025 Edition
-                                                    </h1>
-                                                    <p className="text-sm line-clamp-3">
-                                                        Lorem ipsum dolor sit
-                                                        amet consectetur,
-                                                        adipisicing elit. Natus
-                                                        iusto, voluptate eius
-                                                        beatae, illum laudantium
-                                                        libero debitis veritatis
-                                                        ullam tempora,
-                                                        recusandae odit itaque!
-                                                        Eveniet reiciendis
-                                                        excepturi perspiciatis.
-                                                        Tempora fugit a
-                                                        obcaecati odit
-                                                        similique? Accusantium
-                                                        reprehenderit facilis
-                                                        quidem maiores!
-                                                    </p>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </div>
-                            </CarouselItem>
+                                                </CardContent>
+                                            </Card>
+                                        </Link>
+                                    </div>
+                                </CarouselItem>
+                            ))}
                         </CarouselContent>
                     </div>
                 </Carousel>

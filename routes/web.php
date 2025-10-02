@@ -39,5 +39,6 @@ Route::delete('/api/blog/category/{category}', [BlogCategoryController::class, '
 
 Route::get('/api/blogs', [BlogController::class, 'index']);
 Route::post("/api/blog/create", [BlogController::class, 'store']);
+Route::get('/api/blog/{id}', [BlogController::class, 'show']);
 
 require __DIR__.'/auth.php';

@@ -70,13 +70,25 @@ class BlogController extends Controller
     }
 
     public function index(){
-            // take data from backend database
-            $blogs = Blog::with('category')->latest()->get();
+        // take data from backend database
+        $blogs = Blog::with('category')->latest()->get();
 
-            // send data to frontend
-            return response()->json([
-                'blogs' => $blogs
-            ]);
+        // send data to frontend
+        return response()->json([
+            'blogs' => $blogs
+        ]);
+    }
+
+    public function show($id){
+        $blog = Blog::with('category')->findOrFail($id); // Find blog by ID
+
+        // Check if blog exists
+        if ($blog) {
+            return response()->json(['blog' => $blog]);
+        } else {
+            // If blog not found, return a 404 with a message
+            return response()->json(['message' => 'Blog not found'], 404);
         }
+    }
 
 }
