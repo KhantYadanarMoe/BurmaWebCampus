@@ -46,6 +46,9 @@ export default function BlogForm() {
     const [detailImg2, setDetailImg2] = useState(null); //for new detailImg2 upload
     const [detailImg2Url, setDetailImg2Url] = useState(null); // for displaying the existing detailImg2
 
+    // state to store detail of the blog related to ID
+    let [blogDetail, setBlogDetails] = useState(null);
+
     // prepare state to store form data
     const [form, setForm] = useState({
         title: "",
@@ -60,22 +63,6 @@ export default function BlogForm() {
     const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
-
-    // function to fetch all of the categories data
-    let getCategories = async () => {
-        try {
-            let res = await axios.get("/api/blog/categories");
-            let data = res.data;
-            setCategories(data.categories);
-        } catch (error) {
-            console.error("Failed to fetch categories:", error);
-        }
-    };
-
-    // call data fetching function in useEffect to run when user enter the page
-    useEffect(() => {
-        getCategories();
-    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -93,8 +80,21 @@ export default function BlogForm() {
         }));
     };
 
-    // state to store detail of the blog related to ID
-    let [blogDetail, setBlogDetails] = useState(null);
+    // function to fetch all of the categories data
+    let getCategories = async () => {
+        try {
+            let res = await axios.get("/api/blog/categories");
+            let data = res.data;
+            setCategories(data.categories);
+        } catch (error) {
+            console.error("Failed to fetch categories:", error);
+        }
+    };
+
+    // call data fetching function in useEffect to run when user enter the page
+    useEffect(() => {
+        getCategories();
+    }, []);
 
     // fetch data to show prev data in input fields
     let getDetails = async (id) => {

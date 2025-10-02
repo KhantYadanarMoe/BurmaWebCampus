@@ -42,6 +42,12 @@ import axios from "axios";
 export default function BlogsList() {
     const [blogs, setBlogs] = useState([]);
 
+    // state for pagination
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // rows to show in a page
+    const rowsPerPage = 10;
+
     // Fetch blogs from backend
     const getBlogs = async () => {
         try {
@@ -55,12 +61,6 @@ export default function BlogsList() {
     useEffect(() => {
         getBlogs();
     }, []);
-
-    // state for pagination
-    const [currentPage, setCurrentPage] = useState(1);
-
-    // rows to show in a page
-    const rowsPerPage = 10;
 
     const indexOfLastBlog = currentPage * rowsPerPage;
     const indexOfFirstBlog = indexOfLastBlog - rowsPerPage;
