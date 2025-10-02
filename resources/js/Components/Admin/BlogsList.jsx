@@ -56,6 +56,43 @@ export default function BlogsList() {
         getBlogs();
     }, []);
 
+    // state for pagination
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // rows to show in a page
+    const rowsPerPage = 10;
+
+    const indexOfLastBlog = currentPage * rowsPerPage;
+    const indexOfFirstBlog = indexOfLastBlog - rowsPerPage;
+    const currentBlogs = blogs.slice(indexOfFirstBlog, indexOfLastBlog);
+
+    const totalPages = Math.ceil(blogs.length / rowsPerPage);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    let deleteBlog = async (id) => {
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            let res = await axios.delete("/api/blog/" + id, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            setBlogs((prev) => prev.filter((blog) => blog.id !== id));
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
         <div>
             <h1 className="text-xl font-medium">Blogs</h1>
@@ -231,19 +268,53 @@ export default function BlogsList() {
                     <Pagination className="text-accentRed">
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious />
+                                <PaginationPrevious
+                                    onClick={() =>
+                                        handlePageChange(currentPage - 1)
+                                    }
+                                    disabled={currentPage === 1}
+                                    className={`cursor-pointer ${
+                                        currentPage === 1
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                />
                             </PaginationItem>
+                            {Array.from(
+                                {
+                                    length: Math.ceil(
+                                        blogs.length / rowsPerPage
+                                    ),
+                                },
+                                (_, index) => (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink
+                                            onClick={() =>
+                                                handlePageChange(index + 1)
+                                            }
+                                            isActive={currentPage === index + 1}
+                                            className="cursor-pointer"
+                                        >
+                                            {index + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                )
+                            )}
                             <PaginationItem>
-                                <PaginationLink>1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>2</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext />
+                                <PaginationNext
+                                    onClick={() =>
+                                        handlePageChange(currentPage + 1)
+                                    }
+                                    className={`cursor-pointer ${
+                                        currentPage === totalPages
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    disabled={
+                                        currentPage ===
+                                        Math.ceil(blogs.length / rowsPerPage)
+                                    }
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>

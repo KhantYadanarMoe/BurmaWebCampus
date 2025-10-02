@@ -167,4 +167,11 @@ class BlogController extends Controller
         ]);
     }
 
+    public function delete(Blog $blog){
+        $blog->delete();
+        return response()->json([
+            'message' => 'Blog deleted successful!'
+        ]);
+    }
+
 }
