@@ -93,6 +93,38 @@ export default function BlogForm() {
         }));
     };
 
+    // state to store detail of the blog related to ID
+    let [blogDetail, setBlogDetails] = useState(null);
+
+    // fetch data to show prev data in input fields
+    let getDetails = async (id) => {
+        let res = await fetch("/api/blog/" + id);
+        let data = await res.json();
+        setBlogDetails(data.blog);
+    };
+
+    // call data fetching function depend on id changes
+    useEffect(() => {
+        getDetails(id);
+    }, [id]);
+
+    // add prev data sent from backend in the form state
+    useEffect(() => {
+        if (blogDetail) {
+            console.log(blogDetail);
+            setCoverUrl(blogDetail.cover || null);
+            setDetailImg1(blogDetail.detail_image_1 || null);
+            setDetailImg2(blogDetail.detail_image_2 || null);
+
+            setForm({
+                title: blogDetail.title,
+                category_id: blogDetail.category_id,
+                paragraph: blogDetail.paragraph,
+                visibility: blogDetail.visibility,
+            });
+        }
+    }, [blogDetail]);
+
     // form submit function
     const submit = async (e) => {
         e.preventDefault();
@@ -118,10 +150,15 @@ export default function BlogForm() {
         if (cover) {
             formData.append("cover", cover);
         }
-        if (detailImg1) {
+        if (cover instanceof File) {
+            formData.append("cover", cover);
+        }
+
+        if (detailImg1 instanceof File) {
             formData.append("detail_image_1", detailImg1);
         }
-        if (detailImg2) {
+
+        if (detailImg2 instanceof File) {
             formData.append("detail_image_2", detailImg2);
         }
 
@@ -158,7 +195,7 @@ export default function BlogForm() {
 
             // failed condition
             if (error.response && error.response.status === 422) {
-                setIsDialogOpen(false);
+                // setIsDialogOpen(false);
                 setErrors(error.response.data.errors);
             }
         }
@@ -167,7 +204,9 @@ export default function BlogForm() {
     return (
         <div className="md:flex items-start gap-3">
             <div className="md:w-1/2">
-                <h1 className="text-xl font-medium my-3">Create New Blog</h1>
+                <h1 className="text-xl font-medium my-3">
+                    {isEdit ? "Edit Blog" : "Create New Blog"}
+                </h1>
                 <form action="" className="mt-5">
                     <div className="my-3">
                         <Label>Blog Title</Label>
@@ -287,11 +326,33 @@ export default function BlogForm() {
                         </div>
                     </div>
 
+                    {blogDetail && (
+                        <div className="hidden md:flex gap-2 my-4">
+                            <img
+                                src={`/storage/${blogDetail.cover}`}
+                                alt=""
+                                className="w-2/4 h-40 object-cover rounded-md"
+                            />
+                            <img
+                                src={`/storage/${blogDetail.detail_image_1}`}
+                                alt=""
+                                className="w-1/4 h-40 object-cover rounded-md"
+                            />
+                            <img
+                                src={`/storage/${blogDetail.detail_image_2}`}
+                                alt=""
+                                className="w-1/4 h-40 object-cover rounded-md"
+                            />
+                        </div>
+                    )}
+
                     <div className="my-3">
                         <Label htmlFor="category_id">Category</Label>
                         <Select
                             value={
-                                form.category_id ? String(form.category_id) : ""
+                                form.category_id && categories.length
+                                    ? String(form.category_id)
+                                    : ""
                             }
                             onValueChange={(value) =>
                                 handleCustomChange(
@@ -347,7 +408,9 @@ export default function BlogForm() {
                     </div>
 
                     <div className="my-3 flex justify-end">
-                        <Button onClick={submit}>Create</Button>
+                        <Button onClick={submit}>
+                            {isEdit ? "Update" : "Create"}
+                        </Button>
                     </div>
                 </form>
             </div>

@@ -177,7 +177,11 @@ export default function BlogsList() {
                                             </DropdownMenuItem>
                                         </Link>
                                         <DropdownMenuItem className="text-accentYellow">
-                                            <Link to="">Edit</Link>
+                                            <Link
+                                                to={`/admin/blogs/${blog.id}/edit`}
+                                            >
+                                                Edit
+                                            </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
                                             <AlertDialog>

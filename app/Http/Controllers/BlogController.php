@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class BlogController extends Controller
@@ -89,6 +90,81 @@ class BlogController extends Controller
             // If blog not found, return a 404 with a message
             return response()->json(['message' => 'Blog not found'], 404);
         }
+    }
+
+     public function update(Blog $blog){
+        $validator = Validator::make(request()->all(), [
+            "title" => ["required"],
+            "category_id" => ["required", "exists:blog_categories,id"],
+            "paragraph" => ["required"],
+            "visibility" => ["nullable", "boolean"], 
+            "cover" => ["nullable", "image", "mimes:jpeg,png,jpg,gif,svg", "max:2048"],
+            "detail_image_1" => ["nullable", "image", "mimes:jpeg,png,jpg,gif,svg", "max:2048"],
+            "detail_image_2" => ["nullable", "image", "mimes:jpeg,png,jpg,gif,svg", "max:2048"],
+        ]);
+
+        // condition for failed validation
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->messages()
+            ], 422);
+        }
+
+        // Store new images if they exist
+        $coverPath = $blog->cover;
+
+        if (request()->hasFile('cover')) {
+            // Optional: delete old image
+            if ($coverPath && Storage::disk('public')->exists($coverPath)) {
+                Storage::disk('public')->delete($coverPath);
+            }
+
+            $cover = request()->file('cover');
+            $coverName = time() . '_' . $cover->getClientOriginalName();
+            $coverPath = $cover->storeAs('blogs', $coverName, 'public');
+        }
+
+        // Store new images if they exist
+        $detail1Path = $blog->detail_image_1;
+
+        if (request()->hasFile('detail_image_1')) {
+            // Optional: delete old image
+            if ($detail1Path && Storage::disk('public')->exists($detail1Path)) {
+                Storage::disk('public')->delete($detail1Path);
+            }
+
+            $detail1 = request()->file('detail_image_1');
+            $detail1Name = time() . '_' . $detail1->getClientOriginalName();
+            $detail1Path = $detail1->storeAs('blogs_details_1', $detail1Name, 'public');
+        }
+
+        $detail2Path = $blog->detail_image_2;
+
+        if (request()->hasFile('detail_image_2')) {
+            // Optional: delete old image
+            if ($detail2Path && Storage::disk('public')->exists($detail2Path)) {
+                Storage::disk('public')->delete($detail2Path);
+            }
+
+            $detail2 = request()->file('detail_image_2');
+            $detail2Name = time() . '_' . $detail2->getClientOriginalName();
+            $detail2Path = $detail2->storeAs('blogs_details_2', $detail2Name, 'public');
+        }
+
+        $blog->update([
+            'title' => request('title'),
+            'category_id' => request('category_id'), 
+            'paragraph' => request('paragraph'),
+            'visibility' => request('visibility'),
+            'cover' => $coverPath,
+            'detail_image_1' => $detail1Path,
+            'detail_image_2' => $detail2Path,
+        ]);
+
+        return response()->json([
+            'message' => 'Blog updated successfully.',
+            'blog' => $blog,
+        ]);
     }
 
 }
