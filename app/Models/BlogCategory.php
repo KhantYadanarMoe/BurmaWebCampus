@@ -11,4 +11,9 @@ class BlogCategory extends Model
         'icon',
         'is_visible',
     ];
+
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class, 'category_id');
+    }
 }

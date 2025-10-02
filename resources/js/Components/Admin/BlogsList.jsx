@@ -74,10 +74,12 @@ export default function BlogsList() {
                             </SelectContent>
                         </Select>
                     </div>
-                    <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
-                        <Plus />
-                        Create
-                    </Button>
+                    <Link to="/admin/blogs/create">
+                        <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
+                            <Plus />
+                            Create
+                        </Button>
+                    </Link>
                 </div>
             </div>
             <div className="overflow-x-auto w-full">

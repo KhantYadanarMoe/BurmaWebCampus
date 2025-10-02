@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlogCategoryController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -35,5 +36,7 @@ Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store'
 Route::get('/api/blog/category/{id}', [BlogCategoryController::class, 'show']);
 Route::put('/api/blog/category/{category}', [BlogCategoryController::class, 'update']);
 Route::delete('/api/blog/category/{category}', [BlogCategoryController::class, 'delete']);
+
+Route::post("/api/blog/create", [BlogController::class, 'store']);
 
 require __DIR__.'/auth.php';
