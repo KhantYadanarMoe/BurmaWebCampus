@@ -9,17 +9,26 @@ export default function BlogDetails() {
     const { id } = useParams();
     const [blog, setBlog] = useState(null);
 
-    useEffect(() => {
-        const getDetails = async (id) => {
-            try {
-                let res = await axios.get("/api/blog/" + id);
-                setBlog(res.data.blog);
-            } catch (err) {
-                console.error("Error fetching blog:", err);
-            }
-        };
+    const getDetails = async (id) => {
+        try {
+            let res = await axios.get("/api/blog/" + id);
+            setBlog(res.data.blog);
+        } catch (err) {
+            console.error("Error fetching blog:", err);
+        }
+    };
 
+    const incrementView = async (id) => {
+        try {
+            await axios.post(`/api/blog/${id}/view`);
+        } catch (err) {
+            console.error("Error incrementing view:", err);
+        }
+    };
+
+    useEffect(() => {
         getDetails(id);
+        incrementView(id);
     }, [id]);
 
     if (!blog) {

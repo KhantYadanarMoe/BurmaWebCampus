@@ -41,6 +41,7 @@ Route::get('/api/blogs', [BlogController::class, 'index']);
 Route::post("/api/blog/create", [BlogController::class, 'store']);
 Route::get('/api/blog/{id}', [BlogController::class, 'show']);
 Route::put('/api/blog/{blog}', [BlogController::class, 'update']);
+Route::post('/api/blog/{id}/view', [BlogController::class, 'incrementView']);
 Route::delete('/api/blog/{blog}', [BlogController::class, 'delete']);
 
 

@@ -167,6 +167,17 @@ class BlogController extends Controller
         ]);
     }
 
+    public function incrementView($id){
+        $blog = Blog::find($id);
+
+        if ($blog) {
+            $blog->increment('view');
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Blog not found'], 404);
+    }
+
     public function delete(Blog $blog){
         $blog->delete();
         return response()->json([
