@@ -38,13 +38,13 @@ export default function BlogForm() {
     const [cover, setCover] = useState(null); //for new cover upload
     const [coverUrl, setCoverUrl] = useState(null); // for displaying the existing cover
 
-    // form data to store before sending to backend
-    const [detailImg1, setDetailImg1] = useState(null); //for new detailImg1 upload
-    const [detailImg1Url, setDetailImg1Url] = useState(null); // for displaying the existing detailImg1
+    // For detail image 1
+    const [detailImg1, setDetailImg1] = useState(null); // File
+    const [detailImg1Url, setDetailImg1Url] = useState(null); // String
 
-    // form data to store before sending to backend
-    const [detailImg2, setDetailImg2] = useState(null); //for new detailImg2 upload
-    const [detailImg2Url, setDetailImg2Url] = useState(null); // for displaying the existing detailImg2
+    // For detail image 2
+    const [detailImg2, setDetailImg2] = useState(null);
+    const [detailImg2Url, setDetailImg2Url] = useState(null);
 
     // state to store detail of the blog related to ID
     let [blogDetail, setBlogDetails] = useState(null);
@@ -111,10 +111,9 @@ export default function BlogForm() {
     // add prev data sent from backend in the form state
     useEffect(() => {
         if (blogDetail) {
-            console.log(blogDetail);
             setCoverUrl(blogDetail.cover || null);
-            setDetailImg1(blogDetail.detail_image_1 || null);
-            setDetailImg2(blogDetail.detail_image_2 || null);
+            setDetailImg1Url(blogDetail.detail_image_1 || null);
+            setDetailImg2Url(blogDetail.detail_image_2 || null);
 
             setForm({
                 title: blogDetail.title,
@@ -200,6 +199,10 @@ export default function BlogForm() {
             }
         }
     };
+
+    const selectedCategory = categories.find(
+        (cat) => cat.id === form.category_id
+    );
 
     return (
         <div className="md:flex items-start gap-3">
@@ -418,41 +421,103 @@ export default function BlogForm() {
                 <h1 className="text-lg font-medium mb-4">Preview</h1>
                 <div className="flex flex-col items-start mx-auto">
                     <span className="px-2 py-1 text-xs border border-gray-700 rounded-lg">
-                        Frontend
+                        {selectedCategory ? selectedCategory.name : "Frontend"}
                     </span>
                     <p className="py-2 text-xs text-gray-600">
-                        August 23, 2025
+                        {new Date().toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
                     </p>
                     <h1 className="text-lg md:text-xl font-medium">
-                        Web Developer's Learning Path - 2025 Edition
+                        {form.title ||
+                            "Web Developer's Learning Path - 2025 Edition"}
                     </h1>
-                    <img
-                        src={BlogImg}
-                        alt=""
-                        className="my-6 w-full h-56 object-cover rounded-bl-3xl rounded-br-3xl"
-                    />
+                    {cover ? (
+                        <img
+                            src={URL.createObjectURL(cover)}
+                            alt="Live Preview"
+                            className="my-6 w-full h-56 object-cover rounded-bl-3xl rounded-br-3xl"
+                        />
+                    ) : isEdit && coverUrl ? (
+                        <img
+                            src={`/storage/${coverUrl}`}
+                            alt="Cover Preview"
+                            className="my-6 w-full h-56 object-cover rounded-bl-3xl rounded-br-3xl"
+                        />
+                    ) : (
+                        <img
+                            src={BlogImg}
+                            alt="Default Preview"
+                            className="my-6 w-full h-56 object-cover rounded-bl-3xl rounded-br-3xl"
+                        />
+                    )}
                     <div className="px-2">
-                        <h1 className="text-lg font-medium mb-3">
-                            Lorem ipsum dolor sit amet consectetur.
-                        </h1>
-                        <p className="text-sm text-gray-700 mb-3">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Iste nesciunt corporis mollitia consequuntur
-                            ullam atque officiis magni aliquam impedit nobis
-                            sapiente recusandae provident assumenda optio
-                            molestias odio nulla explicabo, id dolores error
-                            deserunt maxime culpa. Dolorem odio laboriosam
-                            corrupti, quasi a magnam cumque asperiores nisi
-                            enim, aliquam culpa totam voluptatum aperiam
-                            praesentium corporis eius omnis impedit inventore
-                            repudiandae laudantium unde ipsa ex ratione. Aut qui
-                            inventore ab fugit accusamus aliquam voluptatibus
-                            cumque incidunt doloribus laborum hic nulla,
-                            recusandae reiciendis eius? Aut qui inventore ab
-                            fugit accusamus aliquam voluptatibus cumque incidunt
-                            doloribus laborum hic nulla, recusandae reiciendis
-                            eius?
-                        </p>
+                        {form.paragraph ? (
+                            <div
+                                className="prose text-gray-700"
+                                dangerouslySetInnerHTML={{
+                                    __html: form.paragraph,
+                                }}
+                            />
+                        ) : (
+                            <>
+                                <h1 className="text-lg font-medium mb-3">
+                                    Lorem ipsum dolor sit amet consectetur.
+                                </h1>
+                                <p className="text-sm text-gray-700">
+                                    Lorem ipsum dolor sit amet consectetur,
+                                    adipisicing elit. Iste nesciunt corporis
+                                    mollitia consequuntur ullam atque officiis
+                                    magni aliquam impedit nobis sapiente
+                                    recusandae provident assumenda optio
+                                    molestias odio nulla explicabo, id dolores
+                                    error deserunt maxime culpa. Dolorem odio
+                                    laboriosam corrupti, quasi a magnam cumque
+                                    asperiores nisi enim, aliquam culpa totam
+                                    voluptatum aperiam praesentium corporis eius
+                                    omnis impedit inventore repudiandae
+                                    laudantium unde ipsa ex ratione. Aut qui
+                                    inventore ab fugit accusamus aliquam
+                                    voluptatibus cumque incidunt doloribus
+                                    laborum hic nulla, recusandae reiciendis
+                                    eius?
+                                </p>
+                            </>
+                        )}
+                    </div>
+                    <div className="flex gap-2 w-full">
+                        <div className="w-1/2 aspect-video">
+                            {detailImg1 ? (
+                                <img
+                                    src={URL.createObjectURL(detailImg1)}
+                                    alt="Live Preview"
+                                    className="my-6 w-full h-56 object-cover rounded-bl-3xl rounded-br-3xl"
+                                />
+                            ) : isEdit && detailImg1Url ? (
+                                <img
+                                    src={`/storage/${detailImg1Url}`}
+                                    alt="Cover Preview"
+                                    className="my-6 w-full h-56 object-cover rounded-bl-3xl rounded-br-3xl"
+                                />
+                            ) : null}
+                        </div>
+                        <div className="w-1/2 aspect-video">
+                            {detailImg2 ? (
+                                <img
+                                    src={URL.createObjectURL(detailImg2)}
+                                    alt="Live Preview"
+                                    className="my-6 w-full h-56 object-cover rounded-bl-3xl rounded-br-3xl"
+                                />
+                            ) : isEdit && detailImg2Url ? (
+                                <img
+                                    src={`/storage/${detailImg2Url}`}
+                                    alt="Cover Preview"
+                                    className="my-6 w-full h-56 object-cover rounded-bl-3xl rounded-br-3xl"
+                                />
+                            ) : null}
+                        </div>
                     </div>
                 </div>
             </div>
