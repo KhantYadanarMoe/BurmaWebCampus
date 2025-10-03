@@ -45,46 +45,33 @@ import {
 import { useRef } from "react";
 
 export default function BlogsCategory() {
-    // form state to store data before sending to backend
     const [form, setForm] = useState({
         icon: "",
         name: "",
     });
 
-    //img state to store icon
     const [image, setImage] = useState(null);
 
-    //state to control refresh after creating a category
-    const [refreshFlag, setRefreshFlag] = useState(false);
-
-    //to remove input data of icon after creating a category
-    const fileInputRef = useRef(null);
-
-    // store errors state
     const [errors, setErrors] = useState({});
 
-    // state to store categories to show all of the categories data
+    const [refreshFlag, setRefreshFlag] = useState(false);
+
+    const fileInputRef = useRef(null);
+
     let [categories, setCategories] = useState([]);
 
-    // state to control edit category dialog
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-    // state for pagination
-    const [currentPage, setCurrentPage] = useState(1);
-
-    // state to store detail of the category related to ID
-    let [categoryDetail, setCategoryDetails] = useState(null);
-
-    // state to store id to use in edit feature
-    const [editId, setEditId] = useState(null);
-
-    //state to store data for visibility
     const [visibility, setVisibility] = useState({});
 
-    //state to control filter
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+    const [editId, setEditId] = useState(null);
+
+    let [categoryDetail, setCategoryDetails] = useState(null);
+
     const [selectedFilter, setSelectedFilter] = useState("newest");
 
-    //handle icon input
     const uploadImg = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -92,7 +79,6 @@ export default function BlogsCategory() {
         }
     };
 
-    //handle create and edit features
     const submit = async (e) => {
         e.preventDefault();
 
@@ -158,7 +144,6 @@ export default function BlogsCategory() {
         }
     };
 
-    // function to fetch all of the categories data
     let getCategories = async () => {
         try {
             let res = await axios.get("/api/blog/categories");
@@ -176,60 +161,10 @@ export default function BlogsCategory() {
         }
     };
 
-    // call data fetching function in useEffect to run when user enter the page
     useEffect(() => {
         getCategories();
     }, [refreshFlag]);
 
-    // rows to show in a page
-    const rowsPerPage = 10;
-
-    // for pagination
-    const filteredCategories = categories.filter((category) =>
-        category.category?.toLowerCase().includes(query.toLowerCase())
-    );
-
-    // // calculate the last items, first items and set menus to show
-    const indexOfLastCategory = currentPage * rowsPerPage;
-    const indexOfFirstCategory = indexOfLastCategory - rowsPerPage;
-    const currentCategories = filteredCategories.slice(
-        indexOfFirstCategory,
-        indexOfLastCategory
-    );
-
-    const totalPages = Math.ceil(filteredCategories.length / rowsPerPage);
-
-    const handlePageChange = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
-
-    // fetch data to show prev data in input fields
-    let getDetails = async (id) => {
-        let res = await fetch("/api/blog/category/" + id);
-        let data = await res.json();
-        setCategoryDetails(data.category);
-    };
-
-    // call data fetching function depend on id changes
-    useEffect(() => {
-        if (editId !== null) {
-            getDetails(editId);
-        }
-    }, [editId]);
-
-    // add prev data sent from backend in the form state
-    useEffect(() => {
-        if (categoryDetail) {
-            setForm({
-                icon: categoryDetail.icon,
-                name: categoryDetail.name,
-            });
-        }
-    }, [categoryDetail]);
-
-    // function to control visibility
     const toggleVisibility = (categoryId, checked) => {
         setVisibility((prev) => ({
             ...prev,
@@ -245,7 +180,27 @@ export default function BlogsCategory() {
             });
     };
 
-    //function to handle filtering
+    const rowsPerPage = 10;
+
+    const filteredCategories = categories.filter((category) =>
+        category.category?.toLowerCase().includes(query.toLowerCase())
+    );
+
+    const indexOfLastCategory = currentPage * rowsPerPage;
+    const indexOfFirstCategory = indexOfLastCategory - rowsPerPage;
+    const currentCategories = filteredCategories.slice(
+        indexOfFirstCategory,
+        indexOfLastCategory
+    );
+
+    const totalPages = Math.ceil(filteredCategories.length / rowsPerPage);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     const handleFilterChange = (filterValue) => {
         setSelectedFilter(filterValue);
 
@@ -266,7 +221,27 @@ export default function BlogsCategory() {
         handleFilterChange("newest"); // initial load
     }, []);
 
-    // delete function
+    let getDetails = async (id) => {
+        let res = await fetch("/api/blog/category/" + id);
+        let data = await res.json();
+        setCategoryDetails(data.category);
+    };
+
+    useEffect(() => {
+        if (editId !== null) {
+            getDetails(editId);
+        }
+    }, [editId]);
+
+    useEffect(() => {
+        if (categoryDetail) {
+            setForm({
+                icon: categoryDetail.icon,
+                name: categoryDetail.name,
+            });
+        }
+    }, [categoryDetail]);
+
     let deleteCategory = async (id) => {
         try {
             const csrfToken = document

@@ -21,37 +21,17 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import { DropdownMenuContent, DropdownMenuItem } from "../ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
 
 export default function AllBlogs() {
-    const [blogs, setBlogs] = useState([]);
     const [categories, setCategories] = useState([]);
+
     const [selectedCategory, setSelectedCategory] = useState(null);
 
-    // state for pagination
+    const [blogs, setBlogs] = useState([]);
+
     const [currentPage, setCurrentPage] = useState(1);
 
-    // rows to show in a page
     const rowsPerPage = 6;
-
-    // Fetch blogs from backend
-    const getBlogs = async () => {
-        try {
-            const res = await axios.get("/api/blogs");
-            setBlogs(res.data.blogs);
-        } catch (error) {
-            console.error("Failed to fetch blogs:", error);
-        }
-    };
-
-    useEffect(() => {
-        getBlogs();
-    }, []);
 
     const getCategories = async () => {
         try {
@@ -66,7 +46,19 @@ export default function AllBlogs() {
         getCategories();
     }, []);
 
-    // ✅ Filtering logic
+    const getBlogs = async () => {
+        try {
+            const res = await axios.get("/api/blogs");
+            setBlogs(res.data.blogs);
+        } catch (error) {
+            console.error("Failed to fetch blogs:", error);
+        }
+    };
+
+    useEffect(() => {
+        getBlogs();
+    }, []);
+
     const filteredBlogs = selectedCategory
         ? blogs.filter((blog) => blog.category?.id === selectedCategory)
         : blogs;
@@ -95,6 +87,7 @@ export default function AllBlogs() {
         const minutes = Math.ceil(words / wordsPerMinute);
         return `${minutes} min${minutes > 1 ? "s" : ""} read`;
     }
+
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-2 md:mb-0">

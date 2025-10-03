@@ -40,27 +40,17 @@ import { useEffect } from "react";
 import axios from "axios";
 
 export default function BlogsList() {
-    const [blogs, setBlogs] = useState([]);
     const [categories, setCategories] = useState([]);
+
     const [selectedCategory, setSelectedCategory] = useState(null);
+
     const [selectedFilter, setSelectedFilter] = useState("newest");
 
+    const [blogs, setBlogs] = useState([]);
+
     const [currentPage, setCurrentPage] = useState(1);
+
     const rowsPerPage = 10;
-
-    // Fetch blogs from backend
-    const getBlogs = async () => {
-        try {
-            const res = await axios.get("/api/blogs");
-            setBlogs(res.data.blogs);
-        } catch (error) {
-            console.error("Failed to fetch blogs:", error);
-        }
-    };
-
-    useEffect(() => {
-        getBlogs();
-    }, []);
 
     const getCategories = async () => {
         try {
@@ -75,7 +65,19 @@ export default function BlogsList() {
         getCategories();
     }, []);
 
-    // ✅ Filtering logic
+    const getBlogs = async () => {
+        try {
+            const res = await axios.get("/api/blogs");
+            setBlogs(res.data.blogs);
+        } catch (error) {
+            console.error("Failed to fetch blogs:", error);
+        }
+    };
+
+    useEffect(() => {
+        getBlogs();
+    }, []);
+
     const filteredBlogs = selectedCategory
         ? blogs.filter((blog) => blog.category?.id === selectedCategory)
         : blogs;

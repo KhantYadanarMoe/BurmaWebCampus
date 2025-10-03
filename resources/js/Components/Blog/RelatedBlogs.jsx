@@ -7,10 +7,12 @@ import axios from "axios";
 import { useEffect } from "react";
 
 export default function RelatedBlogs() {
-    // state to store blogs
     let [blogs, setBlogs] = useState([]);
 
-    // fetch data that send from backend
+    const shuffledBlogs = [...blogs].sort(() => Math.random() - 0.5);
+
+    const randomBlogs = shuffledBlogs.slice(0, 3);
+
     let getBlogs = async () => {
         let res = await axios.get("/api/blogs");
         let data = res.data;
@@ -21,9 +23,6 @@ export default function RelatedBlogs() {
     useEffect(() => {
         getBlogs();
     }, []);
-
-    const shuffledBlogs = [...blogs].sort(() => Math.random() - 0.5);
-    const randomBlogs = shuffledBlogs.slice(0, 3);
 
     function stripHtml(html) {
         const tmp = document.createElement("div");
@@ -37,8 +36,7 @@ export default function RelatedBlogs() {
         const minutes = Math.ceil(words / wordsPerMinute);
         return `${minutes} min${minutes > 1 ? "s" : ""} read`;
     }
-
-    console.log(blogs);
+    
     return (
         <div className="px-4 md:px-5 lg:px-8 pb-8">
             <hr className="my-5 border-t-gray-500" />

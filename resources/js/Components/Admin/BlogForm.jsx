@@ -19,37 +19,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Switch } from "../ui/switch";
 
 export default function BlogForm() {
-    // state to store categories to show all of the categories data
     let [categories, setCategories] = useState([]);
 
-    // take id for edit feature
     let { id } = useParams();
-
-    // state to check the page is create page or edit page
     let [isEdit, setIsEdit] = useState(false);
 
-    // check the id is exist or not (number or undefined)
-    useEffect(() => {
-        console.log(id);
-        setIsEdit(!!id);
-    }, [id]);
+    const [cover, setCover] = useState(null);
+    const [coverUrl, setCoverUrl] = useState(null); 
 
-    // form data to store before sending to backend
-    const [cover, setCover] = useState(null); //for new cover upload
-    const [coverUrl, setCoverUrl] = useState(null); // for displaying the existing cover
+    const [detailImg1, setDetailImg1] = useState(null); 
+    const [detailImg1Url, setDetailImg1Url] = useState(null); 
 
-    // For detail image 1
-    const [detailImg1, setDetailImg1] = useState(null); // File
-    const [detailImg1Url, setDetailImg1Url] = useState(null); // String
-
-    // For detail image 2
     const [detailImg2, setDetailImg2] = useState(null);
     const [detailImg2Url, setDetailImg2Url] = useState(null);
 
-    // state to store detail of the blog related to ID
     let [blogDetail, setBlogDetails] = useState(null);
 
-    // prepare state to store form data
+    const [errors, setErrors] = useState({});
+
+    const navigate = useNavigate();
+    
     const [form, setForm] = useState({
         title: "",
         cover: "",
@@ -59,10 +48,6 @@ export default function BlogForm() {
         paragraph: "",
         visibility: true,
     });
-    // store errors state
-    const [errors, setErrors] = useState({});
-
-    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -72,7 +57,6 @@ export default function BlogForm() {
         }));
     };
 
-    // Handle other custom Components' inputs
     const handleCustomChange = (name, value) => {
         setForm((prev) => ({
             ...prev,
@@ -80,7 +64,6 @@ export default function BlogForm() {
         }));
     };
 
-    // function to fetch all of the categories data
     let getCategories = async () => {
         try {
             let res = await axios.get("/api/blog/categories");
@@ -91,24 +74,25 @@ export default function BlogForm() {
         }
     };
 
-    // call data fetching function in useEffect to run when user enter the page
     useEffect(() => {
         getCategories();
     }, []);
+    
+    useEffect(() => {
+        console.log(id);
+        setIsEdit(!!id);
+    }, [id]);
 
-    // fetch data to show prev data in input fields
     let getDetails = async (id) => {
         let res = await fetch("/api/blog/" + id);
         let data = await res.json();
         setBlogDetails(data.blog);
     };
 
-    // call data fetching function depend on id changes
     useEffect(() => {
         getDetails(id);
     }, [id]);
 
-    // add prev data sent from backend in the form state
     useEffect(() => {
         if (blogDetail) {
             setCoverUrl(blogDetail.cover || null);
@@ -124,21 +108,16 @@ export default function BlogForm() {
         }
     }, [blogDetail]);
 
-    // form submit function
     const submit = async (e) => {
         e.preventDefault();
-        // setIsDialogOpen(false);
 
-        // url and method to use in sending data using axios
         let url = isEdit ? "/api/blog/" + id : "/api/blog/create";
         let method = "post";
 
-        // create new object to store form data to send
         let formData = new FormData();
 
         console.log("Form Data before submitting:", form);
 
-        // store state data in object
         formData.append("title", form.title);
         formData.append("category_id", form.category_id);
         formData.append("paragraph", form.paragraph);
@@ -174,7 +153,6 @@ export default function BlogForm() {
                 console.log(pair[0] + ": " + pair[1]);
             }
 
-            // send data
             const res = await axios[method](url, formData, {
                 headers: {
                     "X-CSRF-TOKEN": csrfToken,
@@ -182,7 +160,6 @@ export default function BlogForm() {
                 },
             });
 
-            // success condition
             if (
                 res.data.message === "Blog created successfully." ||
                 res.data.message === "Blog updated successfully."
@@ -192,9 +169,7 @@ export default function BlogForm() {
         } catch (error) {
             console.error("Error creating blog:", error);
 
-            // failed condition
             if (error.response && error.response.status === 422) {
-                // setIsDialogOpen(false);
                 setErrors(error.response.data.errors);
             }
         }
@@ -222,8 +197,12 @@ export default function BlogForm() {
                             className="border-gray-400 mt-1"
                             placeholder="Write the title of this blog"
                         />
+                        {errors.title && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.title[0]}
+                            </p>
+                        )}
                     </div>
-                    {/* Cover Image */}
                     <div className="flex justify-center mt-5 px-4 py-4 border border-gray-400 bg-white rounded-md">
                         <div
                             className="w-full p-8 rounded-md text-center cursor-pointer"
@@ -260,9 +239,7 @@ export default function BlogForm() {
                         </div>
                     </div>
 
-                    {/* Detail Images */}
                     <div className="flex gap-3 mt-3">
-                        {/* Detail Image 1 */}
                         <div className="w-1/2 flex justify-center px-4 py-4 border border-gray-400 bg-white rounded-md">
                             <div
                                 className="w-full p-8 rounded-md text-center cursor-pointer"
@@ -295,7 +272,6 @@ export default function BlogForm() {
                             </div>
                         </div>
 
-                        {/* Detail Image 2 */}
                         <div className="w-1/2 flex justify-center px-4 py-4 border border-gray-400 bg-white rounded-md">
                             <div
                                 className="w-full p-8 rounded-md text-center cursor-pointer"
@@ -330,7 +306,6 @@ export default function BlogForm() {
                     </div>
 
                     <div className="hidden md:flex gap-2 my-4">
-                        {/* Cover */}
                         <div className="relative w-2/4 h-40">
                             {cover ? (
                                 <img
@@ -360,7 +335,6 @@ export default function BlogForm() {
                             )}
                         </div>
 
-                        {/* Detail Image 1 */}
                         <div className="relative w-1/4 h-40">
                             {detailImg1 ? (
                                 <img
@@ -390,7 +364,6 @@ export default function BlogForm() {
                             )}
                         </div>
 
-                        {/* Detail Image 2 */}
                         <div className="relative w-1/4 h-40">
                             {detailImg2 ? (
                                 <img
@@ -451,10 +424,15 @@ export default function BlogForm() {
                                 ))}
                             </SelectContent>
                         </Select>
+                        {errors.category_id && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.category_id[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="my-3">
                         <Label>Body</Label>
-                        <div className="mt-1">
+                        <div className="my-1">
                             <RichTextEditor
                                 value={form.paragraph}
                                 onChange={(val) =>
@@ -462,11 +440,17 @@ export default function BlogForm() {
                                 }
                                 className="min-h-[300px] border border-gray-400 rounded-md"
                             />
+                            
                         </div>
+                        {errors.paragraph && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.paragraph[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="my-3">
                         <Label>Visibility</Label>
-                        <div className="mt-1">
+                        <div className="my-1">
                             <Switch
                                 id="visibility"
                                 name="visibility"
@@ -480,6 +464,11 @@ export default function BlogForm() {
                                 }
                             />
                         </div>
+                        {errors.visibility && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.visibility[0]}
+                            </p>
+                        )}
                     </div>
 
                     <div className="my-3 flex justify-end">

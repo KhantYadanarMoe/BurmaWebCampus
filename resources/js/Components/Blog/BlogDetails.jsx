@@ -9,6 +9,12 @@ export default function BlogDetails() {
     const { id } = useParams();
     const [blog, setBlog] = useState(null);
 
+    if (!blog) {
+        return <p>Loading...</p>;
+    }
+
+    if (!blog?.paragraph) return null;
+
     const getDetails = async (id) => {
         try {
             let res = await axios.get("/api/blog/" + id);
@@ -17,6 +23,11 @@ export default function BlogDetails() {
             console.error("Error fetching blog:", err);
         }
     };
+
+    const words = blog.paragraph.split(/\s+/);
+    const mid = Math.ceil(words.length / 2);
+    const firstHalf = words.slice(0, mid).join(" ");
+    const secondHalf = words.slice(mid).join(" ");
 
     const incrementView = async (id) => {
         try {
@@ -30,18 +41,6 @@ export default function BlogDetails() {
         getDetails(id);
         incrementView(id);
     }, [id]);
-
-    if (!blog) {
-        return <p>Loading...</p>;
-    }
-
-    if (!blog?.paragraph) return null;
-
-    // Split paragraph roughly in half
-    const words = blog.paragraph.split(/\s+/);
-    const mid = Math.ceil(words.length / 2);
-    const firstHalf = words.slice(0, mid).join(" ");
-    const secondHalf = words.slice(mid).join(" ");
 
     return (
         <div className="px-4 md:px-5 lg:px-8 w-full md:w-[90%] lg:w-[80%] flex flex-col items-start mx-auto">
