@@ -32,7 +32,7 @@ import {
     AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
-import { Ellipsis, Plus } from "lucide-react";
+import { ChevronDown, Ellipsis, Plus } from "lucide-react";
 import BlogImg from "../../../assets/Blogs.jpg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -41,18 +41,18 @@ import axios from "axios";
 
 export default function BlogsList() {
     const [blogs, setBlogs] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedFilter, setSelectedFilter] = useState("newest");
 
-    // state for pagination
     const [currentPage, setCurrentPage] = useState(1);
-
-    // rows to show in a page
     const rowsPerPage = 10;
 
     // Fetch blogs from backend
     const getBlogs = async () => {
         try {
             const res = await axios.get("/api/blogs");
-            setBlogs(res.data.blogs); // assuming backend sends { blogs: [...] }
+            setBlogs(res.data.blogs);
         } catch (error) {
             console.error("Failed to fetch blogs:", error);
         }
@@ -62,11 +62,29 @@ export default function BlogsList() {
         getBlogs();
     }, []);
 
+    const getCategories = async () => {
+        try {
+            let res = await axios.get("/api/blog/categories");
+            setCategories(res.data.categories);
+        } catch (error) {
+            console.error("Failed to fetch categories:", error);
+        }
+    };
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
+    // ✅ Filtering logic
+    const filteredBlogs = selectedCategory
+        ? blogs.filter((blog) => blog.category?.id === selectedCategory)
+        : blogs;
+
     const indexOfLastBlog = currentPage * rowsPerPage;
     const indexOfFirstBlog = indexOfLastBlog - rowsPerPage;
-    const currentBlogs = blogs.slice(indexOfFirstBlog, indexOfLastBlog);
+    const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
 
-    const totalPages = Math.ceil(blogs.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredBlogs.length / rowsPerPage);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -74,13 +92,33 @@ export default function BlogsList() {
         }
     };
 
-    let deleteBlog = async (id) => {
+    const handleFilterChange = (filterValue) => {
+        setSelectedFilter(filterValue);
+
+        axios
+            .get(`/api/blogs?sort=${filterValue}`)
+            .then((response) => {
+                const data = response.data;
+                if (data.blogs) {
+                    setBlogs(data.blogs);
+                }
+            })
+            .catch((error) => {
+                console.error("Axios request failed:", error);
+            });
+    };
+
+    useEffect(() => {
+        handleFilterChange("newest"); // initial load
+    }, []);
+
+    const deleteBlog = async (id) => {
         try {
             const csrfToken = document
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content");
 
-            let res = await axios.delete("/api/blog/" + id, {
+            await axios.delete("/api/blog/" + id, {
                 headers: {
                     "X-CSRF-TOKEN": csrfToken,
                     "Content-Type": "multipart/form-data",
@@ -96,39 +134,91 @@ export default function BlogsList() {
     return (
         <div>
             <h1 className="text-xl font-medium">Blogs</h1>
-            <div className="flex flex-col md:flex-row justify-between my-4">
-                <div className="flex gap-2">
-                    <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                        Frontend
-                    </span>
-                    <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                        Backend
-                    </span>
-                    <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                        Fullstack
-                    </span>
+            <div className="flex flex-col md:flex-row justify-between items-center my-4">
+                <div className="flex gap-2 flex-wrap">
+                    <button
+                        onClick={() => {
+                            setSelectedCategory(null);
+                            setCurrentPage(1);
+                        }}
+                        className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
+                            !selectedCategory
+                                ? "bg-gray-800 text-white border-gray-800"
+                                : "border-gray-500"
+                        }`}
+                    >
+                        All
+                    </button>
+
+                    {categories.map((category) => (
+                        <button
+                            key={category.id}
+                            onClick={() => {
+                                setSelectedCategory(category.id);
+                                setCurrentPage(1);
+                            }}
+                            className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
+                                selectedCategory === category.id
+                                    ? "bg-gray-800 text-white border-gray-800"
+                                    : "border-gray-500"
+                            }`}
+                        >
+                            {category.name}
+                        </button>
+                    ))}
                 </div>
                 <div className="flex items-center justify-end md:justify-normal gap-2">
                     <div className="hidden md:block">
-                        <Select>
-                            <SelectTrigger className="w-[180px] border-gray-700">
-                                <SelectValue placeholder="Filter " />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="newest">
+                        <DropdownMenu modal={false}>
+                            <DropdownMenuTrigger asChild>
+                                <button className="flex gap-1 items-center px-2 py-1 border border-gray-800 rounded-md">
+                                    {
+                                        {
+                                            newest: "Filter By Newest",
+                                            oldest: "Filter By Oldest",
+                                            "a-z": "Filter By A-Z",
+                                            "z-a": "Filter By Z-A",
+                                        }[selectedFilter]
+                                    }
+                                    <ChevronDown size={16} />
+                                </button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent
+                                align="end"
+                                className="w-40"
+                                avoidCollisions={false}
+                            >
+                                <DropdownMenuItem
+                                    onSelect={() =>
+                                        handleFilterChange("newest")
+                                    }
+                                    className="cursor-pointer"
+                                >
                                     Filter By Newest
-                                </SelectItem>
-                                <SelectItem value="oldest">
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={() =>
+                                        handleFilterChange("oldest")
+                                    }
+                                    className="cursor-pointer"
+                                >
                                     Filter By Oldest
-                                </SelectItem>
-                                <SelectItem value="a-z">
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={() => handleFilterChange("a-z")}
+                                    className="cursor-pointer"
+                                >
                                     Filter By A-Z
-                                </SelectItem>
-                                <SelectItem value="z-a">
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={() => handleFilterChange("z-a")}
+                                    className="cursor-pointer"
+                                >
                                     Filter By Z-A
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                     <Link to="/admin/blogs/create">
                         <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
@@ -149,7 +239,7 @@ export default function BlogsList() {
                         <li className="basis-[14%]">Created at</li>
                         <li className="basis-[6%]"></li>
                     </ul>
-                    {blogs.map((blog) => (
+                    {currentBlogs.map((blog) => (
                         <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                             <li className="basis-[4%]">{blog.id}</li>
                             <li className="basis-[40%] flex items-center gap-2">

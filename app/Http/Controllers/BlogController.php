@@ -70,15 +70,35 @@ class BlogController extends Controller
         ]);
     }
 
-    public function index(){
-        // take data from backend database
-        $blogs = Blog::with('category')->latest()->get();
+    public function index(Request $request){
+        $sort = $request->query('sort', 'newest'); // Default to 'newest' if no data is provided
+        $query = Blog::query();
+
+        // Apply sorting based on the requested sort option
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('title', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $blogs = $query->with('category')->get();
 
         // send data to frontend
         return response()->json([
             'blogs' => $blogs
         ]);
     }
+
 
     public function show($id){
         $blog = Blog::with('category')->findOrFail($id); // Find blog by ID

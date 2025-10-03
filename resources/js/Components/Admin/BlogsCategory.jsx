@@ -146,8 +146,6 @@ export default function BlogsCategory() {
                 if (isEditing) {
                     setEditDialogOpen(false);
                     setEditId(null);
-                } else {
-                    setOpen(false);
                 }
             }
         } catch (error) {

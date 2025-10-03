@@ -21,9 +21,17 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { DropdownMenuContent, DropdownMenuItem } from "../ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 export default function AllBlogs() {
     const [blogs, setBlogs] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
     // state for pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -45,11 +53,29 @@ export default function AllBlogs() {
         getBlogs();
     }, []);
 
+    const getCategories = async () => {
+        try {
+            let res = await axios.get("/api/blog/categories");
+            setCategories(res.data.categories);
+        } catch (error) {
+            console.error("Failed to fetch categories:", error);
+        }
+    };
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
+    // ✅ Filtering logic
+    const filteredBlogs = selectedCategory
+        ? blogs.filter((blog) => blog.category?.id === selectedCategory)
+        : blogs;
+
     const indexOfLastBlog = currentPage * rowsPerPage;
     const indexOfFirstBlog = indexOfLastBlog - rowsPerPage;
+    const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
 
-    const currentBlogs = blogs.slice(indexOfFirstBlog, indexOfLastBlog);
-    const totalPages = Math.ceil(blogs.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredBlogs.length / rowsPerPage);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -86,9 +112,19 @@ export default function AllBlogs() {
                         <SelectValue placeholder="Filter By Categories" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="frontend">Frontend</SelectItem>
-                        <SelectItem value="backend">Backend</SelectItem>
-                        <SelectItem value="fullstack">Fullstack</SelectItem>
+                        {categories.map((category) => (
+                            <SelectItem value={category.name}>
+                                <button
+                                    key={category.id}
+                                    onClick={() => {
+                                        setSelectedCategory(category.id);
+                                        setCurrentPage(1);
+                                    }}
+                                >
+                                    {category.name}
+                                </button>
+                            </SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
             </div>
