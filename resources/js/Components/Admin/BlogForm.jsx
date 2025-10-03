@@ -329,25 +329,97 @@ export default function BlogForm() {
                         </div>
                     </div>
 
-                    {blogDetail && (
-                        <div className="hidden md:flex gap-2 my-4">
-                            <img
-                                src={`/storage/${blogDetail.cover}`}
-                                alt=""
-                                className="w-2/4 h-40 object-cover rounded-md"
-                            />
-                            <img
-                                src={`/storage/${blogDetail.detail_image_1}`}
-                                alt=""
-                                className="w-1/4 h-40 object-cover rounded-md"
-                            />
-                            <img
-                                src={`/storage/${blogDetail.detail_image_2}`}
-                                alt=""
-                                className="w-1/4 h-40 object-cover rounded-md"
-                            />
+                    <div className="hidden md:flex gap-2 my-4">
+                        {/* Cover */}
+                        <div className="relative w-2/4 h-40">
+                            {cover ? (
+                                <img
+                                    src={URL.createObjectURL(cover)}
+                                    alt="Live Cover Preview"
+                                    className="w-full h-full object-cover rounded-md"
+                                />
+                            ) : coverUrl ? (
+                                <img
+                                    src={`/storage/${coverUrl}`}
+                                    alt="Existing Cover"
+                                    className="w-full h-full object-cover rounded-md"
+                                />
+                            ) : null}
+
+                            {(cover || coverUrl) && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setCover(null);
+                                        setCoverUrl(null);
+                                    }}
+                                    className="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full hover:bg-opacity-80"
+                                >
+                                    ✕
+                                </button>
+                            )}
                         </div>
-                    )}
+
+                        {/* Detail Image 1 */}
+                        <div className="relative w-1/4 h-40">
+                            {detailImg1 ? (
+                                <img
+                                    src={URL.createObjectURL(detailImg1)}
+                                    alt="Live Detail 1 Preview"
+                                    className="w-full h-full object-cover rounded-md"
+                                />
+                            ) : detailImg1Url ? (
+                                <img
+                                    src={`/storage/${detailImg1Url}`}
+                                    alt="Existing Detail 1"
+                                    className="w-full h-full object-cover rounded-md"
+                                />
+                            ) : null}
+
+                            {(detailImg1 || detailImg1Url) && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDetailImg1(null);
+                                        setDetailImg1Url(null);
+                                    }}
+                                    className="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full hover:bg-opacity-80"
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Detail Image 2 */}
+                        <div className="relative w-1/4 h-40">
+                            {detailImg2 ? (
+                                <img
+                                    src={URL.createObjectURL(detailImg2)}
+                                    alt="Live Detail 2 Preview"
+                                    className="w-full h-full object-cover rounded-md"
+                                />
+                            ) : detailImg2Url ? (
+                                <img
+                                    src={`/storage/${detailImg2Url}`}
+                                    alt="Existing Detail 2"
+                                    className="w-full h-full object-cover rounded-md"
+                                />
+                            ) : null}
+
+                            {(detailImg2 || detailImg2Url) && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDetailImg2(null);
+                                        setDetailImg2Url(null);
+                                    }}
+                                    className="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full hover:bg-opacity-80"
+                                >
+                                    ✕
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
                     <div className="my-3">
                         <Label htmlFor="category_id">Category</Label>
