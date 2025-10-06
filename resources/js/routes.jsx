@@ -35,6 +35,7 @@ import UserProfile from "./Pages/UserProfile";
 import CreateQuiz from "./Components/Admin/CreateQuiz";
 import Quiz from "./Pages/Quiz";
 import Dashboard from "./Components/Admin/Dashboard";
+import ReviewModal from "./Components/ReviewModal";
 
 const routes = createBrowserRouter([
     {
@@ -80,6 +81,10 @@ const routes = createBrowserRouter([
             {
                 path: "/course/quiz", //it should be course name
                 element: <Quiz />,
+            },
+            {
+                path: "/review", //it should be course name
+                element: <ReviewModal />,
             },
         ],
     },

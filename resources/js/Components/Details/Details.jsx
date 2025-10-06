@@ -22,6 +22,7 @@ import {
 import { useState } from "react";
 import { Textarea } from "../ui/textarea";
 import Pf from "../../../assets/Profile.jpg";
+import ReviewModal from "../ReviewModal";
 
 export default function Details() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -66,20 +67,24 @@ export default function Details() {
                                 18th Jun 2025, 6:35 PM
                             </p>
                         </div>
-                        <div className="hidden md:flex items-center justify-center gap-1">
-                            <p className="text-sm">Chapter 2/12</p>
-                            <Button
-                                variant="outline"
-                                className="px-1 py-1 border-none shadow-none hover:bg-white"
-                            >
-                                <ChevronLeft />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="px-1 py-1 border-none shadow-none hover:bg-white"
-                            >
-                                <ChevronRight />
-                            </Button>
+                        <div>
+                            <div className="hidden md:flex items-center justify-center gap-1">
+                                <p className="text-sm">Chapter 2/12</p>
+
+                                <Button
+                                    variant="outline"
+                                    className="px-1 py-1 border-none shadow-none hover:bg-white"
+                                >
+                                    <ChevronLeft />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="px-1 py-1 border-none shadow-none hover:bg-white"
+                                >
+                                    <ChevronRight />
+                                </Button>
+                            </div>
+                            {/* <ReviewModal /> */}
                         </div>
                     </div>
                     {/* video */}
@@ -88,6 +93,7 @@ export default function Details() {
                         alt=""
                         className="w-full h-64 md:h-96 object-cover my-5"
                     />
+
                     <div className="my-3">
                         <h1 className="text-lg font-medium">Resources</h1>
                         <ul className="list-disc my-3">
