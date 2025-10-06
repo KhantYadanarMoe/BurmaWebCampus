@@ -3,6 +3,7 @@
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -43,6 +44,9 @@ Route::get('/api/blog/{id}', [BlogController::class, 'show']);
 Route::put('/api/blog/{blog}', [BlogController::class, 'update']);
 Route::post('/api/blog/{id}/view', [BlogController::class, 'incrementView']);
 Route::delete('/api/blog/{blog}', [BlogController::class, 'delete']);
+
+
+Route::post("/api/review", [ReviewController::class, 'store']);
 
 
 require __DIR__.'/auth.php';
