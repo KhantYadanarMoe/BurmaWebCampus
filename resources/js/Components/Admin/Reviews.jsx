@@ -184,8 +184,8 @@ export default function Reviews() {
                                                     Number(
                                                         review.visibility
                                                     ) === 1
-                                                        ? "text-accentRed"
-                                                        : "text-accentGreen"
+                                                        ? "text-accentRed cursor-pointer"
+                                                        : "text-accentGreen cursor-pointer"
                                                 }
                                             >
                                                 {Number(review.visibility) === 1
@@ -201,8 +201,8 @@ export default function Reviews() {
                                                 }
                                                 className={
                                                     Number(review.marked) === 1
-                                                        ? "text-accentRed"
-                                                        : "text-accentGreen"
+                                                        ? "text-accentRed cursor-pointer"
+                                                        : "text-accentGreen cursor-pointer"
                                                 }
                                             >
                                                 {Number(review.marked) === 1
