@@ -8,7 +8,7 @@ import {
 } from "../ui/select";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
-import { EllipsisVertical, Star } from "lucide-react";
+import { EllipsisVertical, Flag, Star } from "lucide-react";
 import Profile from "../../../assets/Profile.jpg";
 import {
     DropdownMenu,
@@ -68,6 +68,23 @@ export default function Reviews() {
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
+        }
+    };
+
+    const markReview = async (id, currentMarked) => {
+        try {
+            let newMarked = currentMarked ? 0 : 1;
+
+            let res = await axios.post("/api/review/marked/" + id, {
+                marked: newMarked,
+            });
+            setReviews((prevReviews) =>
+                prevReviews.map((review) =>
+                    review.id == id ? { ...review, marked: newMarked } : review
+                )
+            );
+        } catch (error) {
+            console.error("Failed to mark review:", error);
         }
     };
 
@@ -136,15 +153,49 @@ export default function Reviews() {
                                             className="w-40"
                                         >
                                             <Link to="">
-                                                <DropdownMenuItem>
-                                                    Publish
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        handleCustomChange(
+                                                            "visibility",
+                                                            !form.visibility
+                                                        )
+                                                    }
+                                                    className={`flex items-center justify-between cursor-pointer ${
+                                                        form.visibility
+                                                            ? "text-green-600"
+                                                            : "text-gray-700"
+                                                    }`}
+                                                >
+                                                    {form.visibility
+                                                        ? "Unpublish"
+                                                        : "Publish"}
+
+                                                    <div
+                                                        className={`ml-2 h-2 w-2 rounded-full ${
+                                                            form.visibility
+                                                                ? "bg-green-500"
+                                                                : "bg-gray-400"
+                                                        }`}
+                                                    />
                                                 </DropdownMenuItem>
                                             </Link>
-                                            <Link to="">
-                                                <DropdownMenuItem>
-                                                    Mark
-                                                </DropdownMenuItem>
-                                            </Link>
+                                            <DropdownMenuItem
+                                                onClick={() =>
+                                                    markReview(
+                                                        review.id,
+                                                        Number(review.marked)
+                                                    )
+                                                }
+                                                className={
+                                                    Number(review.marked) === 1
+                                                        ? "text-accentRed"
+                                                        : "text-accentGreen"
+                                                }
+                                            >
+                                                {Number(review.marked) === 1
+                                                    ? "Remove Mark"
+                                                    : "Mark"}
+                                            </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </div>
@@ -153,25 +204,33 @@ export default function Reviews() {
                                 {review.review}
                             </q>
                             <hr className="my-4 border-t-gray-400" />
-                            <div className="flex gap-2 items-center">
-                                <img
-                                    src={Profile}
-                                    alt=""
-                                    className="w-12 h-12 object-cover rounded-full"
-                                />
-                                <div>
-                                    <h1 className="text-sm font-medium">
-                                        {review.name}
-                                    </h1>
-                                    <div className="flex gap-2 items-center mt-2">
-                                        <p className="text-xs text-gray-600">
-                                            Review to:
-                                        </p>
-                                        <p className="text-xs text-gray-800 font-medium">
-                                            {review.course_id}
-                                        </p>
+                            <div className="flex items-center justify-between">
+                                <div className="flex gap-2 items-center">
+                                    <img
+                                        src={Profile}
+                                        alt=""
+                                        className="w-12 h-12 object-cover rounded-full"
+                                    />
+                                    <div>
+                                        <h1 className="text-sm font-medium">
+                                            {review.name}
+                                        </h1>
+                                        <div className="flex gap-2 items-center mt-2">
+                                            <p className="text-xs text-gray-600">
+                                                Review to:
+                                            </p>
+                                            <p className="text-xs text-gray-800 font-medium">
+                                                {review.course_id}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
+                                {Number(review.marked) === 1 ? (
+                                    <Flag
+                                        size={16}
+                                        className="text-yellow-400 fill-yellow-400"
+                                    />
+                                ) : null}
                             </div>
                         </CardContent>
                     </Card>

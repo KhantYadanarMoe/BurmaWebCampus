@@ -47,4 +47,17 @@ class ReviewController extends Controller
         ]);
     }
 
+    public function mark(Request $request, $id){
+        $review = Review::find($id);
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+
+        $review->marked = $request->marked; // Set marked to 1
+        $review->save();
+
+        return response()->json(['message' => 'Review marked successfully']);
+    }
+
 }

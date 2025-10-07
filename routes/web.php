@@ -47,6 +47,7 @@ Route::delete('/api/blog/{blog}', [BlogController::class, 'delete']);
 
 Route::get('/api/reviews', [ReviewController::class, 'index']);
 Route::post("/api/review", [ReviewController::class, 'store']);
+Route::post('/api/review/marked/{id}', [ReviewController::class, 'mark']);
 
 
 require __DIR__.'/auth.php';
