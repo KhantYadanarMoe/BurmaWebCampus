@@ -39,4 +39,12 @@ class ReviewController extends Controller
         ]);
     }
 
+    public function index(){
+        $reviews = Review::latest()->get();
+
+        return response()->json([
+            'reviews' => $reviews
+        ]);
+    }
+
 }

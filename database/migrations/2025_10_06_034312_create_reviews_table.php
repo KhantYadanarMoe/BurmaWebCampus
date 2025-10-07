@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('course_id');
             $table->text('review');
-
+            $table->boolean('visibility')->default(false);
+            $table->boolean('marked')->default(false);
+            $table->boolean('replied')->default(false);
             $table->timestamps();
         });
     }

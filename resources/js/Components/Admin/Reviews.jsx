@@ -35,8 +35,42 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "../ui/pagination";
+import { useState } from "react";
+import axios from "axios";
+import { useEffect } from "react";
 
 export default function Reviews() {
+    let [reviews, setReviews] = useState([]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const rowsPerPage = 10;
+
+    let getReviews = async () => {
+        try {
+            let res = await axios.get("/api/reviews");
+            let data = res.data;
+            setReviews(data.reviews);
+        } catch (error) {
+            console.error("Failed to fetch reviews:", error);
+        }
+    };
+
+    useEffect(() => {
+        getReviews();
+    }, []);
+
+    const indexOfLastReview = currentPage * rowsPerPage;
+    const indexOfFirstReview = indexOfLastReview - rowsPerPage;
+    const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+
+    const totalPages = Math.ceil(reviews.length / rowsPerPage);
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
         <div>
             <div className="flex justify-between mb-7">
@@ -80,738 +114,68 @@ export default function Reviews() {
                 </li>
             </ul>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5 md:mt-0">
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
+                {currentReviews.map((review) => (
+                    <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                        <CardContent className="p-4">
+                            <div className="flex justify-between">
+                                <div className="flex gap-1 items-center mb-4">
+                                    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
+                                    <span className="font-medium">
+                                        {review.rating}
+                                    </span>
+                                </div>
+                                <div>
+                                    <DropdownMenu modal={false}>
+                                        <DropdownMenuTrigger asChild>
+                                            <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                                <EllipsisVertical size={18} />
+                                            </button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent
+                                            align="end"
+                                            className="w-40"
+                                        >
+                                            <Link to="">
+                                                <DropdownMenuItem>
+                                                    Publish
+                                                </DropdownMenuItem>
+                                            </Link>
+                                            <Link to="">
+                                                <DropdownMenuItem>
+                                                    Mark
+                                                </DropdownMenuItem>
+                                            </Link>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
                             </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                            <q className="text-gray-900 text-sm">
+                                {review.review}
+                            </q>
+                            <hr className="my-4 border-t-gray-400" />
+                            <div className="flex gap-2 items-center">
+                                <img
+                                    src={Profile}
+                                    alt=""
+                                    className="w-12 h-12 object-cover rounded-full"
+                                />
+                                <div>
+                                    <h1 className="text-sm font-medium">
+                                        {review.name}
+                                    </h1>
+                                    <div className="flex gap-2 items-center mt-2">
+                                        <p className="text-xs text-gray-600">
+                                            Review to:
+                                        </p>
+                                        <p className="text-xs text-gray-800 font-medium">
+                                            {review.course_id}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div className="flex justify-between">
-                            <div className="flex gap-1 items-center mb-4">
-                                <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                <span className="font-medium">4.5</span>
-                            </div>
-                            <div>
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                            <EllipsisVertical size={18} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Publish
-                                            </DropdownMenuItem>
-                                        </Link>
-                                        <Link to="">
-                                            <DropdownMenuItem>
-                                                Mark
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </div>
-                        <q className="text-gray-900 text-sm">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Numquam nesciunt vero recusandae illo alias
-                            deserunt praesentium, labore saepe placeat
-                            laboriosam nulla ut voluptate quae, iste excepturi
-                            nostrum.
-                        </q>
-                        <hr className="my-4 border-t-gray-400" />
-                        <div className="flex gap-2 items-center">
-                            <img
-                                src={Profile}
-                                alt=""
-                                className="w-12 h-12 object-cover rounded-full"
-                            />
-                            <div>
-                                <h1 className="text-sm font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
-                                <p className="text-xs mt-2 text-gray-600">
-                                    Review to:
-                                </p>
-                                <p className="text-xs text-gray-800 font-medium">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
             <div className="mt-8 flex">
                 <div className="ml-auto">
