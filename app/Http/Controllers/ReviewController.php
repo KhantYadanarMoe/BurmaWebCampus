@@ -54,10 +54,22 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Review not found'], 404);
         }
 
-        $review->marked = $request->marked; // Set marked to 1
+        $review->marked = $request->marked; 
         $review->save();
 
         return response()->json(['message' => 'Review marked successfully']);
     }
 
+    public function publish(Request $request, $id){
+        $review = Review::find($id);
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+
+        $review->visibility = $request->visibility; 
+        $review->save();
+
+        return response()->json(['message' => 'Review published successfully']);
+    }
 }

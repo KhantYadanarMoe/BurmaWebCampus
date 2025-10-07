@@ -88,6 +88,25 @@ export default function Reviews() {
         }
     };
 
+    const publishReview = async (id, currentVisibility) => {
+        try {
+            let newVisibility = currentVisibility ? 0 : 1;
+
+            let res = await axios.post("/api/review/published/" + id, {
+                visibility: newVisibility,
+            });
+            setReviews((prevReviews) =>
+                prevReviews.map((review) =>
+                    review.id == id
+                        ? { ...review, visibility: newVisibility }
+                        : review
+                )
+            );
+        } catch (error) {
+            console.error("Failed to publish review:", error);
+        }
+    };
+
     return (
         <div>
             <div className="flex justify-between mb-7">
@@ -152,33 +171,27 @@ export default function Reviews() {
                                             align="end"
                                             className="w-40"
                                         >
-                                            <Link to="">
-                                                <DropdownMenuItem
-                                                    onClick={() =>
-                                                        handleCustomChange(
-                                                            "visibility",
-                                                            !form.visibility
+                                            <DropdownMenuItem
+                                                onClick={() =>
+                                                    publishReview(
+                                                        review.id,
+                                                        Number(
+                                                            review.visibility
                                                         )
-                                                    }
-                                                    className={`flex items-center justify-between cursor-pointer ${
-                                                        form.visibility
-                                                            ? "text-green-600"
-                                                            : "text-gray-700"
-                                                    }`}
-                                                >
-                                                    {form.visibility
-                                                        ? "Unpublish"
-                                                        : "Publish"}
-
-                                                    <div
-                                                        className={`ml-2 h-2 w-2 rounded-full ${
-                                                            form.visibility
-                                                                ? "bg-green-500"
-                                                                : "bg-gray-400"
-                                                        }`}
-                                                    />
-                                                </DropdownMenuItem>
-                                            </Link>
+                                                    )
+                                                }
+                                                className={
+                                                    Number(
+                                                        review.visibility
+                                                    ) === 1
+                                                        ? "text-accentRed"
+                                                        : "text-accentGreen"
+                                                }
+                                            >
+                                                {Number(review.visibility) === 1
+                                                    ? "Unpublish"
+                                                    : "Publish"}
+                                            </DropdownMenuItem>
                                             <DropdownMenuItem
                                                 onClick={() =>
                                                     markReview(
@@ -225,12 +238,19 @@ export default function Reviews() {
                                         </div>
                                     </div>
                                 </div>
-                                {Number(review.marked) === 1 ? (
-                                    <Flag
-                                        size={16}
-                                        className="text-yellow-400 fill-yellow-400"
-                                    />
-                                ) : null}
+                                <div className="flex gap-1 flex-col justify-end items-end">
+                                    {Number(review.marked) === 1 ? (
+                                        <Flag
+                                            size={16}
+                                            className="text-yellow-400 fill-yellow-400"
+                                        />
+                                    ) : null}
+                                    {Number(review.visibility) === 1 ? (
+                                        <span className="p-1 text-green-600 bg-green-100 text-xs rounded-md">
+                                            Published
+                                        </span>
+                                    ) : null}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
