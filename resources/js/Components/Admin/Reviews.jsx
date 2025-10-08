@@ -44,6 +44,8 @@ export default function Reviews() {
 
     const [selectedFilter, setSelectedFilter] = useState("newest");
 
+    const [activeTab, setActiveTab] = useState("all");
+
     const [currentPage, setCurrentPage] = useState(1);
 
     const rowsPerPage = 10;
@@ -82,11 +84,21 @@ export default function Reviews() {
         handleFilterChange("newest"); // initial load
     }, []);
 
+    const filteredReviews = reviews.filter((review, index) => {
+        if (activeTab === "all") return true;
+        if (activeTab === "unread") return index < 10;
+        if (activeTab === "published") return Number(review.visibility) === 1;
+        return true;
+    });
+
     const indexOfLastReview = currentPage * rowsPerPage;
     const indexOfFirstReview = indexOfLastReview - rowsPerPage;
-    const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+    const currentReviews = filteredReviews.slice(
+        indexOfFirstReview,
+        indexOfLastReview
+    );
+    const totalPages = Math.ceil(filteredReviews.length / rowsPerPage);
 
-    const totalPages = Math.ceil(reviews.length / rowsPerPage);
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
@@ -195,30 +207,24 @@ export default function Reviews() {
                 </DropdownMenu>
             </div>
             <ul className="flex space-x-6 my-7 md:my-5">
-                <li>
-                    <Link
-                        to=""
-                        class="relative text-black cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-black before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-black after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]"
-                    >
-                        <span>All</span>
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        to=""
-                        class="relative text-black cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-black before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-black after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]"
-                    >
-                        <span>Unread</span>
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        to=""
-                        class="relative text-black cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-black before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-black after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]"
-                    >
-                        <span>Published</span>
-                    </Link>
-                </li>
+                {["all", "unread", "published"].map((tab) => (
+                    <li key={tab}>
+                        <button
+                            onClick={() => {
+                                setActiveTab(tab);
+                                setCurrentPage(1); // reset pagination
+                            }}
+                            className={`
+                                ${
+                                    activeTab === tab
+                                        ? "font-semibold underline"
+                                        : ""
+                                }`}
+                        >
+                            <span className="capitalize">{tab}</span>
+                        </button>
+                    </li>
+                ))}
             </ul>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5 md:mt-0">
                 {currentReviews.map((review) => (
