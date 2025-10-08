@@ -8,7 +8,7 @@ import {
 } from "../ui/select";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
-import { EllipsisVertical, Flag, Star } from "lucide-react";
+import { ChevronDown, EllipsisVertical, Flag, Star } from "lucide-react";
 import Profile from "../../../assets/Profile.jpg";
 import {
     DropdownMenu,
@@ -42,6 +42,8 @@ import { useEffect } from "react";
 export default function Reviews() {
     let [reviews, setReviews] = useState([]);
 
+    const [selectedFilter, setSelectedFilter] = useState("newest");
+
     const [currentPage, setCurrentPage] = useState(1);
 
     const rowsPerPage = 10;
@@ -58,6 +60,26 @@ export default function Reviews() {
 
     useEffect(() => {
         getReviews();
+    }, []);
+
+    const handleFilterChange = (filterValue) => {
+        setSelectedFilter(filterValue);
+
+        axios
+            .get(`/api/reviews?sort=${filterValue}`)
+            .then((response) => {
+                const data = response.data;
+                if (data.reviews) {
+                    setReviews(data.reviews);
+                }
+            })
+            .catch((error) => {
+                console.error("Axios request failed:", error);
+            });
+    };
+
+    useEffect(() => {
+        handleFilterChange("newest"); // initial load
     }, []);
 
     const indexOfLastReview = currentPage * rowsPerPage;
@@ -111,17 +133,66 @@ export default function Reviews() {
         <div>
             <div className="flex justify-between mb-7">
                 <h1 className="text-xl font-medium">Reviews</h1>
-                <Select>
-                    <SelectTrigger className="w-[180px] border-gray-700">
-                        <SelectValue placeholder="Filter " />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="oldest">Oldest</SelectItem>
-                        <SelectItem value="highest">Highest Rated</SelectItem>
-                        <SelectItem value="lowest">Lowest Rated</SelectItem>
-                    </SelectContent>
-                </Select>
+                <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                        <button className="flex gap-1 items-center px-2 py-1 border border-gray-800 rounded-md">
+                            {
+                                {
+                                    newest: "Filter By Newest",
+                                    oldest: "Filter By Oldest",
+                                    "a-z": "Filter By A-Z",
+                                    "z-a": "Filter By Z-A",
+                                    "1-5": "Filter By Rating 1-5",
+                                    "5-1": "Filter By Rating 5-1",
+                                }[selectedFilter]
+                            }
+                            <ChevronDown size={16} />
+                        </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent
+                        align="end"
+                        className="w-40"
+                        avoidCollisions={false}
+                    >
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("newest")}
+                            className="cursor-pointer"
+                        >
+                            Filter By Newest
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("oldest")}
+                            className="cursor-pointer"
+                        >
+                            Filter By Oldest
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("a-z")}
+                            className="cursor-pointer"
+                        >
+                            Filter By A-Z
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("z-a")}
+                            className="cursor-pointer"
+                        >
+                            Filter By Z-A
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("1-5")}
+                            className="cursor-pointer"
+                        >
+                            Filter By Rating 1-5
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={() => handleFilterChange("5-1")}
+                            className="cursor-pointer"
+                        >
+                            Filter By Rating 5-1
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             <ul className="flex space-x-6 my-7 md:my-5">
                 <li>
@@ -261,19 +332,53 @@ export default function Reviews() {
                     <Pagination className="text-accentRed">
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious />
+                                <PaginationPrevious
+                                    onClick={() =>
+                                        handlePageChange(currentPage - 1)
+                                    }
+                                    disabled={currentPage === 1}
+                                    className={`cursor-pointer ${
+                                        currentPage === 1
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                />
                             </PaginationItem>
+                            {Array.from(
+                                {
+                                    length: Math.ceil(
+                                        reviews.length / rowsPerPage
+                                    ),
+                                },
+                                (_, index) => (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink
+                                            onClick={() =>
+                                                handlePageChange(index + 1)
+                                            }
+                                            isActive={currentPage === index + 1}
+                                            className="cursor-pointer"
+                                        >
+                                            {index + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                )
+                            )}
                             <PaginationItem>
-                                <PaginationLink>1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>2</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext />
+                                <PaginationNext
+                                    onClick={() =>
+                                        handlePageChange(currentPage + 1)
+                                    }
+                                    className={`cursor-pointer ${
+                                        currentPage === totalPages
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    disabled={
+                                        currentPage ===
+                                        Math.ceil(reviews.length / rowsPerPage)
+                                    }
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>

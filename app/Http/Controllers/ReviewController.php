@@ -39,13 +39,40 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function index(){
-        $reviews = Review::latest()->get();
+    public function index(Request $request){
+        $sort = $request->query('sort', 'newest'); 
+        $query = Review::query();
 
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('name', 'desc');
+                break;
+                case '1-5':
+                $query->orderBy('rating', 'asc');
+                break;
+            case '5-1':
+                $query->orderBy('rating', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $reviews = $query->latest()->get();
+
+        // send data to frontend
         return response()->json([
             'reviews' => $reviews
         ]);
     }
+
 
     public function mark(Request $request, $id){
         $review = Review::find($id);
