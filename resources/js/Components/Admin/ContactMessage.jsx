@@ -131,6 +131,22 @@ export default function ContactMessage() {
         }
     };
 
+    const currentIndex = contacts.findIndex((c) => c.id.toString() === id);
+
+    const goToPrev = () => {
+        if (currentIndex > 0) {
+            const prevContact = contacts[currentIndex - 1];
+            navigate(`/admin/contacts/${prevContact.id}`);
+        }
+    };
+
+    const goToNext = () => {
+        if (currentIndex < contacts.length - 1) {
+            const nextContact = contacts[currentIndex + 1];
+            navigate(`/admin/contacts/${nextContact.id}`);
+        }
+    };
+
     return (
         <div className="flex gap-2 pt-2 lg:pt-4">
             <div className="lg:w-1/3 relative border-r border-r-gray-300">
@@ -239,9 +255,35 @@ export default function ContactMessage() {
                         )}
                     </button>
                     <div className="flex gap-1 items-center">
-                        <ChevronLeft size={18} /> 1 of 259{" "}
-                        <ChevronRight size={18} />
+                        <button
+                            onClick={goToPrev}
+                            disabled={currentIndex <= 0}
+                            className={`p-1 rounded ${
+                                currentIndex <= 0
+                                    ? "text-gray-400"
+                                    : "text-gray-700 hover:text-black"
+                            }`}
+                        >
+                            <ChevronLeft size={18} />
+                        </button>
+                        <span className="text-sm text-gray-700">
+                            {contacts.length > 0
+                                ? `${currentIndex + 1} of ${contacts.length}`
+                                : "0 of 0"}
+                        </span>
+                        <button
+                            onClick={goToNext}
+                            disabled={currentIndex >= contacts.length - 1}
+                            className={`p-1 rounded ${
+                                currentIndex >= contacts.length - 1
+                                    ? "text-gray-400"
+                                    : "text-gray-700 hover:text-black"
+                            }`}
+                        >
+                            <ChevronRight size={18} />
+                        </button>
                     </div>
+
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <button className="">
