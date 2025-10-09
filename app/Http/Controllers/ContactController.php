@@ -42,9 +42,18 @@ class ContactController extends Controller
     public function index(){
         $contacts = Contact::latest()->get();
 
-        // send data to frontend
         return response()->json([
             'contacts' => $contacts
         ]);
+    }
+
+    public function show($id){
+        $contact = Contact::FindOrFail($id); 
+
+        if ($contact) {
+            return response()->json(['contact' => $contact]);
+        } else {
+            return response()->json(['message' => 'Contact not found'], 404);
+        }
     }
 }

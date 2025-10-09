@@ -1,6 +1,6 @@
 import React from "react";
 import Pf from "../../../assets/Profile.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import {
     ChevronLeft,
@@ -22,6 +22,16 @@ export default function ContactMessage() {
 
     let [contacts, setContacts] = useState([]);
 
+    let [contact, setContact] = useState([]);
+
+    const { id } = useParams();
+
+    const navigate = useNavigate();
+
+    const selectedContact = contacts.find(
+        (contact) => contact.id.toString() === id
+    );
+
     let getContacts = async () => {
         try {
             let res = await axios.get("/api/contact");
@@ -29,14 +39,35 @@ export default function ContactMessage() {
             setContacts(data.contacts);
         } catch (error) {
             console.error("Failed to fetch contacts:", error);
-        } finally {
-            setLoading(false);
         }
     };
 
     useEffect(() => {
         getContacts();
     }, []);
+
+    const getDetails = async (id) => {
+        try {
+            let res = await axios.get("/api/contact/" + id);
+            setContact(res.data.contact);
+        } catch (err) {
+            console.error("Error fetching contact:", err);
+        }
+    };
+
+    useEffect(() => {
+        if (contacts.length > 0) {
+            // If there's no selected ID in the URL, go to the latest contact
+            if (!id) {
+                navigate(`/admin/contacts/${contacts[0].id}`, {
+                    replace: true,
+                });
+            } else {
+                // If we do have an ID, fetch its details
+                getDetails(id);
+            }
+        }
+    }, [contacts, id]);
     return (
         <div className="flex gap-2 pt-2 lg:pt-4">
             <div className="lg:w-1/3 relative border-r border-r-gray-300">
@@ -70,10 +101,19 @@ export default function ContactMessage() {
                     <div className="py-3 lg:py-0 lg:mt-3 h-[calc(100vh-8rem)] xl:h-[calc(100vh-8rem)]  hover:overflow-y-auto custom-scrollbar overflow-hidden duration-300">
                         {contacts.map((contact) => (
                             <div>
-                                <hr className="border-t-gray-300" />
-                                <Link
-                                    to=""
-                                    className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
+                                <button
+                                    key={contact.id}
+                                    onClick={() =>
+                                        navigate(
+                                            `/admin/contacts/${contact.id}`
+                                        )
+                                    }
+                                    className={`flex gap-2 w-full text-left px-3 py-3 rounded-lg duration-300 cursor-pointer 
+                ${
+                    selectedContact?.id === contact.id
+                        ? "bg-gray-100"
+                        : "hover:bg-gray-50"
+                }`}
                                 >
                                     <img
                                         src={Pf}
@@ -89,7 +129,7 @@ export default function ContactMessage() {
                                             <span className="text-sm text-gray-700">
                                                 {formatDistanceToNow(
                                                     new Date(
-                                                        contact.created_at
+                                                        contact?.created_at
                                                     ),
                                                     { addSuffix: true }
                                                 )}
@@ -99,7 +139,7 @@ export default function ContactMessage() {
                                             {contact.message}
                                         </p>
                                     </div>
-                                </Link>
+                                </button>
                             </div>
                         ))}
                     </div>
@@ -125,19 +165,24 @@ export default function ContactMessage() {
                                 className="w-12 h-12 object-cover rounded-full p-0.5 border border-gray-600"
                             />
                             <div>
-                                <h1 className="font-medium">
-                                    Khant Yadanar Moe
-                                </h1>
+                                <h1 className="font-medium">{contact?.name}</h1>
                                 <p className="text-sm text-gray-700">to BWC</p>
                             </div>
                         </div>
-                        <p className="text-gray-700">7:00 PM</p>
+                        <p className="text-gray-700">
+                            {contact?.created_at
+                                ? formatDistanceToNow(
+                                      new Date(contact.created_at),
+                                      { addSuffix: true }
+                                  )
+                                : ""}
+                        </p>
                     </div>
                     <div className="p-2 py-3 md:p-6 text-gray-900 text-sm leading-relaxed">
                         <p className="mb-4">Hello Admin,</p>
                         <p className="mb-4">
                             You’ve received a new contact message from{" "}
-                            <strong>Hsu Wai</strong>.
+                            <strong>{contact?.name}</strong>.
                         </p>
 
                         <div className="bg-gray-100 rounded-md p-4 space-y-2 text-sm">
@@ -145,26 +190,26 @@ export default function ContactMessage() {
                                 <span className="font-semibold w-12">
                                     Name:
                                 </span>
-                                <span>Hsu Wai</span>
+                                <span>{contact?.name}</span>
                             </div>
+
                             <div className="flex gap-6">
                                 <span className="font-semibold w-12">
                                     Email:
                                 </span>
-                                <span>hsuwai@gmail.com</span>
+                                <span>{contact?.email}</span>
+                            </div>
+                            <div className="flex gap-6">
+                                <span className="font-semibold w-12">
+                                    Phone:
+                                </span>
+                                <span>{contact?.phone}</span>
                             </div>
                             <div className="flex gap-6">
                                 <span className="font-semibold w-12">
                                     Message:
                                 </span>
-                                <span>
-                                    Lorem ipsum dolor, sit amet consectetur
-                                    adipisicing elit. Ex, veritatis numquam
-                                    corporis dicta ut provident saepe ab hic
-                                    dolores reprehenderit laboriosam? Minima ad
-                                    exercitationem dolorem molestiae officiis
-                                    quibusdam quo quod tenetur ipsam.
-                                </span>
+                                <span>{contact?.message}</span>
                             </div>
                         </div>
 

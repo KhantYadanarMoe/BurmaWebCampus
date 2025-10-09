@@ -187,7 +187,7 @@ const routes = createBrowserRouter([
                 element: <Reviews />,
             },
             {
-                path: "/admin/contacts",
+                path: "/admin/contacts/:id?",
                 element: <ContactMessage />,
             },
             {
