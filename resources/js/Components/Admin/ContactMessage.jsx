@@ -6,6 +6,7 @@ import {
     ChevronLeft,
     ChevronRight,
     Flag,
+    MailCheck,
     MessageCircleMore,
     Trash,
     X,
@@ -147,6 +148,24 @@ export default function ContactMessage() {
         }
     };
 
+    const [replyText, setReplyText] = useState("");
+
+    const handleReply = async () => {
+        try {
+            const res = await axios.post(`/api/contacts/reply/${contact.id}`, {
+                message: replyText,
+            });
+
+            if (res.data.contact) {
+                setShowReply(false);
+                setContact(res.data.contact); // update UI
+                setReplyText(""); // clear box
+            }
+        } catch (err) {
+            console.error("Failed to send reply:", err);
+        }
+    };
+
     return (
         <div className="flex gap-2 pt-2 lg:pt-4">
             <div className="lg:w-1/3 relative border-r border-r-gray-300">
@@ -212,6 +231,15 @@ export default function ContactMessage() {
                                                         <Flag
                                                             size={16}
                                                             className="text-yellow-400 fill-yellow-400"
+                                                        />
+                                                    ) : null}
+                                                </div>
+                                                <div>
+                                                    {Number(contact.replied) ===
+                                                    1 ? (
+                                                        <MailCheck
+                                                            size={16}
+                                                            className="text-green-400"
                                                         />
                                                     ) : null}
                                                 </div>
@@ -392,9 +420,11 @@ export default function ContactMessage() {
                                 placeholder="Type your reply here..."
                                 className="w-full"
                                 name="message"
+                                value={replyText}
+                                onChange={(e) => setReplyText(e.target.value)}
                             />
                             <div className="flex justify-end mt-3">
-                                <Button>Send</Button>
+                                <Button onClick={handleReply}>Send</Button>
                             </div>
                         </div>
                     )}

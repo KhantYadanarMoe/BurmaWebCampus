@@ -57,5 +57,6 @@ Route::post("/api/contact", [ContactController::class, 'store']);
 Route::get('/api/contact/{id}', [ContactController::class, 'show']);
 Route::post('/api/contact/marked/{id}', [ContactController::class, 'mark']);
 Route::delete('/api/contact/{contact}', [ContactController::class, 'delete']);
+    Route::post('/api/contacts/reply/{id}', [ContactController::class, 'replyToContact']);
 
 require __DIR__.'/auth.php';

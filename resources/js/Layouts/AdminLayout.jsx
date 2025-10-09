@@ -12,7 +12,7 @@ export default function AdminLayout() {
                 setIsSidebarOpen={setIsSidebarOpen}
             />
             <div
-                className={`transition-all duration-300 flex-1 mt-20 xl:mt-28 xl:border xl:border-gray-400 rounded-tl-3xl min-w-0 ${
+                className={`transition-all duration-300 flex-1 mt-20 xl:mt-28 xl:border xl:border-gray-400 rounded-tl-3xl min-w-0 p-4 ${
                     isSidebarOpen
                         ? "xl:w-[76%] xl:ml-[25%]"
                         : "xl:w-full xl:ml-4"

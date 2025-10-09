@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactReplyMail;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
@@ -68,6 +70,40 @@ class ContactController extends Controller
         $contact->save();
 
         return response()->json(['message' => 'Contact marked successfully']);
+    }
+
+    public function replyToContact(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'message' => ['required', 'string'],
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->messages()
+            ], 422);
+        }
+    
+        // find the contact
+        $contact = Contact::find($id);
+    
+        if (!$contact) {
+            return response()->json([
+                'message' => 'Contact not found.'
+            ], 404);
+        }
+    
+        // send email
+        Mail::to($contact->email)->send(new ContactReplyMail($request->message));
+    
+        // mark as replied
+        $contact->replied = true;
+        $contact->save();
+    
+        // return when the reply is successfully sent
+        return response()->json([
+            'message' => 'Reply sent successfully.',
+            'contact' => $contact,
+        ]);
     }
 
     public function delete(Contact $contact){
