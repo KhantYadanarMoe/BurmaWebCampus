@@ -12,8 +12,77 @@ import {
     FaYoutube,
     FaTiktok,
 } from "react-icons/fa";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Contact() {
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+    });
+
+    const [errors, setErrors] = useState({});
+
+    const navigate = useNavigate();
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const submit = async (e) => {
+        e.preventDefault();
+
+        let url = "/api/contact";
+        let method = "post";
+
+        let formData = new FormData();
+
+        console.log("Form Data before submitting:", form);
+
+        formData.append("name", form.name);
+        formData.append("email", form.email);
+        formData.append("phone", form.phone);
+        formData.append("message", form.message);
+
+        console.log("Form data after appending:", formData);
+
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            const res = await axios[method](url, formData, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (res.data.message === "Contact Message sent successfully.") {
+                setForm({
+                    name: "",
+                    email: "",
+                    phone: "",
+                    message: "",
+                });
+                navigate("/");
+            }
+        } catch (error) {
+            console.error("Error sending contact message:", error);
+
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
+            }
+        }
+    };
+
     return (
         <div className="px-5 lg:px-8 pb-8 pt-5 md:pt-8 md:flex items-center gap-3 lg:gap-5">
             {/* Text section */}
@@ -71,21 +140,75 @@ export default function Contact() {
                 <div className="md:w-[95%] mx-auto">
                     <div className="my-3">
                         <Label>Name</Label>
-                        <Input className="border-gray-500" />
+                        <Input
+                            id="name"
+                            name="name"
+                            value={form.name}
+                            onChange={handleInputChange}
+                            type="text"
+                            className="border-gray-400 mt-1"
+                            placeholder="Enter your name"
+                        />
+                        {errors.name && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.name[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="my-3">
                         <Label>Email</Label>
-                        <Input className="border-gray-500" />
+                        <Input
+                            id="email"
+                            name="email"
+                            value={form.email}
+                            onChange={handleInputChange}
+                            type="text"
+                            className="border-gray-400 mt-1"
+                            placeholder="Enter your email"
+                        />
+                        {errors.email && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.email[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="my-3">
                         <Label>Phone</Label>
-                        <Input className="border-gray-500" />
+                        <Input
+                            id="phone"
+                            name="phone"
+                            value={form.phone}
+                            onChange={handleInputChange}
+                            type="text"
+                            className="border-gray-400 mt-1"
+                            placeholder="Enter your phone"
+                        />
+                        {errors.phone && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.phone[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="my-3">
                         <Label>Message</Label>
-                        <Textarea className="border-gray-500"></Textarea>
+                        <Textarea
+                            id="message"
+                            name="message"
+                            value={form.message}
+                            onChange={handleInputChange}
+                            type="text"
+                            className="border-gray-400 mt-1"
+                            placeholder="Write something..."
+                        ></Textarea>
+                        {errors.message && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {errors.message[0]}
+                            </p>
+                        )}
                     </div>
-                    <Button className="w-full my-4">Send</Button>
+                    <Button onClick={submit} className="w-full my-4">
+                        Send
+                    </Button>
                 </div>
             </form>
         </div>

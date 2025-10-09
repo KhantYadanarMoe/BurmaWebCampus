@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Contact;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class ContactController extends Controller
+{
+    public function store(){
+        // validate all the data from frontend
+        $validator = Validator::make(request()->all(), [
+            "name" => ["required"],
+            "email" => ["required"],
+            "phone" => ["required"],
+            "message" => ["string", "max:1000"],
+        ]);
+
+        // condition for failed validation
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->messages()
+            ], 422);
+        }
+
+        // store the rest of the data
+        $contacts = Contact::create([
+            'name' => request('name'),
+            'email' => request('email'),
+            'phone' => request('phone'),
+            'message' => request('message'),
+        ]);
+
+        // return when the data is successfully created.
+        return response()->json([
+            'message' => 'Contact Message sent successfully.',
+            'contacts' => $contacts,
+        ]);
+    }
+}

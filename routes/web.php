@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
+use App\Models\Contact;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -50,5 +52,6 @@ Route::post("/api/review", [ReviewController::class, 'store']);
 Route::post('/api/review/published/{id}', [ReviewController::class, 'publish']);
 Route::post('/api/review/marked/{id}', [ReviewController::class, 'mark']);
 
+Route::post("/api/contact", [ContactController::class, 'store']);
 
 require __DIR__.'/auth.php';
