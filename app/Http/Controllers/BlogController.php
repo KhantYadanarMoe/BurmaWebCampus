@@ -204,5 +204,4 @@ class BlogController extends Controller
             'message' => 'Blog deleted successful!'
         ]);
     }
-
 }

@@ -15,6 +15,17 @@ import { Button } from "../ui/button";
 import { useEffect } from "react";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 export default function ContactMessage() {
     const [open, setOpen] = useState(false);
@@ -85,6 +96,41 @@ export default function ContactMessage() {
             console.error("Failed to mark contact:", error);
         }
     };
+
+    const deleteContact = async (id) => {
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            await axios.delete("/api/contact/" + id, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            setContacts((prev) => {
+                const updatedContacts = prev.filter((c) => c.id !== id);
+
+                if (updatedContacts.length > 0) {
+                    if (contact?.id === id) {
+                        navigate(`/admin/contacts/${updatedContacts[0].id}`, {
+                            replace: true,
+                        });
+                    }
+                } else {
+                    setContact({});
+                    navigate(`/admin/contacts`, { replace: true });
+                }
+
+                return updatedContacts;
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
         <div className="flex gap-2 pt-2 lg:pt-4">
             <div className="lg:w-1/3 relative border-r border-r-gray-300">
@@ -196,7 +242,31 @@ export default function ContactMessage() {
                         <ChevronLeft size={18} /> 1 of 259{" "}
                         <ChevronRight size={18} />
                     </div>
-                    <Trash size={18} />
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <button className="">
+                                <Trash size={18} />
+                            </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Are you sure you want to delete this menu?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={() => deleteContact(contact.id)}
+                                >
+                                    Delete
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
                 <hr className="border-t-gray-300" />
                 <div className="mt-5">
