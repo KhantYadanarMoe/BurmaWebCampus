@@ -12,10 +12,31 @@ import {
 } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import { useEffect } from "react";
+import axios from "axios";
+import { formatDistanceToNow } from "date-fns";
 
 export default function ContactMessage() {
     const [open, setOpen] = useState(false);
     const [showReply, setShowReply] = useState(false);
+
+    let [contacts, setContacts] = useState([]);
+
+    let getContacts = async () => {
+        try {
+            let res = await axios.get("/api/contact");
+            let data = res.data;
+            setContacts(data.contacts);
+        } catch (error) {
+            console.error("Failed to fetch contacts:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getContacts();
+    }, []);
     return (
         <div className="flex gap-2 pt-2 lg:pt-4">
             <div className="lg:w-1/3 relative border-r border-r-gray-300">
@@ -47,508 +68,40 @@ export default function ContactMessage() {
                         </button>
                     </div>
                     <div className="py-3 lg:py-0 lg:mt-3 h-[calc(100vh-8rem)] xl:h-[calc(100vh-8rem)]  hover:overflow-y-auto custom-scrollbar overflow-hidden duration-300">
-                        <div>
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
+                        {contacts.map((contact) => (
+                            <div>
+                                <hr className="border-t-gray-300" />
+                                <Link
+                                    to=""
+                                    className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
+                                >
+                                    <img
+                                        src={Pf}
+                                        alt="User profile"
+                                        className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
+                                    />
 
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-medium">
+                                                {contact.name}
+                                            </span>
+                                            <span className="text-sm text-gray-700">
+                                                {formatDistanceToNow(
+                                                    new Date(
+                                                        contact.created_at
+                                                    ),
+                                                    { addSuffix: true }
+                                                )}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-gray-800 mt-1 line-clamp-2">
+                                            {contact.message}
+                                        </p>
                                     </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <hr className="border-t-gray-300" />
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <hr className="border-t-gray-300" />
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <hr className="border-t-gray-300" />
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <hr className="border-t-gray-300" />
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <hr className="border-t-gray-300" />
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <hr className="border-t-gray-300" />
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
-                        <div>
-                            <hr className="border-t-gray-300" />
-                            <Link
-                                to=""
-                                className="flex gap-2 px-3 rounded-lg bg-white hover:bg-gray-50 duration-300 py-3 cursor-pointer"
-                            >
-                                <img
-                                    src={Pf}
-                                    alt="User profile"
-                                    className="w-11 h-11 object-cover rounded-full p-0.5 border border-gray-600"
-                                />
-
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium">
-                                            Khant Yadanar Moe
-                                        </span>
-                                        <span className="text-sm text-gray-700">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1 line-clamp-2">
-                                        Hello. My name is Khant Yadanar Moe. The
-                                        reason why I'm contacting BWC is to give
-                                        an advice for BWC teaching techniques.
-                                        Before mentioning my advice, I want to
-                                        say all of the lectures on BWC website
-                                        are really helpful, clear, and
-                                        beginner-friendly way. The UI is also
-                                        clear and impressive.
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
+                                </Link>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

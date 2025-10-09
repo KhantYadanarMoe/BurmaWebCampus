@@ -38,4 +38,13 @@ class ContactController extends Controller
             'contacts' => $contacts,
         ]);
     }
+
+    public function index(){
+        $contacts = Contact::latest()->get();
+
+        // send data to frontend
+        return response()->json([
+            'contacts' => $contacts
+        ]);
+    }
 }
