@@ -57,17 +57,34 @@ export default function ContactMessage() {
 
     useEffect(() => {
         if (contacts.length > 0) {
-            // If there's no selected ID in the URL, go to the latest contact
             if (!id) {
                 navigate(`/admin/contacts/${contacts[0].id}`, {
                     replace: true,
                 });
             } else {
-                // If we do have an ID, fetch its details
                 getDetails(id);
             }
         }
     }, [contacts, id]);
+
+    const markContact = async (id, currentMarked) => {
+        try {
+            let newMarked = currentMarked ? 0 : 1;
+
+            let res = await axios.post("/api/contact/marked/" + id, {
+                marked: newMarked,
+            });
+            setContacts((prevContacts) =>
+                prevContacts.map((contact) =>
+                    contact.id == id
+                        ? { ...contact, marked: newMarked }
+                        : contact
+                )
+            );
+        } catch (error) {
+            console.error("Failed to mark contact:", error);
+        }
+    };
     return (
         <div className="flex gap-2 pt-2 lg:pt-4">
             <div className="lg:w-1/3 relative border-r border-r-gray-300">
@@ -123,9 +140,20 @@ export default function ContactMessage() {
 
                                     <div className="flex flex-col">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm font-medium">
-                                                {contact.name}
-                                            </span>
+                                            <div className="flex gap-1 items-center">
+                                                <span className="text-sm font-medium">
+                                                    {contact.name}
+                                                </span>
+                                                <div>
+                                                    {Number(contact.marked) ===
+                                                    1 ? (
+                                                        <Flag
+                                                            size={16}
+                                                            className="text-yellow-400 fill-yellow-400"
+                                                        />
+                                                    ) : null}
+                                                </div>
+                                            </div>
                                             <span className="text-sm text-gray-700">
                                                 {formatDistanceToNow(
                                                     new Date(
@@ -148,7 +176,22 @@ export default function ContactMessage() {
 
             <div className="lg:w-2/3 px-3 pb-4">
                 <div className="flex items-center justify-between text-gray-700 px-3 py-3 pl-6 lg:pl-0">
-                    <Flag size={18} />
+                    <button
+                        onClick={() =>
+                            markContact(contact.id, Number(contact.marked))
+                        }
+                        className={
+                            Number(contact.marked) === 1
+                                ? "text-accentRed cursor-pointer"
+                                : "text-accentGreen cursor-pointer"
+                        }
+                    >
+                        {Number(contact.marked) === 1 ? (
+                            <Flag className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                        ) : (
+                            <Flag className="w-5 h-5 text-gray-500" />
+                        )}
+                    </button>
                     <div className="flex gap-1 items-center">
                         <ChevronLeft size={18} /> 1 of 259{" "}
                         <ChevronRight size={18} />

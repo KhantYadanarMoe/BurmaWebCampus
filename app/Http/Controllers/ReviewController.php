@@ -73,7 +73,6 @@ class ReviewController extends Controller
         ]);
     }
 
-
     public function mark(Request $request, $id){
         $review = Review::find($id);
 

@@ -55,5 +55,6 @@ Route::post('/api/review/marked/{id}', [ReviewController::class, 'mark']);
 Route::get('/api/contact', [ContactController::class, 'index']);
 Route::post("/api/contact", [ContactController::class, 'store']);
 Route::get('/api/contact/{id}', [ContactController::class, 'show']);
+Route::post('/api/contact/marked/{id}', [ContactController::class, 'mark']);
 
 require __DIR__.'/auth.php';
