@@ -52,18 +52,18 @@ export default function Subscribers() {
                 <div className="min-w-[920px]">
                     <ul className="flex items-center px-3 py-4 border-b border-b-gray-700 my-3">
                         <li className="basis-[5%]">ID</li>
-                        <li className="basis-[40%]">Email</li>
-                        <li className="basis-[10%] pl-2">User ID</li>
+                        <li className="basis-[35%]">Email</li>
+                        <li className="basis-[15%] pl-2">User ID</li>
                         <li className="basis-[25%]">Subscribed At</li>
                         <li className="basis-[15%]">Status</li>
                         <li className="basis-[5%]"></li>
                     </ul>
                     <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                         <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
+                        <li className="basis-[35%]">
                             khantyadanarmoe@gmail.com
                         </li>
-                        <li className="basis-[10%] pl-2">46</li>
+                        <li className="basis-[15%] pl-2">46</li>
                         <li className="basis-[25%]">24th Sep 2025</li>
                         <li className="basis-[15%]">
                             <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
@@ -92,10 +92,10 @@ export default function Subscribers() {
                     </ul>
                     <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                         <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
+                        <li className="basis-[35%]">
                             khantyadanarmoe@gmail.com
                         </li>
-                        <li className="basis-[10%] pl-2">46</li>
+                        <li className="basis-[15%] pl-2">46</li>
                         <li className="basis-[25%]">24th Sep 2025</li>
                         <li className="basis-[15%]">
                             <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
@@ -124,10 +124,10 @@ export default function Subscribers() {
                     </ul>
                     <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                         <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
+                        <li className="basis-[35%]">
                             khantyadanarmoe@gmail.com
                         </li>
-                        <li className="basis-[10%] pl-2">46</li>
+                        <li className="basis-[15%] pl-2">46</li>
                         <li className="basis-[25%]">24th Sep 2025</li>
                         <li className="basis-[15%]">
                             <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
@@ -156,10 +156,10 @@ export default function Subscribers() {
                     </ul>
                     <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                         <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
+                        <li className="basis-[35%]">
                             khantyadanarmoe@gmail.com
                         </li>
-                        <li className="basis-[10%] pl-2">46</li>
+                        <li className="basis-[15%] pl-2">46</li>
                         <li className="basis-[25%]">24th Sep 2025</li>
                         <li className="basis-[15%]">
                             <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
@@ -188,10 +188,10 @@ export default function Subscribers() {
                     </ul>
                     <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                         <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
+                        <li className="basis-[35%]">
                             khantyadanarmoe@gmail.com
                         </li>
-                        <li className="basis-[10%] pl-2">46</li>
+                        <li className="basis-[15%] pl-2">46</li>
                         <li className="basis-[25%]">24th Sep 2025</li>
                         <li className="basis-[15%]">
                             <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
@@ -220,10 +220,10 @@ export default function Subscribers() {
                     </ul>
                     <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                         <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
+                        <li className="basis-[35%]">
                             khantyadanarmoe@gmail.com
                         </li>
-                        <li className="basis-[10%] pl-2">46</li>
+                        <li className="basis-[15%] pl-2">46</li>
                         <li className="basis-[25%]">24th Sep 2025</li>
                         <li className="basis-[15%]">
                             <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
@@ -252,10 +252,10 @@ export default function Subscribers() {
                     </ul>
                     <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                         <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
+                        <li className="basis-[35%]">
                             khantyadanarmoe@gmail.com
                         </li>
-                        <li className="basis-[10%] pl-2">46</li>
+                        <li className="basis-[15%] pl-2">46</li>
                         <li className="basis-[25%]">24th Sep 2025</li>
                         <li className="basis-[15%]">
                             <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">

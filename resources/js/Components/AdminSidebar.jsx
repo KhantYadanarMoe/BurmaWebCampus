@@ -130,7 +130,7 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                                 <Users size={20} /> Users
                             </div>
                         </Link>
-                        <Link to="/admin/users">
+                        <Link to="/admin/subscribers">
                             <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
                                 <Inbox size={20} /> Subscribers
                             </div>
