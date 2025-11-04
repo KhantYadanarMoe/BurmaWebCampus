@@ -49,6 +49,7 @@ Route::put('/api/blog/{blog}', [BlogController::class, 'update']);
 Route::post('/api/blog/{id}/view', [BlogController::class, 'incrementView']);
 Route::delete('/api/blog/{blog}', [BlogController::class, 'delete']);
 
+Route::get('/api/subscribers', [SubscribeController::class, 'index']);
 Route::post("/api/subscribe", [SubscribeController::class, 'store']);
 
 Route::get('/api/reviews', [ReviewController::class, 'index']);

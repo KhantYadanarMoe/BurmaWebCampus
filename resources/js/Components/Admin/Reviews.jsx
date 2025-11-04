@@ -335,7 +335,7 @@ export default function Reviews() {
             </div>
             <div className="mt-8 flex">
                 <div className="ml-auto">
-                    <Pagination className="text-accentRed">
+                    <Pagination>
                         <PaginationContent>
                             <PaginationItem>
                                 <PaginationPrevious

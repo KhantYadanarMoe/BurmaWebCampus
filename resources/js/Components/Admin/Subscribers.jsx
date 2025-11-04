@@ -22,10 +22,47 @@ import {
 } from "../ui/pagination";
 import { Button } from "../ui/button";
 import { Ellipsis, GraduationCap, Plus, Users } from "lucide-react";
-import BlogImg from "../../../assets/Blogs.jpg";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
 
 export default function Subscribers() {
+    let [subscribers, setSubscribers] = useState([]);
+
+    let getSubscribers = async () => {
+        try {
+            let res = await axios.get("/api/subscribers");
+            let data = res.data;
+            setSubscribers(data.subscribes);
+        } catch (error) {
+            console.error("Failed to fetch subscribers:", error);
+        }
+    };
+
+    useEffect(() => {
+        getSubscribers();
+    }, []);
+
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const rowsPerPage = 10;
+
+    const indexOfLastSubscriber = currentPage * rowsPerPage;
+    const indexOfFirstSubscriber = indexOfLastSubscriber - rowsPerPage;
+    const currentSubscribers = subscribers?.slice(
+        indexOfFirstSubscriber,
+        indexOfLastSubscriber
+    );
+
+    const totalPages = Math.ceil(subscribers?.length / rowsPerPage);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
         <div>
             <div className="flex justify-between my-4">
@@ -58,250 +95,102 @@ export default function Subscribers() {
                         <li className="basis-[15%]">Status</li>
                         <li className="basis-[5%]"></li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[35%]">
-                            khantyadanarmoe@gmail.com
-                        </li>
-                        <li className="basis-[15%] pl-2">46</li>
-                        <li className="basis-[25%]">24th Sep 2025</li>
-                        <li className="basis-[15%]">
-                            <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
-                                Subscribed
-                            </span>
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Profile
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[35%]">
-                            khantyadanarmoe@gmail.com
-                        </li>
-                        <li className="basis-[15%] pl-2">46</li>
-                        <li className="basis-[25%]">24th Sep 2025</li>
-                        <li className="basis-[15%]">
-                            <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
-                                Subscribed
-                            </span>
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Profile
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[35%]">
-                            khantyadanarmoe@gmail.com
-                        </li>
-                        <li className="basis-[15%] pl-2">46</li>
-                        <li className="basis-[25%]">24th Sep 2025</li>
-                        <li className="basis-[15%]">
-                            <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
-                                Subscribed
-                            </span>
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Profile
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[35%]">
-                            khantyadanarmoe@gmail.com
-                        </li>
-                        <li className="basis-[15%] pl-2">46</li>
-                        <li className="basis-[25%]">24th Sep 2025</li>
-                        <li className="basis-[15%]">
-                            <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
-                                Subscribed
-                            </span>
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Profile
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[35%]">
-                            khantyadanarmoe@gmail.com
-                        </li>
-                        <li className="basis-[15%] pl-2">46</li>
-                        <li className="basis-[25%]">24th Sep 2025</li>
-                        <li className="basis-[15%]">
-                            <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
-                                Subscribed
-                            </span>
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Profile
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[35%]">
-                            khantyadanarmoe@gmail.com
-                        </li>
-                        <li className="basis-[15%] pl-2">46</li>
-                        <li className="basis-[25%]">24th Sep 2025</li>
-                        <li className="basis-[15%]">
-                            <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
-                                Subscribed
-                            </span>
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Profile
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[35%]">
-                            khantyadanarmoe@gmail.com
-                        </li>
-                        <li className="basis-[15%] pl-2">46</li>
-                        <li className="basis-[25%]">24th Sep 2025</li>
-                        <li className="basis-[15%]">
-                            <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
-                                Subscribed
-                            </span>
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Profile
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
+                    {currentSubscribers?.map((subscriber) => (
+                        <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                            <li className="basis-[5%]">{subscriber.id}</li>
+                            <li className="basis-[35%]">{subscriber.email}</li>
+                            <li className="basis-[15%] pl-2">46</li>
+                            <li className="basis-[25%]">
+                                {new Date(
+                                    subscriber.created_at
+                                ).toLocaleDateString("en-GB", {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                })}
+                            </li>
+                            <li className="basis-[15%]">
+                                <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
+                                    Subscribed
+                                </span>
+                            </li>
+                            <li className="basis-[5%]">
+                                <DropdownMenu modal={false}>
+                                    <DropdownMenuTrigger asChild>
+                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                            <Ellipsis size={20} />
+                                        </button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="end"
+                                        className="w-40"
+                                    >
+                                        <Link to="">
+                                            <DropdownMenuItem className="text-accentGreen">
+                                                View Profile
+                                            </DropdownMenuItem>
+                                        </Link>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </li>
+                        </ul>
+                    ))}
                 </div>
             </div>
             <div className="mt-8 flex">
                 <div className="ml-auto">
-                    <Pagination className="text-accentRed">
+                    <Pagination>
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious />
+                                <PaginationPrevious
+                                    onClick={() =>
+                                        handlePageChange(currentPage - 1)
+                                    }
+                                    disabled={currentPage === 1}
+                                    className={`cursor-pointer ${
+                                        currentPage === 1
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                />
                             </PaginationItem>
+                            {Array.from(
+                                {
+                                    length: Math.ceil(
+                                        subscribers.length / rowsPerPage
+                                    ),
+                                },
+                                (_, index) => (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink
+                                            onClick={() =>
+                                                handlePageChange(index + 1)
+                                            }
+                                            isActive={currentPage === index + 1}
+                                            className="cursor-pointer"
+                                        >
+                                            {index + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                )
+                            )}
                             <PaginationItem>
-                                <PaginationLink>1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>2</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext />
+                                <PaginationNext
+                                    onClick={() =>
+                                        handlePageChange(currentPage + 1)
+                                    }
+                                    className={`cursor-pointer ${
+                                        currentPage === totalPages
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    disabled={
+                                        currentPage ===
+                                        Math.ceil(
+                                            subscribers.length / rowsPerPage
+                                        )
+                                    }
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>

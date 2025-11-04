@@ -32,4 +32,12 @@ class SubscribeController extends Controller
             'subscribes' => $subscribes,
         ]);
     }
+
+    public function index(){
+        $subscribes = Subscribe::latest()->get();
+
+        return response()->json([
+            'subscribes' => $subscribes
+        ]);
+    }
 }
