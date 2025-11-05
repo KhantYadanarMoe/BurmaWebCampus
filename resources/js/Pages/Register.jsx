@@ -95,6 +95,11 @@ export default function Register() {
                 </div>
                 <div className="my-8 lg:my-0 flex-1 flex flex-col justify-center">
                     <form onSubmit={submit}>
+                        {errors.general && (
+                            <p className="text-red-600 text-sm mb-2">
+                                {errors.general}
+                            </p>
+                        )}
                         <div className="my-2">
                             <Label>Name</Label>
                             <Input
