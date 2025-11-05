@@ -5,8 +5,84 @@ import React from "react";
 import Google from "../../assets/Google.png";
 import Bg from "../../assets/Auth-Bg.jpg";
 import Logo from "../../assets/Logo.png";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Register() {
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        password: "",
+        passwordConfirmation: "",
+    });
+
+    const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
+    const { setUser } = useAuth();
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+        if (!form.name.trim()) newErrors.name = ["Name is required."];
+        if (!form.email.trim()) newErrors.email = ["Email is required."];
+        if (!form.password.trim())
+            newErrors.password = ["Password is required."];
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const submit = async (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+        setErrors({});
+
+        try {
+            await axios.get("/sanctum/csrf-cookie", {
+                withCredentials: true,
+            });
+
+            // 2. Register user
+            await axios.post(
+                "/api/register",
+                {
+                    name: form.name,
+                    email: form.email,
+                    password: form.password,
+                    password_confirmation: form.passwordConfirmation,
+                },
+                { withCredentials: true }
+            );
+
+            setForm({
+                name: "",
+                email: "",
+                password: "",
+                passwordConfirmation: "",
+            });
+
+            const userRes = await axios.get("/api/user", {
+                withCredentials: true,
+            });
+            setUser(userRes.data);
+
+            console.log("Registered user:", userRes.data);
+
+            navigate("/user"); // success redirect
+        } catch (error) {
+            if (error.response?.status === 422) {
+                setErrors(error.response.data.errors);
+            } else {
+                setErrors({ general: "Registration failed. Try again." });
+            }
+        }
+    };
     return (
         <div className="flex flex-col-reverse lg:flex-row gap-3 min-h-screen md:min-h-full">
             <div className="w-full lg:w-1/2 flex flex-col justify-between p-4 md:p-6 lg:p-7 flex-1">
@@ -18,41 +94,79 @@ export default function Register() {
                     </p>
                 </div>
                 <div className="my-8 lg:my-0 flex-1 flex flex-col justify-center">
-                    <form action="">
+                    <form onSubmit={submit}>
                         <div className="my-2">
                             <Label>Name</Label>
                             <Input
-                                type="name"
-                                className="border-gray-400 mt-1"
+                                id="name"
+                                name="name"
+                                type="text"
                                 placeholder="Enter your name"
+                                value={form.name}
+                                onChange={handleInputChange}
+                                className="border-gray-400 mt-1"
                             />
+                            {errors.name && (
+                                <p className="text-sm text-red-600 mt-1">
+                                    {errors.name[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="my-2">
                             <Label>Email</Label>
                             <Input
+                                id="email"
+                                name="email"
                                 type="email"
-                                className="border-gray-400 mt-1"
                                 placeholder="Enter your email"
+                                value={form.email}
+                                onChange={handleInputChange}
+                                className="border-gray-400 mt-1"
                             />
+                            {errors.email && (
+                                <p className="text-sm text-red-600 mt-1">
+                                    {errors.email[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="my-2">
                             <Label>Password</Label>
                             <Input
+                                id="password"
+                                name="password"
                                 type="password"
-                                className="border-gray-400 mt-1"
                                 placeholder="Enter your password"
+                                value={form.password}
+                                onChange={handleInputChange}
+                                className="border-gray-400 mt-1"
                             />
+                            {errors.password && (
+                                <p className="text-sm text-red-600 mt-1">
+                                    {errors.password[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="my-2">
                             <Label>Confirm Password</Label>
                             <Input
+                                id="passwordConfirmation"
+                                name="passwordConfirmation"
                                 type="password"
-                                className="border-gray-400 mt-1"
                                 placeholder="Confirm your password"
+                                value={form.passwordConfirmation}
+                                onChange={handleInputChange}
+                                className="border-gray-400 mt-1"
                             />
+                            {errors.password && (
+                                <p className="text-sm text-red-600 mt-1">
+                                    {errors.password[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="mt-8">
-                            <Button className="w-full">Register</Button>
+                            <Button type="submit" className="w-full">
+                                Register
+                            </Button>
                         </div>
                     </form>
                     <div className="flex items-center my-4 lg:my-2">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\SubscribeController;
 use App\Models\Contact;
 use App\Models\Subscribe;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,6 +36,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::post('/api/register', [AuthController::class, 'register']);
+Route::middleware('auth:sanctum')->get('/api/user', fn(Request $req) => $req->user());
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);
