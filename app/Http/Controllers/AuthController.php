@@ -49,6 +49,11 @@ class AuthController extends Controller
         return back()->withErrors(['error' => 'Invalid credentials'])->withInput();
     }
 
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('login'); 
+    }
+
     public function index(Request $request){
         $users = User::latest()->get();
 

@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import Logo from "../../assets/Logo.png";
 import { ChevronDown, LogIn, Menu, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import axios from "axios";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,20 @@ export default function Navbar() {
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
+    };
+
+    const navigate = useNavigate();
+
+    const logout = async () => {
+        try {
+            await axios.post("/api/logout", null, {
+                withCredentials: true,
+            });
+            setUser(null);
+            navigate("/login");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
     };
     return (
         <div className="fixed top-0 inset-x-0 z-50">
@@ -99,12 +114,12 @@ export default function Navbar() {
                                     {/* Dropdown Menu */}
                                     {dropdownOpen && (
                                         <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg z-50">
-                                            {/* <button
+                                            <button
                                                 onClick={logout}
                                                 className="w-full text-left px-4 py-2 hover:bg-gray-100"
                                             >
                                                 Logout
-                                            </button> */}
+                                            </button>
                                         </div>
                                     )}
                                 </div>
