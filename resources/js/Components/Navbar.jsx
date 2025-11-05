@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import Logo from "../../assets/Logo.png";
-import { LogIn, Menu, Search, X } from "lucide-react";
+import { ChevronDown, LogIn, Menu, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Input } from "./ui/input";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [searchBox, setSearchBox] = useState(false);
+    const { user, setUser } = useAuth();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -78,14 +81,43 @@ export default function Navbar() {
                                 </div>
                             )}
 
-                            <Link to="/">
-                                <Button
-                                    variant="outline"
-                                    className="text-black border-gray-700"
-                                >
-                                    Login
-                                </Button>
-                            </Link>
+                            {user ? (
+                                <div className="relative">
+                                    <div
+                                        onClick={() =>
+                                            setDropdownOpen(!dropdownOpen)
+                                        }
+                                        className="text-gray-700 hover:text-gray-900 bg-white hover:bg-gray-100 duration-300 border-l-2 border-accentRed px-2 py-1 flex items-center space-x-2 cursor-pointer"
+                                    >
+                                        <span>{user.name}</span>
+                                        <ChevronDown
+                                            size={16}
+                                            className="text-gray-700"
+                                        />
+                                    </div>
+
+                                    {/* Dropdown Menu */}
+                                    {dropdownOpen && (
+                                        <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg z-50">
+                                            {/* <button
+                                                onClick={logout}
+                                                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                                            >
+                                                Logout
+                                            </button> */}
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <Link to="/">
+                                    <Button
+                                        variant="outline"
+                                        className="text-black border-gray-700"
+                                    >
+                                        Login
+                                    </Button>
+                                </Link>
+                            )}
                         </div>
 
                         <div className="flex space-x-2 md:hidden text-gray-700 focus:outline-none">
