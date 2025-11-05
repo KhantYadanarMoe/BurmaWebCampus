@@ -31,4 +31,14 @@ class AuthController extends Controller
 
         return redirect('/'); 
     }
+
+    public function index(Request $request){
+        $users = User::latest()->get();
+
+        // Send data to frontend
+        return response()->json([
+            'message' => 'Users retrieved successfully.',
+            'users' => $users
+        ]);
+    }
 }

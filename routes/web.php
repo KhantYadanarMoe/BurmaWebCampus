@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
 Route::post('/api/register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->get('/api/user', fn(Request $req) => $req->user());
 
+Route::get('/api/users', [AuthController::class, 'index']);
+
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);
  Route::put('/api/blog/category/{id}/visibility', [BlogCategoryController::class, 'updateVisibility']);
