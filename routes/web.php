@@ -27,6 +27,9 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware('guest')->get('auth/google', [AuthController::class, 'redirectToGoogle']);
+Route::middleware('guest')->get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
 Route::get('/{any}', function () {
     return view('app');
 })->where('any', '^(?!api).*');

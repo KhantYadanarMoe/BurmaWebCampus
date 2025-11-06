@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -52,6 +53,30 @@ class AuthController extends Controller
     public function logout(){
         Auth::logout();
         return redirect()->route('login'); 
+    }
+
+    public function redirectToGoogle(){
+        return Socialite::driver('google')->redirect();
+    }
+
+
+    public function handleGoogleCallback(){
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            $user = User::updateOrCreate([
+                'email' => $googleUser->getEmail(),
+            ], [
+                'name' => $googleUser->getName(),
+                'google_id' => $googleUser->getId(),
+                'avatar' => $googleUser->getAvatar(),
+            ]);
+
+            Auth::login($user);
+            return redirect('/');  
+        } catch (\Exception $e) {
+            dd($e);  
+        }
     }
 
     public function index(Request $request){

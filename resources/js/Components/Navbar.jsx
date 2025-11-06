@@ -102,7 +102,7 @@ export default function Navbar() {
                                         onClick={() =>
                                             setDropdownOpen(!dropdownOpen)
                                         }
-                                        className="text-gray-700 hover:text-gray-900 bg-white hover:bg-gray-100 duration-300 border-l-2 border-accentRed px-2 py-1 flex items-center space-x-2 cursor-pointer"
+                                        className=" bg-white hover:bg-gray-100 duration-300 border-l-2 border-accentRed px-2 py-1 flex items-center space-x-2 cursor-pointer"
                                     >
                                         <span>{user.name}</span>
                                         <ChevronDown

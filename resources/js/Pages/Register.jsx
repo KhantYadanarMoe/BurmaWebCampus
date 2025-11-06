@@ -181,13 +181,19 @@ export default function Register() {
                         </span>
                         <div className="flex-grow border-t border-gray-500"></div>
                     </div>
-                    <Button
-                        variant="outline"
-                        className="flex gap-2 items-center w-full border-gray-400 "
-                    >
-                        <img src={Google} alt="google" className="w-5" />
-                        SIGNUP with Google
-                    </Button>
+                    <a href="/auth/google">
+                        <Button
+                            type="button"
+                            className="mt-3 bg-white text-black w-full border border-gray-700 hover:bg-gray-50"
+                        >
+                            <img
+                                src={Google}
+                                alt="Google Logo"
+                                className="w-5 h-5 object-cover"
+                            />
+                            Signup with Google
+                        </Button>
+                    </a>
                 </div>
                 <div className="flex gap-1 items-center justify-center text-sm">
                     <span className="text-gray-700">
