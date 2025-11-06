@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -106,6 +107,47 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Users retrieved successfully.',
             'users' => $users
+        ]);
+    }
+
+    public function updateUser(User $user){
+        $validator = Validator::make(request()->all(), [
+            "firstName" => ["required"],
+            "lastName" => ["required"],
+            "email" => ["required"],
+            "phone" => ["nullable", "numeric"],
+            "DoB" => ["nullable"],
+            "bio" => ["nullable"],
+        ]);
+
+        // condition for failed validation
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->messages()
+            ], 422);
+        }
+
+        $name = trim(request('firstName') . ' ' . request('lastName'));
+
+    // Log for debugging
+    Log::info('Updating user with data:', [
+        'name' => $name,
+        'email' => request('email'),
+        'phone' => request('phone'),
+        'DoB' => request('DoB'),
+        'bio' => request('bio'),
+    ]);
+
+        $user->update([
+            'name' => $name,
+            'email' => request('email'),
+            'phone' => request('phone'),
+            'DoB' => request('DoB'),
+            'bio' => request('bio'),
+        ]);
+        return response()->json([
+            'message' => 'User data updated successfully.',
+            'user' => $user
         ]);
     }
 }

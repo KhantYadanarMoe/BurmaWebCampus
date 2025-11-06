@@ -43,6 +43,7 @@ Route::post('/api/login', [AuthController::class, 'login']);
 Route::post('/api/logout', [AuthController::class, 'logout']);
 
 Route::get('/api/users', [AuthController::class, 'index']);
+Route::middleware('auth:sanctum')->put('/api/user/{user}', [AuthController::class, 'updateUser']);
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);

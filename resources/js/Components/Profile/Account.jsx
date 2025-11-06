@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -7,9 +7,118 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import Pf from "../../../assets/Profile.jpg";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Account() {
     const { user, setUser } = useAuth();
+    // prepare state to store form data
+    const [form, setForm] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        DoB: "",
+        bio: "",
+    });
+    // store errors state
+    const [errors, setErrors] = useState({});
+
+    // prepare to move another route/page after sending data
+    const navigate = useNavigate();
+
+    // Handle HTML inputs
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    // Handle other custom Components' inputs
+    const handleCustomChange = (name, value) => {
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    useEffect(() => {
+        if (user) {
+            setForm({
+                firstName:
+                    user.name?.trim().split(" ").slice(0, -1).join(" ") ||
+                    "" ||
+                    "",
+                lastName: user.name?.trim().split(" ").slice(-1)[0] || "" || "",
+                email: user.email || "",
+                phone: user.phone || "",
+                DoB: user.DoB || "",
+                bio: user.bio || "",
+            });
+        }
+    }, [user]);
+
+    // form submit function
+    const submit = async (e) => {
+        e.preventDefault();
+
+        // url and method to use in sending data using axios
+        let url = "/api/user/" + user.id;
+        let method = "post";
+
+        // create new object to store form data to send
+        let formData = new FormData();
+
+        console.log("Form Data before submitting:", form);
+
+        // store state data in object
+        formData.append("firstName", form.firstName);
+        formData.append("lastName", form.lastName);
+        formData.append("email", form.email);
+        formData.append("phone", form.phone);
+        formData.append("DoB", form.DoB);
+        formData.append("bio", form.bio);
+
+        console.log("Form data after appending:", formData);
+
+        // if (image) {
+        //     formData.append("image", image);
+        // }
+
+        formData.append("_method", "PUT");
+
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            // send data
+            const res = await axios[method](url, formData, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            // success condition
+            if (res.data.message === "User data updated successfully.") {
+                const updatedUser = res.data.user;
+
+                setUser(updatedUser);
+                navigate("/user");
+            }
+        } catch (error) {
+            console.error("Error updating user:", error);
+
+            // failed condition
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
+            }
+        }
+    };
+
     return (
         <div className="px-5 md:px-6 lg:px-12">
             <div className="md:flex gap-3 py-6">
@@ -88,13 +197,11 @@ export default function Account() {
                             <div className="my-2 md:w-1/2">
                                 <Label>First Name</Label>
                                 <Input
-                                    value={
-                                        user?.name
-                                            ?.trim()
-                                            .split(" ")
-                                            .slice(0, -1)
-                                            .join(" ") || ""
-                                    }
+                                    id="firstName"
+                                    name="firstName"
+                                    type="text"
+                                    value={form.firstName}
+                                    onChange={handleInputChange}
                                     className="border-gray-400 mt-1"
                                     placeholder="Enter your first name"
                                 />
@@ -102,12 +209,11 @@ export default function Account() {
                             <div className="my-2 md:w-1/2">
                                 <Label>Last Name</Label>
                                 <Input
-                                    value={
-                                        user?.name
-                                            ?.trim()
-                                            .split(" ")
-                                            .slice(-1)[0] || ""
-                                    }
+                                    id="lastName"
+                                    name="lastName"
+                                    type="text"
+                                    value={form.lastName}
+                                    onChange={handleInputChange}
                                     className="border-gray-400 mt-1"
                                     placeholder="Enter your last name"
                                 />
@@ -119,7 +225,11 @@ export default function Account() {
                                 <Input
                                     className="border-gray-400 mt-1"
                                     placeholder="Enter your email"
-                                    value={user?.email}
+                                    id="email"
+                                    name="email"
+                                    type="text"
+                                    value={form.email}
+                                    onChange={handleInputChange}
                                 />
                             </div>
                             <div className="my-2 md:w-1/2">
@@ -127,7 +237,11 @@ export default function Account() {
                                 <Input
                                     className="border-gray-400 mt-1"
                                     placeholder="Enter your phone"
-                                    value={user?.phone}
+                                    id="phone"
+                                    name="phone"
+                                    type="text"
+                                    value={form.phone}
+                                    onChange={handleInputChange}
                                 />
                             </div>
                         </div>
@@ -135,7 +249,14 @@ export default function Account() {
                             <Label>Date of Birth (Optional)</Label>
                             <DatePicker
                                 className="border-gray-400"
-                                value={user?.DoB}
+                                id="DoB"
+                                name="DoB"
+                                type="text"
+                                selectedDate={form.DoB}
+                                onDateChange={(date) =>
+                                    handleCustomChange("DoB", date)
+                                }
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className="my-4">
@@ -143,11 +264,15 @@ export default function Account() {
                             <Textarea
                                 className="border-gray-400 mt-1"
                                 placeholder="Write here..."
-                                value={user?.bio}
+                                id="bio"
+                                name="bio"
+                                type="text"
+                                value={form.bio}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className="flex justify-end mt-3">
-                            <Button>Submit</Button>
+                            <Button onClick={submit}>Submit</Button>
                         </div>
                     </Card>
                     <Card className="mt-5 py-3 px-3 border-gray-400">
