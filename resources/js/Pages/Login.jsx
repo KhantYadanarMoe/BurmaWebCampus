@@ -6,7 +6,7 @@ import Google from "../../assets/Google.png";
 import Bg from "../../assets/Auth-Bg.jpg";
 import Logo from "../../assets/Logo.png";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import axios from "axios";
 
@@ -158,21 +158,27 @@ export default function Login() {
                         </span>
                         <div className="flex-grow border-t border-gray-500"></div>
                     </div>
-                    <Button
-                        variant="outline"
-                        className="flex gap-2 items-center w-full border-gray-400"
-                    >
-                        <img src={Google} alt="google" className="w-5" />
-                        LOGIN with Google
-                    </Button>
+                    <a href="/auth/google">
+                        <Button
+                            type="button"
+                            className=" bg-white text-black w-full border border-gray-700 hover:bg-gray-50"
+                        >
+                            <img
+                                src={Google}
+                                alt="Google Logo"
+                                className="w-5 h-5 object-cover"
+                            />
+                            Signin with Google
+                        </Button>
+                    </a>
                 </div>
                 <div className="flex gap-1 items-center justify-center text-sm">
                     <span className="text-gray-700">
                         Don't Have An Account?
                     </span>
-                    <a href="" className="text-black hover:underline">
-                        Sign up
-                    </a>
+                    <Link to="/register" className="text-black hover:underline">
+                        Signup
+                    </Link>
                 </div>
             </div>
 

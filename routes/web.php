@@ -23,9 +23,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('guest')->get('auth/google', [AuthController::class, 'redirectToGoogle']);
 Route::middleware('guest')->get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);

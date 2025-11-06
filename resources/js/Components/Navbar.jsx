@@ -102,7 +102,7 @@ export default function Navbar() {
                                         onClick={() =>
                                             setDropdownOpen(!dropdownOpen)
                                         }
-                                        className=" bg-white hover:bg-gray-100 duration-300 border-l-2 border-accentRed px-2 py-1 flex items-center space-x-2 cursor-pointer"
+                                        className="bg-white hover:bg-gray-100 duration-300 border-l-2 border-accentRed px-2 py-1 flex items-center space-x-2 cursor-pointer"
                                     >
                                         <span>{user.name}</span>
                                         <ChevronDown
@@ -124,7 +124,7 @@ export default function Navbar() {
                                     )}
                                 </div>
                             ) : (
-                                <Link to="/">
+                                <Link to="/login">
                                     <Button
                                         variant="outline"
                                         className="text-black border-gray-700"

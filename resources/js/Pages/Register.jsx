@@ -6,7 +6,7 @@ import Google from "../../assets/Google.png";
 import Bg from "../../assets/Auth-Bg.jpg";
 import Logo from "../../assets/Logo.png";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -184,7 +184,7 @@ export default function Register() {
                     <a href="/auth/google">
                         <Button
                             type="button"
-                            className="mt-3 bg-white text-black w-full border border-gray-700 hover:bg-gray-50"
+                            className="bg-white text-black w-full border border-gray-700 hover:bg-gray-50"
                         >
                             <img
                                 src={Google}
@@ -199,9 +199,9 @@ export default function Register() {
                     <span className="text-gray-700">
                         Already Have An Account?
                     </span>
-                    <a href="" className="text-black hover:underline">
-                        Log in
-                    </a>
+                    <Link to="/login" className="text-black hover:underline">
+                        Login
+                    </Link>
                 </div>
             </div>
 
