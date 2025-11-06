@@ -80,7 +80,27 @@ class AuthController extends Controller
     }
 
     public function index(Request $request){
-        $users = User::latest()->get();
+        $sort = $request->query('sort', 'newest'); // Default to 'newest' if no data is provided
+        $query = User::query();
+
+        // Apply sorting based on the requested sort option
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $users = $query->get();
 
         // Send data to frontend
         return response()->json([

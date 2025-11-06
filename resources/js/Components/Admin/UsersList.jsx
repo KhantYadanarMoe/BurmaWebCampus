@@ -21,7 +21,13 @@ import {
     PaginationPrevious,
 } from "../ui/pagination";
 import { Button } from "../ui/button";
-import { Ellipsis, GraduationCap, Plus, Users } from "lucide-react";
+import {
+    ChevronDown,
+    Ellipsis,
+    GraduationCap,
+    Plus,
+    Users,
+} from "lucide-react";
 import BlogImg from "../../../assets/Blogs.jpg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -35,6 +41,8 @@ export default function UsersList() {
     const [currentPage, setCurrentPage] = useState(1);
     // rows to show in a page
     const rowsPerPage = 10;
+    // state for filter
+    const [selectedFilter, setSelectedFilter] = useState("newest");
 
     // fetch data that send from backend
     let getUsers = async () => {
@@ -50,6 +58,26 @@ export default function UsersList() {
     // call data fetching function in useEffect to run when user enter the page
     useEffect(() => {
         getUsers();
+    }, []);
+
+    const handleFilterChange = (filterValue) => {
+        setSelectedFilter(filterValue);
+
+        axios
+            .get(`/api/users?sort=${filterValue}`)
+            .then((response) => {
+                const data = response.data;
+                if (data.users) {
+                    setUsers(data.users);
+                }
+            })
+            .catch((error) => {
+                console.error("Axios request failed:", error);
+            });
+    };
+
+    useEffect(() => {
+        handleFilterChange("newest"); // initial load
     }, []);
 
     const indexOfLastUser = currentPage * rowsPerPage;
@@ -83,21 +111,52 @@ export default function UsersList() {
                     </Link>
                 </div>
                 <div className="hidden md:block">
-                    <Select>
-                        <SelectTrigger className="w-[180px] border-gray-700">
-                            <SelectValue placeholder="Filter " />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="newest">
+                    <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger asChild>
+                            <button className="flex gap-1 items-center px-2 py-1 border border-gray-800 rounded-md">
+                                {
+                                    {
+                                        newest: "Filter By Newest",
+                                        oldest: "Filter By Oldest",
+                                        "a-z": "Filter By A-Z",
+                                        "z-a": "Filter By Z-A",
+                                    }[selectedFilter]
+                                }
+                                <ChevronDown size={16} />
+                            </button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent
+                            align="end"
+                            className="w-40"
+                            avoidCollisions={false}
+                        >
+                            <DropdownMenuItem
+                                onSelect={() => handleFilterChange("newest")}
+                                className="cursor-pointer"
+                            >
                                 Filter By Newest
-                            </SelectItem>
-                            <SelectItem value="oldest">
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onSelect={() => handleFilterChange("oldest")}
+                                className="cursor-pointer"
+                            >
                                 Filter By Oldest
-                            </SelectItem>
-                            <SelectItem value="a-z">Filter By A-Z</SelectItem>
-                            <SelectItem value="z-a">Filter By Z-A</SelectItem>
-                        </SelectContent>
-                    </Select>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onSelect={() => handleFilterChange("a-z")}
+                                className="cursor-pointer"
+                            >
+                                Filter By A-Z
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onSelect={() => handleFilterChange("z-a")}
+                                className="cursor-pointer"
+                            >
+                                Filter By Z-A
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
             <div className="overflow-x-auto w-full">
