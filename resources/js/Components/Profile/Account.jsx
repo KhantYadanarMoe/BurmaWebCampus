@@ -6,8 +6,10 @@ import DatePicker from "../DatePicker";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import Pf from "../../../assets/Profile.jpg";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Account() {
+    const { user, setUser } = useAuth();
     return (
         <div className="px-5 md:px-6 lg:px-12">
             <div className="md:flex gap-3 py-6">
@@ -22,7 +24,7 @@ export default function Account() {
                             />
                             <div>
                                 <h1 className="text-lg font-medium">
-                                    Khant Yadanar Moe
+                                    {user?.name}
                                 </h1>
                                 <p className="text-gray-500 text-sm">
                                     ID: STU2025-001
@@ -37,35 +39,41 @@ export default function Account() {
                                         First Name
                                     </h1>
                                     <p className="text-sm text-gray-700">
-                                        Khant Yadanar
+                                        {user?.name
+                                            ?.trim()
+                                            .split(" ")
+                                            .slice(0, -1)
+                                            .join(" ") || ""}
                                     </p>
                                 </div>
                                 <div className="w-1/2">
                                     <h1 className="text-sm font-medium">
                                         Last Name
                                     </h1>
-                                    <p className="text-sm text-gray-700">Moe</p>
+                                    <p className="text-sm text-gray-700">
+                                        {user?.name
+                                            ?.trim()
+                                            .split(" ")
+                                            .slice(-1)[0] || ""}
+                                    </p>
                                 </div>
                             </div>
                             <div className="my-2">
                                 <h1 className="text-sm font-medium">Email</h1>
                                 <p className="text-sm text-gray-700">
-                                    khantyadanarmoe@gmail.com
+                                    {user?.email}
                                 </p>
                             </div>
                             <div className="my-4">
                                 <h1 className="text-sm font-medium">Phone</h1>
                                 <p className="text-sm text-gray-700">
-                                    +959 253 473 584
+                                    {user?.phone}
                                 </p>
                             </div>
                             <div className="mt-4">
                                 <h1 className="text-sm font-medium">Bio</h1>
                                 <p className="text-sm text-gray-700">
-                                    Lorem, ipsum dolor sit amet consectetur
-                                    adipisicing elit. Deserunt tempore dicta
-                                    alias iste soluta accusamus, aliquam saepe
-                                    maxime?
+                                    {user?.bio}
                                 </p>
                             </div>
                         </div>
@@ -79,30 +87,64 @@ export default function Account() {
                         <div className="flex flex-col md:flex-row md:gap-3">
                             <div className="my-2 md:w-1/2">
                                 <Label>First Name</Label>
-                                <Input className="border-gray-400 mt-1" />
+                                <Input
+                                    value={
+                                        user?.name
+                                            ?.trim()
+                                            .split(" ")
+                                            .slice(0, -1)
+                                            .join(" ") || ""
+                                    }
+                                    className="border-gray-400 mt-1"
+                                    placeholder="Enter your first name"
+                                />
                             </div>
                             <div className="my-2 md:w-1/2">
                                 <Label>Last Name</Label>
-                                <Input className="border-gray-400 mt-1" />
+                                <Input
+                                    value={
+                                        user?.name
+                                            ?.trim()
+                                            .split(" ")
+                                            .slice(-1)[0] || ""
+                                    }
+                                    className="border-gray-400 mt-1"
+                                    placeholder="Enter your last name"
+                                />
                             </div>
                         </div>
                         <div className="flex flex-col md:flex-row md:gap-3">
                             <div className="my-2 md:w-1/2">
                                 <Label>Email</Label>
-                                <Input className="border-gray-400 mt-1" />
+                                <Input
+                                    className="border-gray-400 mt-1"
+                                    placeholder="Enter your email"
+                                    value={user?.email}
+                                />
                             </div>
                             <div className="my-2 md:w-1/2">
                                 <Label>Phone (Optional)</Label>
-                                <Input className="border-gray-400 mt-1" />
+                                <Input
+                                    className="border-gray-400 mt-1"
+                                    placeholder="Enter your phone"
+                                    value={user?.phone}
+                                />
                             </div>
                         </div>
                         <div className="my-3">
                             <Label>Date of Birth (Optional)</Label>
-                            <DatePicker className="border-gray-400" />
+                            <DatePicker
+                                className="border-gray-400"
+                                value={user?.DoB}
+                            />
                         </div>
                         <div className="my-4">
                             <Label>Bio (Optional)</Label>
-                            <Textarea className="border-gray-400 mt-1" />
+                            <Textarea
+                                className="border-gray-400 mt-1"
+                                placeholder="Write here..."
+                                value={user?.bio}
+                            />
                         </div>
                         <div className="flex justify-end mt-3">
                             <Button>Submit</Button>
