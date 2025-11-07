@@ -22,6 +22,7 @@ import {
 } from "../ui/pagination";
 import { Button } from "../ui/button";
 import {
+    BanIcon,
     ChevronDown,
     Ellipsis,
     GraduationCap,
@@ -89,6 +90,23 @@ export default function UsersList() {
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
+        }
+    };
+
+    const banUser = async (id, currentStatus) => {
+        try {
+            let newStatus = currentStatus ? 0 : 1;
+
+            let res = await axios.post("/api/users/banned/" + id, {
+                banned: newStatus,
+            });
+            const updatedUser = res.data.user;
+
+            setUsers((prevUsers) =>
+                prevUsers.map((user) => (user.id == id ? updatedUser : user))
+            );
+        } catch (error) {
+            console.error("Failed:", error);
         }
     };
 
@@ -172,7 +190,19 @@ export default function UsersList() {
                     </ul>
                     {users.map((user) => (
                         <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                            <li className="basis-[4%]">{user.id}</li>
+                            <li className="basis-[4%] ">
+                                <div className="flex gap-1 items-center">
+                                    {user.id}{" "}
+                                    {Number(user.banned) === 1 ? (
+                                        <BanIcon
+                                            className="text-red-600"
+                                            size={18}
+                                        />
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
+                            </li>
                             <li className="basis-[20%]">
                                 <h1 className="font-medium">{user.name}</h1>
                             </li>
@@ -200,12 +230,26 @@ export default function UsersList() {
                                         className="w-40"
                                     >
                                         <Link to="">
-                                            <DropdownMenuItem className="text-accentGreen">
+                                            <DropdownMenuItem>
                                                 View Profile
                                             </DropdownMenuItem>
                                         </Link>
-                                        <DropdownMenuItem className="text-accentYellow">
-                                            <Link to="">Ban</Link>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                banUser(
+                                                    user.id,
+                                                    Number(user.banned)
+                                                )
+                                            }
+                                            className={
+                                                Number(user.banned) === 1
+                                                    ? "text-green-500"
+                                                    : "text-yellow-500"
+                                            }
+                                        >
+                                            {Number(user.banned) === 1
+                                                ? "Re-activate"
+                                                : "Ban"}
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>

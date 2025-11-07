@@ -174,4 +174,17 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Password updated successfully.']);
     }
+
+    public function ban(Request $request, $id){
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->banned = $request->banned; // Set banned to 1
+        $user->save();
+
+       return response()->json(['message' => $user->banned ? 'User banned successfully' : 'User re-activated successfully', 'user' => $user]);
+    }
 }

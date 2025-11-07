@@ -46,6 +46,8 @@ Route::get('/api/users', [AuthController::class, 'index']);
 Route::middleware('auth:sanctum')->put('/api/user/{user}', [AuthController::class, 'updateUser']);
 Route::middleware('auth:sanctum')->put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
 
+Route::post('/api/users/banned/{id}', [AuthController::class, 'ban']);
+
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);
  Route::put('/api/blog/category/{id}/visibility', [BlogCategoryController::class, 'updateVisibility']);

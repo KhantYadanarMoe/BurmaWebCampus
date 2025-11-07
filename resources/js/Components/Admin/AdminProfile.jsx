@@ -28,7 +28,6 @@ export default function AdminProfile() {
         lastName: "",
         email: "",
         phone: "",
-        role: "",
     });
     // store errors state
     const [errors, setErrors] = useState({});
@@ -82,7 +81,6 @@ export default function AdminProfile() {
         formData.append("lastName", form.lastName);
         formData.append("email", form.email);
         formData.append("phone", form.phone);
-        formData.append("DoB", form.role);
 
         console.log("Form data after appending:", formData);
 
@@ -256,22 +254,7 @@ export default function AdminProfile() {
                             />
                         </div>
                     </div>
-                    <div className="my-3">
-                        <Label htmlFor="role">Role</Label>
-                        <Select>
-                            <SelectTrigger
-                                id="role"
-                                name="role"
-                                className="mt-1 border-gray-400"
-                            >
-                                <span>Admin</span>{" "}
-                            </SelectTrigger>
-                            <SelectContent className="w-96 max-h-60">
-                                <SelectItem value="admin">Admin</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end mt-3">
                         <Button onClick={submit}>Update</Button>
                     </div>
                 </form>

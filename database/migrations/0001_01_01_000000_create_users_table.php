@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('bio')->nullable();
             $table->string('google_id')->nullable();
             $table->string('avatar')->nullable();
+            $table->boolean('isAdmin')->default(false); 
+            $table->boolean('banned')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
