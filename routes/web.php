@@ -24,8 +24,11 @@ Route::get('/', function () {
 });
 
 
-Route::middleware('guest')->get('auth/google', [AuthController::class, 'redirectToGoogle']);
-Route::middleware('guest')->get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+Route::middleware(['web', 'guest'])->group(function () {
+    Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
+    Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+});
+
 
 Route::get('/{any}', function () {
     return view('app');
