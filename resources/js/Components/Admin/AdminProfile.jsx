@@ -1,15 +1,184 @@
 import { Bell, ChevronsRight, X } from "lucide-react";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Pf from "../../../assets/Profile.jpg";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { useState } from "react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
+import { useAuth } from "@/contexts/AuthContext";
+import axios from "axios";
 
 export default function AdminProfile() {
     const [open, setOpen] = useState(false);
+    const { user, setUser } = useAuth();
+    // prepare state to store form data
+    const [form, setForm] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        role: "",
+    });
+    // store errors state
+    const [errors, setErrors] = useState({});
+
+    const [isPasswordSuccessDialogOpen, setIsPasswordSuccessDialogOpen] =
+        useState(false);
+
+    // prepare to move another route/page after sending data
+    const navigate = useNavigate();
+
+    // Handle HTML inputs
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    useEffect(() => {
+        if (user) {
+            setForm({
+                firstName:
+                    user.name?.trim().split(" ").slice(0, -1).join(" ") ||
+                    "" ||
+                    "",
+                lastName: user.name?.trim().split(" ").slice(-1)[0] || "" || "",
+                email: user.email || "",
+                phone: user.phone || "",
+                DoB: user.DoB || "",
+                bio: user.bio || "",
+            });
+        }
+    }, [user]);
+
+    // form submit function
+    const submit = async (e) => {
+        e.preventDefault();
+
+        // url and method to use in sending data using axios
+        let url = "/api/user/" + user.id;
+        let method = "post";
+
+        // create new object to store form data to send
+        let formData = new FormData();
+
+        console.log("Form Data before submitting:", form);
+
+        // store state data in object
+        formData.append("firstName", form.firstName);
+        formData.append("lastName", form.lastName);
+        formData.append("email", form.email);
+        formData.append("phone", form.phone);
+        formData.append("DoB", form.role);
+
+        console.log("Form data after appending:", formData);
+
+        // if (image) {
+        //     formData.append("image", image);
+        // }
+
+        formData.append("_method", "PUT");
+
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            // send data
+            const res = await axios[method](url, formData, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            // success condition
+            if (res.data.message === "User data updated successfully.") {
+                const updatedUser = res.data.user;
+
+                setUser(updatedUser);
+                navigate("/admin/profile");
+            }
+        } catch (error) {
+            console.error("Error updating user:", error);
+
+            // failed condition
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
+            }
+        }
+    };
+
+    const [passwordForm, setPasswordForm] = useState({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+    });
+
+    const [passwordErrors, setPasswordErrors] = useState({});
+
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        setPasswordForm((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+
+        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+            setPasswordErrors({
+                confirmPassword: ["Password and Confirm Password don't match."],
+            });
+            return;
+        }
+
+        try {
+            const res = await axios.put(`/api/user/${user.id}/changePassword`, {
+                currentPassword: passwordForm.currentPassword,
+                newPassword: passwordForm.newPassword,
+                newPassword_confirmation: passwordForm.confirmPassword,
+            });
+
+            if (res.data.message === "Password updated successfully.") {
+                setIsPasswordSuccessDialogOpen(true);
+                setPasswordForm({
+                    currentPassword: "",
+                    newPassword: "",
+                    confirmPassword: "",
+                });
+                setPasswordErrors({});
+            }
+        } catch (error) {
+            if (error.response && error.response.data) {
+                const data = error.response.data;
+
+                if (data.errors) {
+                    setPasswordErrors(data.errors); // Object with field errors
+                } else if (data.message) {
+                    // Wrap single message into an object keyed by a general field or 'form'
+                    setPasswordErrors({ general: [data.message] });
+                } else {
+                    setPasswordErrors({});
+                }
+            }
+        }
+    };
     return (
         <div className="flex lg:gap-3">
             <div className="w-full lg:w-3/5">
@@ -39,15 +208,25 @@ export default function AdminProfile() {
                         <div className="my-3 md:w-1/2">
                             <Label>First Name</Label>
                             <Input
+                                id="firstName"
+                                name="firstName"
+                                type="text"
+                                value={form.firstName}
+                                onChange={handleInputChange}
                                 className="border-gray-400 mt-1"
-                                placeholder="Khant Yadanar Moe"
+                                placeholder="Enter your first name"
                             />
                         </div>
                         <div className="my-3 md:w-1/2">
                             <Label>Last Name</Label>
                             <Input
+                                id="lastName"
+                                name="lastName"
+                                type="text"
+                                value={form.lastName}
+                                onChange={handleInputChange}
                                 className="border-gray-400 mt-1"
-                                placeholder="Khant Yadanar Moe"
+                                placeholder="Enter your last name"
                             />
                         </div>
                     </div>
@@ -56,14 +235,24 @@ export default function AdminProfile() {
                             <Label>Email</Label>
                             <Input
                                 className="border-gray-400 mt-1"
-                                placeholder="khantyadanarmoe@gmail.com"
+                                id="email"
+                                name="email"
+                                type="text"
+                                value={form.email}
+                                onChange={handleInputChange}
+                                placeholder="Enter your email"
                             />
                         </div>
                         <div className="my-3 md:w-1/2">
                             <Label>Phone</Label>
                             <Input
+                                id="phone"
+                                name="phone"
+                                type="text"
+                                value={form.phone}
+                                onChange={handleInputChange}
+                                placeholder="Enter your phone"
                                 className="border-gray-400 mt-1"
-                                placeholder="+959 123 456 789"
                             />
                         </div>
                     </div>
@@ -83,7 +272,7 @@ export default function AdminProfile() {
                         </Select>
                     </div>
                     <div className="flex justify-end">
-                        <Button>Update</Button>
+                        <Button onClick={submit}>Update</Button>
                     </div>
                 </form>
                 <hr className="border-t-gray-400 my-5" />
@@ -93,30 +282,80 @@ export default function AdminProfile() {
                     <div className="my-3">
                         <Label>Current Password</Label>
                         <Input
+                            id="currentPassword"
+                            name="currentPassword"
+                            type="password"
+                            placeholder="Enter your password"
+                            value={passwordForm.currentPassword}
+                            onChange={handlePasswordChange}
                             className="border-gray-400 mt-1"
-                            placeholder="Enter your current password"
                         />
+                        {passwordErrors.general && (
+                            <p className="text-red-500 mt-1 text-sm">
+                                {passwordErrors.general[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="md:flex gap-2">
                         <div className="my-3 md:w-1/2">
                             <Label>New Password</Label>
                             <Input
-                                className="border-gray-400 mt-1"
+                                id="newPassword"
+                                name="newPassword"
+                                type="password"
+                                value={passwordForm.newPassword}
+                                onChange={handlePasswordChange}
                                 placeholder="Enter your new password"
+                                className="border-gray-400 mt-1"
                             />
+                            {passwordErrors.confirmPassword && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {passwordErrors.confirmPassword}
+                                </p>
+                            )}
                         </div>
                         <div className="my-3 md:w-1/2">
                             <Label>Confirm Password</Label>
                             <Input
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                type="password"
+                                value={passwordForm.confirmPassword}
+                                onChange={handlePasswordChange}
+                                placeholder="Confirm your password"
                                 className="border-gray-400 mt-1"
-                                placeholder="Confirm your new password"
                             />
                         </div>
                     </div>
                     <div className="flex justify-end">
-                        <Button>Change</Button>
+                        <Button onClick={handlePasswordSubmit}>Change</Button>
                     </div>
                 </form>
+                <AlertDialog
+                    open={isPasswordSuccessDialogOpen}
+                    onOpenChange={setIsPasswordSuccessDialogOpen}
+                >
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>
+                                Password Updated Successfully!
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Your password has been changed. You can now use
+                                your new password to log in.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogAction
+                                onClick={() =>
+                                    setIsPasswordSuccessDialogOpen(false)
+                                }
+                            >
+                                OK
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
             <div className="lg:w-2/5 relative">
                 <button
