@@ -118,6 +118,7 @@ class AuthController extends Controller
             "phone" => ["nullable", "numeric"],
             "DoB" => ["nullable"],
             "bio" => ["nullable"],
+            "image" => ["nullable", "image", "mimes:jpeg,png,jpg,gif,svg", "max:2048"],
         ]);
 
         // condition for failed validation
@@ -125,6 +126,17 @@ class AuthController extends Controller
             return response()->json([
                 'errors' => $validator->errors()->messages()
             ], 422);
+        }
+
+        // store image
+        $imagePath = null;
+        if (request()->hasFile('image')) {
+            $image = request()->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('users', $imageName, 'public'); 
+        }else {
+            // Retain the old image if no new image is provided
+            $imagePath = $user->image;
         }
 
         $name = trim(request('firstName') . ' ' . request('lastName'));
@@ -136,6 +148,7 @@ class AuthController extends Controller
             'phone' => request('phone'),
             'DoB' => request('DoB'),
             'bio' => request('bio'),
+            'image' => $imagePath,
         ]);
 
         $user->update([
@@ -144,6 +157,7 @@ class AuthController extends Controller
             'phone' => request('phone'),
             'DoB' => request('DoB'),
             'bio' => request('bio'),
+            'image' => $imagePath,
         ]);
         return response()->json([
             'message' => 'User data updated successfully.',

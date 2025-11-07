@@ -21,6 +21,8 @@ import {
 
 export default function Account() {
     const { user, setUser } = useAuth();
+
+    const [image, setImage] = useState(null);
     // prepare state to store form data
     const [form, setForm] = useState({
         firstName: "",
@@ -56,6 +58,14 @@ export default function Account() {
         }));
     };
 
+    // Handle image input
+    const uploadImg = (e) => {
+        const file = e.target.files?.[0];
+        console.log("e.target.files:", e.target.files);
+        console.log("file:", file);
+        setImage(file);
+    };
+
     useEffect(() => {
         if (user) {
             setForm({
@@ -84,6 +94,7 @@ export default function Account() {
         let formData = new FormData();
 
         console.log("Form Data before submitting:", form);
+        console.log("image:", image);
 
         // store state data in object
         formData.append("firstName", form.firstName);
@@ -93,13 +104,16 @@ export default function Account() {
         formData.append("DoB", form.DoB);
         formData.append("bio", form.bio);
 
+        if (image) {
+            formData.append("image", image);
+        }
         console.log("Form data after appending:", formData);
 
-        // if (image) {
-        //     formData.append("image", image);
-        // }
-
         formData.append("_method", "PUT");
+
+        for (let [key, val] of formData.entries()) {
+            console.log(key, val);
+        }
 
         try {
             const csrfToken = document
@@ -197,7 +211,13 @@ export default function Account() {
                     <Card className="pb-3 px-3 border-gray-400">
                         <div className="py-6 flex gap-3 items-center">
                             <img
-                                src={Pf}
+                                src={
+                                    image
+                                        ? URL.createObjectURL(image)
+                                        : user?.image
+                                        ? `/storage/${user.image}`
+                                        : Pf
+                                }
                                 alt=""
                                 className="w-20 h-20 lg:w-24 lg:h-24 object-cover rounded-full border p-1 border-gray-700"
                             />
@@ -263,6 +283,17 @@ export default function Account() {
                         Account Setting
                     </h1>
                     <Card className="py-3 px-3 border-gray-400">
+                        <div className="my-3">
+                            <Label>Profile Image</Label>
+                            <Input
+                                id="image-upload"
+                                name="image"
+                                type="file"
+                                accept="image/*"
+                                onChange={uploadImg}
+                                className="mt-1 border-gray-400"
+                            />
+                        </div>
                         <div className="flex flex-col md:flex-row md:gap-3">
                             <div className="my-2 md:w-1/2">
                                 <Label>First Name</Label>

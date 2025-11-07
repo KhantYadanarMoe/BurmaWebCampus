@@ -1,12 +1,14 @@
 import React from "react";
 import Pf from "../../../assets/Profile.jpg";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function UserInfo() {
+    const { user, setUser } = useAuth();
     return (
         <div className="px-5 md:px-10 lg:px-12">
             <div className="pt-9 pb-12 flex gap-3 items-center">
                 <img
-                    src={Pf}
+                    src={user?.image ? `/storage/${user.image}` : Pf}
                     alt=""
                     className="w-24 md:w-32 h-24 md:h-32 object-cover rounded-full border p-1 border-gray-700"
                 />

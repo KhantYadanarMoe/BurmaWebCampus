@@ -181,9 +181,9 @@ export default function AdminProfile() {
         <div className="flex lg:gap-3">
             <div className="w-full lg:w-3/5">
                 <div className="flex gap-1 items-end text-gray-800 text-sm">
-                    <Link>Home</Link>
+                    <Link to="/">Home</Link>
                     <ChevronsRight size={18} />
-                    <Link>Dashboard</Link>
+                    <Link to="/admin">Dashboard</Link>
                     <ChevronsRight size={18} />
                     <Link className="text-black">Profile</Link>
                 </div>

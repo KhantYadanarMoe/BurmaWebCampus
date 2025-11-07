@@ -229,11 +229,11 @@ export default function UsersList() {
                                         align="end"
                                         className="w-40"
                                     >
-                                        <Link to="">
+                                        {/* <Link to="">
                                             <DropdownMenuItem>
                                                 View Profile
                                             </DropdownMenuItem>
-                                        </Link>
+                                        </Link> */}
                                         <DropdownMenuItem
                                             onClick={() =>
                                                 banUser(
