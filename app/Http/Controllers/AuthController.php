@@ -129,14 +129,14 @@ class AuthController extends Controller
 
         $name = trim(request('firstName') . ' ' . request('lastName'));
 
-    // Log for debugging
-    Log::info('Updating user with data:', [
-        'name' => $name,
-        'email' => request('email'),
-        'phone' => request('phone'),
-        'DoB' => request('DoB'),
-        'bio' => request('bio'),
-    ]);
+        // Log for debugging
+        Log::info('Updating user with data:', [
+            'name' => $name,
+            'email' => request('email'),
+            'phone' => request('phone'),
+            'DoB' => request('DoB'),
+            'bio' => request('bio'),
+        ]);
 
         $user->update([
             'name' => $name,
@@ -149,5 +149,29 @@ class AuthController extends Controller
             'message' => 'User data updated successfully.',
             'user' => $user
         ]);
+    }
+
+    public function changePassword(Request $request, $id){
+        $request->validate([
+            'currentPassword' => 'required|string',
+            'newPassword' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        if ($request->user()->id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        // Verify current password
+        if (!Hash::check($request->currentPassword, $user->password)) {
+            return response()->json(['message' => 'Current password is incorrect.'], 422);
+        }
+
+        // Update password
+        $user->password = Hash::make($request->newPassword);
+        $user->save();
+
+        return response()->json(['message' => 'Password updated successfully.']);
     }
 }

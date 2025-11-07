@@ -9,6 +9,15 @@ import Pf from "../../../assets/Profile.jpg";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function Account() {
     const { user, setUser } = useAuth();
@@ -23,6 +32,9 @@ export default function Account() {
     });
     // store errors state
     const [errors, setErrors] = useState({});
+
+    const [isPasswordSuccessDialogOpen, setIsPasswordSuccessDialogOpen] =
+        useState(false);
 
     // prepare to move another route/page after sending data
     const navigate = useNavigate();
@@ -115,6 +127,64 @@ export default function Account() {
             // failed condition
             if (error.response && error.response.status === 422) {
                 setErrors(error.response.data.errors);
+            }
+        }
+    };
+
+    const [passwordForm, setPasswordForm] = useState({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+    });
+
+    const [passwordErrors, setPasswordErrors] = useState({});
+
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        setPasswordForm((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+
+        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+            setPasswordErrors({
+                confirmPassword: ["Password and Confirm Password don't match."],
+            });
+            return;
+        }
+
+        try {
+            const res = await axios.put(`/api/user/${user.id}/changePassword`, {
+                currentPassword: passwordForm.currentPassword,
+                newPassword: passwordForm.newPassword,
+                newPassword_confirmation: passwordForm.confirmPassword,
+            });
+
+            if (res.data.message === "Password updated successfully.") {
+                setIsPasswordSuccessDialogOpen(true);
+                setPasswordForm({
+                    currentPassword: "",
+                    newPassword: "",
+                    confirmPassword: "",
+                });
+                setPasswordErrors({});
+            }
+        } catch (error) {
+            if (error.response && error.response.data) {
+                const data = error.response.data;
+
+                if (data.errors) {
+                    setPasswordErrors(data.errors); // Object with field errors
+                } else if (data.message) {
+                    // Wrap single message into an object keyed by a general field or 'form'
+                    setPasswordErrors({ general: [data.message] });
+                } else {
+                    setPasswordErrors({});
+                }
             }
         }
     };
@@ -281,21 +351,82 @@ export default function Account() {
                         </h1>
                         <div className="my-2">
                             <Label>Current Password</Label>
-                            <Input className="border-gray-400 mt-1" />
+                            <Input
+                                id="currentPassword"
+                                name="currentPassword"
+                                type="password"
+                                placeholder="Enter your password"
+                                value={passwordForm.currentPassword}
+                                onChange={handlePasswordChange}
+                                className="border-gray-400 mt-1"
+                            />
+                            {passwordErrors.general && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {passwordErrors.general[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="my-2">
                             <Label>New Password</Label>
-                            <Input className="border-gray-400 mt-1" />
+                            <Input
+                                id="newPassword"
+                                name="newPassword"
+                                type="password"
+                                value={passwordForm.newPassword}
+                                onChange={handlePasswordChange}
+                                placeholder="Enter your new password"
+                                className="border-gray-400 mt-1"
+                            />
+                            {passwordErrors.confirmPassword && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {passwordErrors.confirmPassword}
+                                </p>
+                            )}
                         </div>
                         <div className="my-2">
                             <Label>Confirm Password</Label>
-                            <Input className="border-gray-400 mt-1" />
+                            <Input
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                type="password"
+                                value={passwordForm.confirmPassword}
+                                onChange={handlePasswordChange}
+                                placeholder="Confirm your password"
+                                className="border-gray-400 mt-1"
+                            />
                         </div>
                         <div className="flex justify-end mt-3">
-                            <Button>Submit</Button>
+                            <Button onClick={handlePasswordSubmit}>
+                                Submit
+                            </Button>
                         </div>
                     </Card>
                 </div>
+                <AlertDialog
+                    open={isPasswordSuccessDialogOpen}
+                    onOpenChange={setIsPasswordSuccessDialogOpen}
+                >
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>
+                                Password Updated Successfully!
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Your password has been changed. You can now use
+                                your new password to log in.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogAction
+                                onClick={() =>
+                                    setIsPasswordSuccessDialogOpen(false)
+                                }
+                            >
+                                OK
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </div>
     );
