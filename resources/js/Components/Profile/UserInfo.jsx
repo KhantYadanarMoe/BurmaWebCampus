@@ -17,7 +17,7 @@ export default function UserInfo() {
                         Khant Yadanar Moe
                     </h1>
                     <p className="text-gray-500 text-sm md:text-base">
-                        ID: STU2025-001
+                        ID: {user?.student_id}
                     </p>
                 </div>
             </div>

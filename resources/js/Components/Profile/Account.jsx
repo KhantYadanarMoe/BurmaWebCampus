@@ -222,7 +222,7 @@ export default function Account() {
                                     {user?.name}
                                 </h1>
                                 <p className="text-gray-500 text-sm">
-                                    ID: STU2025-001
+                                    ID: {user?.student_id}
                                 </p>
                             </div>
                         </div>

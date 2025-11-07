@@ -25,7 +25,11 @@ class User extends Authenticatable
         'DoB',
         'bio',
         'password',
+        'student_id',
     ];
+
+
+    
 
     /**
      * The attributes that should be hidden for serialization.

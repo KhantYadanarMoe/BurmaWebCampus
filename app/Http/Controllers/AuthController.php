@@ -23,10 +23,22 @@ class AuthController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        $year = date('Y');
+        $latestUser = User::whereYear('created_at', $year)->orderBy('id', 'desc')->first();
+
+        if ($latestUser && preg_match('/STU' . $year . '-(\d+)/', $latestUser->student_id, $matches)) {
+            $nextNumber = (int)$matches[1] + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        $studentId = 'STU' . $year . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password), // Hash the password
+            "student_id" => $studentId
         ]);
 
         Auth::login($user);
