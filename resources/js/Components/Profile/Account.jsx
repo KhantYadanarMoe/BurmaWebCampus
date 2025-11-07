@@ -111,10 +111,6 @@ export default function Account() {
 
         formData.append("_method", "PUT");
 
-        for (let [key, val] of formData.entries()) {
-            console.log(key, val);
-        }
-
         try {
             const csrfToken = document
                 .querySelector('meta[name="csrf-token"]')

@@ -22,6 +22,7 @@ import axios from "axios";
 export default function AdminProfile() {
     const [open, setOpen] = useState(false);
     const { user, setUser } = useAuth();
+    const [image, setImage] = useState(null);
     // prepare state to store form data
     const [form, setForm] = useState({
         firstName: "",
@@ -45,6 +46,14 @@ export default function AdminProfile() {
             ...prevState,
             [name]: value,
         }));
+    };
+
+    // Handle image input
+    const uploadImg = (e) => {
+        const file = e.target.files?.[0];
+        console.log("e.target.files:", e.target.files);
+        console.log("file:", file);
+        setImage(file);
     };
 
     useEffect(() => {
@@ -84,9 +93,9 @@ export default function AdminProfile() {
 
         console.log("Form data after appending:", formData);
 
-        // if (image) {
-        //     formData.append("image", image);
-        // }
+        if (image) {
+            formData.append("image", image);
+        }
 
         formData.append("_method", "PUT");
 
@@ -190,16 +199,33 @@ export default function AdminProfile() {
                 <h1 className="text-xl font-medium my-5">Admin Profile</h1>
                 <div className="flex items-center gap-3">
                     <img
-                        src={Pf}
+                        src={
+                            image
+                                ? URL.createObjectURL(image)
+                                : user?.image
+                                ? `/storage/${user.image}`
+                                : Pf
+                        }
                         alt=""
                         className="w-20 h-20 object-cover rounded-full p-0.5 border border-gray-800"
                     />
-                    <Button
-                        variant="outline"
-                        className="rounded-2xl border border-gray-600 px-3 py-1"
-                    >
-                        Edit
-                    </Button>
+                    <div className="flex gap-2 md:justify-start mt-3">
+                        <Input
+                            id="image-upload"
+                            name="image"
+                            type="file"
+                            accept="image/*"
+                            onChange={uploadImg}
+                            className="hidden"
+                        />
+
+                        <Label
+                            htmlFor="image-upload"
+                            className="rounded-2xl border border-gray-600 px-3 py-2 cursor-pointer"
+                        >
+                            Edit
+                        </Label>
+                    </div>
                 </div>
                 <form className="mt-4">
                     <div className="md:flex gap-2">
