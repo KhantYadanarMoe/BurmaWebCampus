@@ -161,20 +161,20 @@ export default function CoursesCategory() {
         getCategories();
     }, [refreshFlag]);
 
-    // const toggleVisibility = (categoryId, checked) => {
-    //     setVisibility((prev) => ({
-    //         ...prev,
-    //         [categoryId]: checked,
-    //     }));
+    const toggleVisibility = (categoryId, checked) => {
+        setVisibility((prev) => ({
+            ...prev,
+            [categoryId]: checked,
+        }));
 
-    //     axios
-    //         .put(`/api/course/category/${categoryId}/visibility`, {
-    //             is_visible: checked,
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error updating visibility:", error);
-    //         });
-    // };
+        axios
+            .put(`/api/course/category/${categoryId}/visibility`, {
+                is_visible: checked,
+            })
+            .catch((error) => {
+                console.error("Error updating visibility:", error);
+            });
+    };
 
     const rowsPerPage = 10;
 
@@ -353,6 +353,9 @@ export default function CoursesCategory() {
                                         visibility.hasOwnProperty(category.id)
                                             ? visibility[category.id]
                                             : false
+                                    }
+                                    onCheckedChange={(checked) =>
+                                        toggleVisibility(category.id, checked)
                                     }
                                 />
                             </li>

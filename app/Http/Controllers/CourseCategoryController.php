@@ -73,4 +73,16 @@ class CourseCategoryController extends Controller
             'categories' => $categories
         ]);
     }
+
+    public function updateVisibility(Request $request, $id){
+        $request->validate([
+            'is_visible' => 'required|boolean',
+        ]);
+
+        $category = CourseCategories::findOrFail($id);
+        $category->is_visible = $request->is_visible;
+        $category->save();
+
+        return response()->json(['success' => true]);
+    }
 }
