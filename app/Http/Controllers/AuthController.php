@@ -79,10 +79,10 @@ class AuthController extends Controller
         $user = User::where('email', $googleUser->getEmail())->first();
 
         if (!$user) {
-            // Generate student_id
             $year = date('Y');
             $latestUser = User::whereYear('created_at', $year)
                 ->orderBy('id', 'desc')
+                
                 ->first();
 
             $nextNumber = 1;
@@ -99,7 +99,6 @@ class AuthController extends Controller
                 'student_id' => $studentId, // ✅ fix here
             ]);
         } else {
-            // Update existing user
             $user->update([
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),

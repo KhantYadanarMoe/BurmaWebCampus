@@ -89,7 +89,7 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                                 <Plus size={20} /> Create Course
                             </div>
                         </Link>
-                        <Link to="/admin/courses/categories">
+                        <Link to="/admin/courses/category">
                             <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
                                 <TagIcon size={20} /> Categories
                             </div>
