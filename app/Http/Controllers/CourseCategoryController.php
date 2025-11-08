@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CourseCategories;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class CourseCategoryController extends Controller
@@ -84,6 +85,41 @@ class CourseCategoryController extends Controller
             // If category doesn't found, return a 404 with a message
             return response()->json(['message' => 'Category not found.'], 404);
         }
+    }
+
+    public function update(CourseCategories $category){
+        $validator = Validator::make(request()->all(), [
+            "name" => ["required"],
+            "image" => ["nullable", "image", "mimes:jpeg,png,jpg,gif,svg", "max:2048"],
+        ]);
+
+        // condition for failed validation
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()->messages()
+            ], 422);
+        }
+
+        $iconPath = null;
+        if (request()->hasFile('icon')) {
+            $icon = request()->file('icon');
+            $iconName = time() . '_' . $icon->getClientOriginalName();
+            $iconPath = $icon->storeAs('blog_categories', $iconName, 'public'); 
+        }else {
+            // Retain the old icon if no new icon is provided
+            $iconPath = $category->icon;
+        }
+
+        Log::info(request()->all()); // Log all incoming data
+
+        $category->update([
+            'icon' => $iconPath, 
+            'name' => request('name'),
+        ]);
+        return response()->json([
+            'message' => 'Blog Category updated successfully.',
+            'category' => $category
+        ]);
     }
 
     public function updateVisibility(Request $request, $id){
