@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->put('/api/user/{user}/changePassword', [AuthC
 
 Route::post('/api/users/banned/{id}', [AuthController::class, 'ban']);
 
-
+Route::get('/api/course/categories', [CourseCategoryController::class, 'index']);
 Route::post("/api/course/category/create", [CourseCategoryController::class, 'store']);
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);

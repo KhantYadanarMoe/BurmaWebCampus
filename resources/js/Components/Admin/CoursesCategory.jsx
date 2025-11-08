@@ -140,26 +140,26 @@ export default function CoursesCategory() {
         }
     };
 
-    // let getCategories = async () => {
-    //     try {
-    //         let res = await axios.get("/api/course/categories");
-    //         let data = res.data;
-    //         setCategories(data.categories);
+    let getCategories = async () => {
+        try {
+            let res = await axios.get("/api/course/categories");
+            let data = res.data;
+            setCategories(data.categories);
 
-    //         const visibilityMap = {};
-    //         data.categories.forEach((cat) => {
-    //             visibilityMap[cat.id] = !!+cat.is_visible;
-    //         });
+            const visibilityMap = {};
+            data.categories.forEach((cat) => {
+                visibilityMap[cat.id] = !!+cat.is_visible;
+            });
 
-    //         setVisibility(visibilityMap);
-    //     } catch (error) {
-    //         console.error("Failed to fetch categories:", error);
-    //     }
-    // };
+            setVisibility(visibilityMap);
+        } catch (error) {
+            console.error("Failed to fetch categories:", error);
+        }
+    };
 
-    // useEffect(() => {
-    //     getCategories();
-    // }, [refreshFlag]);
+    useEffect(() => {
+        getCategories();
+    }, [refreshFlag]);
 
     // const toggleVisibility = (categoryId, checked) => {
     //     setVisibility((prev) => ({
@@ -331,447 +331,80 @@ export default function CoursesCategory() {
                         <li className="basis-[20%]">Visibility</li>
                         <li className="basis-[5%]"></li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
-                            <div className="flex gap-2 items-center">
-                                <img
-                                    src={Icon}
-                                    alt=""
-                                    className="w-8 h-8 object-cover"
+                    {categories.map((category) => (
+                        <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                            <li className="basis-[5%]">{category.id}</li>
+                            <li className="basis-[40%]">
+                                <div className="flex gap-2 items-center">
+                                    <img
+                                        src={`/storage/${category.icon}`}
+                                        alt=""
+                                        className="w-8 h-8 object-cover rounded-md"
+                                    />
+                                    <span className="font-medium">
+                                        {category.name}
+                                    </span>
+                                </div>
+                            </li>
+                            <li className="basis-[30%]">27</li>
+                            <li className="basis-[20%]">
+                                <Switch
+                                    checked={
+                                        visibility.hasOwnProperty(category.id)
+                                            ? visibility[category.id]
+                                            : false
+                                    }
                                 />
-                                <span className="font-medium">Frontend</span>
-                            </div>
-                        </li>
-                        <li className="basis-[30%]">27</li>
-                        <li className="basis-[20%]">
-                            <Switch />
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <DropdownMenuItem className="text-accentYellow">
-                                        <Link to="">Edit</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <button className="text-accentRed bg-white w-full text-left px-2 py-2">
-                                                    Delete
-                                                </button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>
-                                                        Are you sure you want to
-                                                        delete this menu?
-                                                    </AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This action cannot be
-                                                        undone.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction>
+                            </li>
+                            <li className="basis-[5%]">
+                                <DropdownMenu modal={false}>
+                                    <DropdownMenuTrigger asChild>
+                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                            <Ellipsis size={20} />
+                                        </button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="end"
+                                        className="w-40"
+                                    >
+                                        <DropdownMenuItem className="text-accentYellow">
+                                            <Link to="">Edit</Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem asChild>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <button className="text-accentRed bg-white w-full text-left px-2 py-2">
                                                         Delete
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
-                            <div className="flex gap-2 items-center">
-                                <img
-                                    src={Icon}
-                                    alt=""
-                                    className="w-8 h-8 object-cover"
-                                />
-                                <span className="font-medium">Frontend</span>
-                            </div>
-                        </li>
-                        <li className="basis-[30%]">27</li>
-                        <li className="basis-[20%]">
-                            <Switch />
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <DropdownMenuItem className="text-accentYellow">
-                                        <Link to="">Edit</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <button className="text-accentRed bg-white w-full text-left px-2 py-2">
-                                                    Delete
-                                                </button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>
-                                                        Are you sure you want to
-                                                        delete this menu?
-                                                    </AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This action cannot be
-                                                        undone.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction>
-                                                        Delete
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
-                            <div className="flex gap-2 items-center">
-                                <img
-                                    src={Icon}
-                                    alt=""
-                                    className="w-8 h-8 object-cover"
-                                />
-                                <span className="font-medium">Frontend</span>
-                            </div>
-                        </li>
-                        <li className="basis-[30%]">27</li>
-                        <li className="basis-[20%]">
-                            <Switch />
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <DropdownMenuItem className="text-accentYellow">
-                                        <Link to="">Edit</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <button className="text-accentRed bg-white w-full text-left px-2 py-2">
-                                                    Delete
-                                                </button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>
-                                                        Are you sure you want to
-                                                        delete this menu?
-                                                    </AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This action cannot be
-                                                        undone.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction>
-                                                        Delete
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
-                            <div className="flex gap-2 items-center">
-                                <img
-                                    src={Icon}
-                                    alt=""
-                                    className="w-8 h-8 object-cover"
-                                />
-                                <span className="font-medium">Frontend</span>
-                            </div>
-                        </li>
-                        <li className="basis-[30%]">27</li>
-                        <li className="basis-[20%]">
-                            <Switch />
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <DropdownMenuItem className="text-accentYellow">
-                                        <Link to="">Edit</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <button className="text-accentRed bg-white w-full text-left px-2 py-2">
-                                                    Delete
-                                                </button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>
-                                                        Are you sure you want to
-                                                        delete this menu?
-                                                    </AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This action cannot be
-                                                        undone.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction>
-                                                        Delete
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
-                            <div className="flex gap-2 items-center">
-                                <img
-                                    src={Icon}
-                                    alt=""
-                                    className="w-8 h-8 object-cover"
-                                />
-                                <span className="font-medium">Frontend</span>
-                            </div>
-                        </li>
-                        <li className="basis-[30%]">27</li>
-                        <li className="basis-[20%]">
-                            <Switch />
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <DropdownMenuItem className="text-accentYellow">
-                                        <Link to="">Edit</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <button className="text-accentRed bg-white w-full text-left px-2 py-2">
-                                                    Delete
-                                                </button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>
-                                                        Are you sure you want to
-                                                        delete this menu?
-                                                    </AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This action cannot be
-                                                        undone.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction>
-                                                        Delete
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
-                            <div className="flex gap-2 items-center">
-                                <img
-                                    src={Icon}
-                                    alt=""
-                                    className="w-8 h-8 object-cover"
-                                />
-                                <span className="font-medium">Frontend</span>
-                            </div>
-                        </li>
-                        <li className="basis-[30%]">27</li>
-                        <li className="basis-[20%]">
-                            <Switch />
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <DropdownMenuItem className="text-accentYellow">
-                                        <Link to="">Edit</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <button className="text-accentRed bg-white w-full text-left px-2 py-2">
-                                                    Delete
-                                                </button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>
-                                                        Are you sure you want to
-                                                        delete this menu?
-                                                    </AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This action cannot be
-                                                        undone.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction>
-                                                        Delete
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[5%]">1</li>
-                        <li className="basis-[40%]">
-                            <div className="flex gap-2 items-center">
-                                <img
-                                    src={Icon}
-                                    alt=""
-                                    className="w-8 h-8 object-cover"
-                                />
-                                <span className="font-medium">Frontend</span>
-                            </div>
-                        </li>
-                        <li className="basis-[30%]">27</li>
-                        <li className="basis-[20%]">
-                            <Switch />
-                        </li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <DropdownMenuItem className="text-accentYellow">
-                                        <Link to="">Edit</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <button className="text-accentRed bg-white w-full text-left px-2 py-2">
-                                                    Delete
-                                                </button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>
-                                                        Are you sure you want to
-                                                        delete this menu?
-                                                    </AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This action cannot be
-                                                        undone.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction>
-                                                        Delete
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
+                                                    </button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>
+                                                            Are you sure you
+                                                            want to delete this
+                                                            menu?
+                                                        </AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This action cannot
+                                                            be undone.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>
+                                                            Cancel
+                                                        </AlertDialogCancel>
+                                                        <AlertDialogAction>
+                                                            Delete
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </li>
+                        </ul>
+                    ))}
                 </div>
             </div>
             <div className="mt-8 flex">

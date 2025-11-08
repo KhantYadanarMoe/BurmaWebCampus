@@ -45,4 +45,32 @@ class CourseCategoryController extends Controller
             'icon_url' => $iconPath ? asset('storage/' . $iconPath) : null
         ]);
     }
+
+    public function index(Request $request){
+        // $sort = $request->query('sort', 'newest'); 
+        // $query = CourseCategories::query();
+
+        // switch ($sort) {
+        //     case 'oldest':
+        //         $query->orderBy('created_at', 'asc');
+        //         break;
+        //     case 'a-z':
+        //         $query->orderBy('name', 'asc');
+        //         break;
+        //     case 'z-a':
+        //         $query->orderBy('name', 'desc');
+        //         break;
+        //     case 'newest':
+        //     default:
+        //         $query->orderBy('created_at', 'desc');
+        //         break;
+        // }
+
+        $categories = CourseCategories::latest()->get();
+
+        // send data to frontend
+        return response()->json([
+            'categories' => $categories
+        ]);
+    }
 }
