@@ -48,26 +48,26 @@ class CourseCategoryController extends Controller
     }
 
     public function index(Request $request){
-        // $sort = $request->query('sort', 'newest'); 
-        // $query = CourseCategories::query();
+        $sort = $request->query('sort', 'newest'); 
+        $query = CourseCategories::query();
 
-        // switch ($sort) {
-        //     case 'oldest':
-        //         $query->orderBy('created_at', 'asc');
-        //         break;
-        //     case 'a-z':
-        //         $query->orderBy('name', 'asc');
-        //         break;
-        //     case 'z-a':
-        //         $query->orderBy('name', 'desc');
-        //         break;
-        //     case 'newest':
-        //     default:
-        //         $query->orderBy('created_at', 'desc');
-        //         break;
-        // }
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
 
-        $categories = CourseCategories::latest()->get();
+        $categories = $query->get();
 
         // send data to frontend
         return response()->json([
