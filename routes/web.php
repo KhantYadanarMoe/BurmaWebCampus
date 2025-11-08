@@ -57,6 +57,7 @@ Route::post("/api/course/category/create", [CourseCategoryController::class, 'st
  Route::put('/api/course/category/{id}/visibility', [CourseCategoryController::class, 'updateVisibility']);
  Route::get('/api/course/category/{id}', [CourseCategoryController::class, 'show']);
 Route::put('/api/course/category/{category}', [CourseCategoryController::class, 'update']);
+Route::delete('/api/course/category/{category}', [CourseCategoryController::class, 'delete']);
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);

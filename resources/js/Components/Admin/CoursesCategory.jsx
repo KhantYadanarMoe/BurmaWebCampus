@@ -481,7 +481,7 @@ export default function CoursesCategory() {
                                         <DropdownMenuItem asChild>
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
-                                                    <button className="text-accentRed bg-white w-full text-left px-2 py-2">
+                                                    <button className="text-red-600 bg-white w-full text-left px-2 py-2">
                                                         Delete
                                                     </button>
                                                 </AlertDialogTrigger>
@@ -501,7 +501,13 @@ export default function CoursesCategory() {
                                                         <AlertDialogCancel>
                                                             Cancel
                                                         </AlertDialogCancel>
-                                                        <AlertDialogAction>
+                                                        <AlertDialogAction
+                                                            onClick={() =>
+                                                                deleteCategory(
+                                                                    category.id
+                                                                )
+                                                            }
+                                                        >
                                                             Delete
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
@@ -520,19 +526,55 @@ export default function CoursesCategory() {
                     <Pagination className="text-accentRed">
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious />
+                                <PaginationPrevious
+                                    onClick={() =>
+                                        handlePageChange(currentPage - 1)
+                                    }
+                                    disabled={currentPage === 1}
+                                    className={`cursor-pointer ${
+                                        currentPage === 1
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                />
                             </PaginationItem>
+                            {Array.from(
+                                {
+                                    length: Math.ceil(
+                                        categories.length / rowsPerPage
+                                    ),
+                                },
+                                (_, index) => (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink
+                                            onClick={() =>
+                                                handlePageChange(index + 1)
+                                            }
+                                            isActive={currentPage === index + 1}
+                                            className="cursor-pointer"
+                                        >
+                                            {index + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                )
+                            )}
                             <PaginationItem>
-                                <PaginationLink>1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>2</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext />
+                                <PaginationNext
+                                    onClick={() =>
+                                        handlePageChange(currentPage + 1)
+                                    }
+                                    className={`cursor-pointer ${
+                                        currentPage === totalPages
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    disabled={
+                                        currentPage ===
+                                        Math.ceil(
+                                            categories.length / rowsPerPage
+                                        )
+                                    }
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>

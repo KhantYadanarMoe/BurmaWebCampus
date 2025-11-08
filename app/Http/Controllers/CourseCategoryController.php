@@ -133,4 +133,11 @@ class CourseCategoryController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function delete(CourseCategories $category){
+        $category->delete();
+        return response()->json([
+            'message' => 'Course Category deleted successful!'
+        ]);
+    }
 }
