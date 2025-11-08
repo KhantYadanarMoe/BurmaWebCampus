@@ -74,6 +74,18 @@ class CourseCategoryController extends Controller
         ]);
     }
 
+    public function show($id){
+        $category = CourseCategories::find($id); // Find category by ID
+
+        // Check if category exists
+        if ($category) {
+            return response()->json(['category' => $category]);
+        } else {
+            // If category doesn't found, return a 404 with a message
+            return response()->json(['message' => 'Category not found.'], 404);
+        }
+    }
+
     public function updateVisibility(Request $request, $id){
         $request->validate([
             'is_visible' => 'required|boolean',

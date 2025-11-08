@@ -39,6 +39,15 @@ import {
     AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import axios from "axios";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "../ui/dialog";
 
 export default function CoursesCategory() {
     const [form, setForm] = useState({
@@ -370,9 +379,105 @@ export default function CoursesCategory() {
                                         align="end"
                                         className="w-40"
                                     >
-                                        <DropdownMenuItem className="text-accentYellow">
-                                            <Link to="">Edit</Link>
-                                        </DropdownMenuItem>
+                                        <Dialog
+                                            open={editDialogOpen}
+                                            onOpenChange={(isOpen) => {
+                                                setEditDialogOpen(isOpen);
+                                                if (isOpen) {
+                                                    setEditId(category.id);
+                                                } else {
+                                                    setEditId(null);
+                                                    setErrors({});
+                                                    setForm({
+                                                        icon: "",
+                                                        name: "",
+                                                    }); // reset when dialog closes
+                                                }
+                                            }}
+                                        >
+                                            <DialogTrigger asChild>
+                                                <Button className="text-accentYellow px-2 py-0 bg-white shadow-none hover:bg-white">
+                                                    Edit
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>
+                                                        Edit Category
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        Update the category of
+                                                        course below.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <div className="flex flex-col gap-4 py-4">
+                                                    <div>
+                                                        <Label>
+                                                            Category Icon
+                                                        </Label>
+                                                        <div className="flex items-center gap-1 mt-1">
+                                                            <img
+                                                                src={`/storage/${category.icon}`}
+                                                                alt=""
+                                                                className="w-9 h-9 object-cover rounded-md"
+                                                            />
+                                                            <Input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                id="icon"
+                                                                name="icon"
+                                                                onChange={
+                                                                    uploadImg
+                                                                }
+                                                                className="border-gray-400 mt-1"
+                                                            />
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            Upload an icon (PNG,
+                                                            JPG, or SVG)
+                                                        </p>
+                                                        {errors.icon && (
+                                                            <p className="text-red-500 mt-1 text-sm">
+                                                                {errors.icon[0]}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <Label>
+                                                            Category Name
+                                                        </Label>
+                                                        <Input
+                                                            id="name"
+                                                            name="name"
+                                                            value={form.name}
+                                                            onChange={(e) =>
+                                                                setForm({
+                                                                    ...form,
+                                                                    name: e
+                                                                        .target
+                                                                        .value,
+                                                                })
+                                                            }
+                                                            className="border-gray-400 mt-1"
+                                                            placeholder="Write category name"
+                                                        />
+                                                        {errors.name && (
+                                                            <p className="text-red-500 mt-1 text-sm">
+                                                                {errors.name[0]}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <DialogFooter>
+                                                    <Button variant="secondary">
+                                                        Cancel
+                                                    </Button>
+                                                    <Button onClick={submit}>
+                                                        Update
+                                                    </Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
                                         <DropdownMenuItem asChild>
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
