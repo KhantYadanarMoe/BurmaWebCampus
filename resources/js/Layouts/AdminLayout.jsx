@@ -32,7 +32,7 @@ export default function AdminLayout() {
                         : "xl:w-full xl:ml-4"
                 }`}
             >
-                <Outlet />
+                <Outlet context={{ darkMode, setDarkMode }} />
             </div>
         </div>
     );

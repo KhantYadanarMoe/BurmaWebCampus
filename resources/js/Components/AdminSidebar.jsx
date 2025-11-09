@@ -1,26 +1,13 @@
 import {
     ChevronsLeft,
     LayoutDashboard,
-    ScrollText,
-    Tag,
-    PackageCheck,
     Users,
-    Truck,
-    HandPlatter,
-    AppWindowMac,
-    MessageSquare,
-    Send,
-    NotepadText,
-    Handshake,
     Search,
     Menu,
     Settings,
     MoonStar,
     BookOpen,
     Newspaper,
-    Users2,
-    BookCopy,
-    Wallet,
     MessageCircle,
     ReceiptText,
     Mail,
@@ -73,15 +60,19 @@ export default function AdminSidebar({
                 <aside className="h-screen hover:overflow-y-auto custom-scrollbar overflow-hidden duration-300 p-4 mt-3">
                     {/* Home Section */}
                     <div className="mb-6 ml-3">
-                        <h2 className="text-xs font-semibold text-gray-900 uppercase mb-2">
+                        <h2
+                            className={`text-xs font-semibold ${
+                                darkMode ? "text-gray-400" : "text-gray-900"
+                            } uppercase mb-2`}
+                        >
                             Home
                         </h2>
                         <Link to="/admin/dashboard">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <LayoutDashboard size={20} /> Dashboard
@@ -89,10 +80,10 @@ export default function AdminSidebar({
                         </Link>
                         <Link to="/admin/purchase">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <ReceiptText size={20} /> Purchase
@@ -102,15 +93,19 @@ export default function AdminSidebar({
 
                     {/* Courses Section */}
                     <div className="mb-6 ml-3">
-                        <h2 className="text-xs font-semibold text-gray-900 uppercase mb-2">
+                        <h2
+                            className={`text-xs font-semibold ${
+                                darkMode ? "text-gray-400" : "text-gray-900"
+                            } uppercase mb-2`}
+                        >
                             Courses
                         </h2>
                         <Link to="/admin/courses/add">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <Plus size={20} /> Create Course
@@ -118,10 +113,10 @@ export default function AdminSidebar({
                         </Link>
                         <Link to="/admin/courses/category">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <TagIcon size={20} /> Categories
@@ -129,10 +124,10 @@ export default function AdminSidebar({
                         </Link>
                         <Link to="/admin/courses">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <BookOpen size={20} /> Courses
@@ -142,15 +137,19 @@ export default function AdminSidebar({
 
                     {/* Blog Section */}
                     <div className="mb-6 ml-3">
-                        <h2 className="text-xs font-semibold text-gray-900 uppercase mb-2">
+                        <h2
+                            className={`text-xs font-semibold ${
+                                darkMode ? "text-gray-400" : "text-gray-900"
+                            } uppercase mb-2`}
+                        >
                             Blog
                         </h2>
                         <Link to="/admin/blogs/create">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <Plus size={20} /> Create Blog
@@ -158,10 +157,10 @@ export default function AdminSidebar({
                         </Link>
                         <Link to="/admin/blogs/category">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <TagIcon size={20} /> Categories
@@ -169,10 +168,10 @@ export default function AdminSidebar({
                         </Link>
                         <Link to="/admin/blogs">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <Newspaper size={20} /> Blogs
@@ -184,10 +183,10 @@ export default function AdminSidebar({
                     <div className="mb-6 ml-3">
                         <Link to="/admin/users">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <Users size={20} /> Users
@@ -195,10 +194,10 @@ export default function AdminSidebar({
                         </Link>
                         <Link to="/admin/subscribers">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <Inbox size={20} /> Subscribers
@@ -206,10 +205,10 @@ export default function AdminSidebar({
                         </Link>
                         <Link to="/admin/reviews">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <MessageCircle size={20} /> Reviews
@@ -217,10 +216,10 @@ export default function AdminSidebar({
                         </Link>
                         <Link to="/admin/contacts">
                             <div
-                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode
-                                        ? "text-white border-l-[#121212]"
-                                        : "text-black border-l-white"
+                                        ? "text-white border-l-[#121212] hover:bg-gray-700"
+                                        : "text-black border-l-white hover:bg-gray-100 "
                                 }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
                             >
                                 <Mail size={20} /> Contact
@@ -255,19 +254,26 @@ export default function AdminSidebar({
                             onClick={() => setIsSidebarOpen(true)}
                             className="mr-2 text-black focus:outline-none"
                         >
-                            <Menu size={20} />
+                            <Menu
+                                size={20}
+                                className={`${
+                                    darkMode ? "text-gray-200" : "text-gray-800"
+                                }`}
+                            />
                         </button>
                     )}
 
                     <div className="relative hidden md:block flex-1 max-w-xs ml-3 xl:ml-0">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/3 text-gray-900"
+                            className={`absolute left-3 top-1/2 -translate-y-1/3 ${
+                                darkMode ? "text-gray-200" : "text-gray-900"
+                            }`}
                             size={16}
                         />
                         <Input
                             type="text"
                             placeholder="Search..."
-                            className="mt-1 border-gray-500 pl-8 pr-4"
+                            className="mt-1 border-gray-400 pl-8 pr-4"
                         />
                     </div>
                 </div>
@@ -279,7 +285,12 @@ export default function AdminSidebar({
                         onClick={() => setDarkMode(!darkMode)}
                     />
                     <Link to="/admin/settings">
-                        <Settings size={20} className="text-gray-800" />
+                        <Settings
+                            size={20}
+                            className={`${
+                                darkMode ? "text-gray-200" : "text-gray-800"
+                            }`}
+                        />
                     </Link>
                     <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>

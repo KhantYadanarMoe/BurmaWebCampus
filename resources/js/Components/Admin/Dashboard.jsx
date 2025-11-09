@@ -21,6 +21,7 @@ import {
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Link } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 export default function UserGrowthChart({
     data,
@@ -38,6 +39,8 @@ export default function UserGrowthChart({
         { date: "2025-08-01", users: 410 },
         { date: "2025-09-01", users: 470 },
     ];
+
+    const { darkMode } = useOutletContext();
 
     const chartData = data || sampleData;
 
@@ -70,21 +73,43 @@ export default function UserGrowthChart({
         }
     };
 
+    console.log("Dark mode:", darkMode);
+
     return (
         <div>
             <h1 className="text-lg font-medium">Dashboard</h1>
             <div className="my-5 md:grid md:grid-cols-4 gap-2">
-                <Card className="my-2 md:my-0 bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card
+                    className={`my-2 md:my-0 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                >
                     <CardContent className="p-3">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-gray-700 font-medium">
+                                <p
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-300"
+                                            : "text-gray-800"
+                                    } font-medium`}
+                                >
                                     Total Courses
                                 </p>
-                                <p className="text-black text-lg font-medium mt-1">
+                                <p
+                                    className={`${
+                                        darkMode ? "text-white" : "text-black"
+                                    } text-lg font-medium mt-1`}
+                                >
                                     6
                                 </p>
-                                <p className="text-gray-500 text-sm mt-2">
+                                <p
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-500"
+                                    } text-sm mt-2`}
+                                >
                                     Active courses
                                 </p>
                             </div>
@@ -92,17 +117,37 @@ export default function UserGrowthChart({
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="my-2 md:my-0 bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card
+                    className={`my-2 md:my-0 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                >
                     <CardContent className="p-3">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-gray-700 font-medium">
+                                <p
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-300"
+                                            : "text-gray-800"
+                                    } font-medium`}
+                                >
                                     Total Users
                                 </p>
-                                <p className="text-black text-lg font-medium mt-1">
+                                <p
+                                    className={`${
+                                        darkMode ? "text-white" : "text-black"
+                                    } text-lg font-medium mt-1`}
+                                >
                                     376
                                 </p>
-                                <p className="text-gray-500 text-sm mt-2">
+                                <p
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-500"
+                                    } text-sm mt-2`}
+                                >
                                     Registered users
                                 </p>
                             </div>
@@ -110,17 +155,37 @@ export default function UserGrowthChart({
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="my-2 md:my-0 bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card
+                    className={`my-2 md:my-0 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                >
                     <CardContent className="p-3">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-gray-700 font-medium">
+                                <p
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-300"
+                                            : "text-gray-800"
+                                    } font-medium`}
+                                >
                                     Revenue
                                 </p>
-                                <p className="text-black text-lg font-medium mt-1">
+                                <p
+                                    className={`${
+                                        darkMode ? "text-white" : "text-black"
+                                    } text-lg font-medium mt-1`}
+                                >
                                     3,600,000
                                 </p>
-                                <p className="text-gray-500 text-sm mt-2">
+                                <p
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-500"
+                                    } text-sm mt-2`}
+                                >
                                     Overall revenue
                                 </p>
                             </div>
@@ -128,17 +193,37 @@ export default function UserGrowthChart({
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="my-2 md:my-0 bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card
+                    className={`my-2 md:my-0 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                >
                     <CardContent className="p-3">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-gray-700 font-medium">
+                                <p
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-300"
+                                            : "text-gray-800"
+                                    } font-medium`}
+                                >
                                     Subscribers
                                 </p>
-                                <p className="text-black text-lg font-medium mt-1">
+                                <p
+                                    className={`${
+                                        darkMode ? "text-white" : "text-black"
+                                    } text-lg font-medium mt-1`}
+                                >
                                     583
                                 </p>
-                                <p className="text-gray-500 text-sm mt-2">
+                                <p
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-500"
+                                    } text-sm mt-2`}
+                                >
                                     Subscribed users
                                 </p>
                             </div>
@@ -148,16 +233,22 @@ export default function UserGrowthChart({
                 </Card>
             </div>
             <div className="flex flex-col md:flex-row gap-2 my-5">
-                <Card className="md:w-3/5 bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="md:w-3/5  border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-3 h-full flex items-center">
                         <div className="w-full">
                             <div className="flex items-start justify-between">
                                 <div>
-                                    <p className="text-gray-700 font-medium">
+                                    <p
+                                        className={`${
+                                            darkMode
+                                                ? "text-gray-300"
+                                                : "text-gray-700"
+                                        } font-medium`}
+                                    >
                                         User Growth
                                     </p>
                                     <div className="flex items-end gap-3">
-                                        <p className="text-black text-2xl font-semibold">
+                                        <p className=" text-2xl font-semibold">
                                             {totalUsers.toLocaleString()}
                                         </p>
                                         <div className="flex items-center gap-2">
@@ -172,20 +263,20 @@ export default function UserGrowthChart({
                                                     ? `+${delta}`
                                                     : `${delta}`}
                                             </span>
-                                            <span className="text-xs text-gray-500">
+                                            <span className="text-xs text-gray-400">
                                                 ({deltaPercent}%)
                                             </span>
                                         </div>
                                     </div>
                                     {!compact && (
-                                        <p className="text-gray-500 text-sm mt-2">
+                                        <p className="text-gray-400 text-sm mt-2">
                                             Monthly active users — last
                                             {chartData.length} months
                                         </p>
                                     )}
                                 </div>
 
-                                <div className="text-right text-sm text-gray-500">
+                                <div className="text-right text-sm text-gray-400">
                                     <p className="hidden sm:block">
                                         Since start: {chartData[0]?.date}
                                     </p>
@@ -291,11 +382,11 @@ export default function UserGrowthChart({
                             <div className="mt-3 flex gap-2 text-xs">
                                 <div className="flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
-                                    <span className="text-gray-600">Users</span>
+                                    <span className="text-gray-500">Users</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-yellow-300 inline-block" />
-                                    <span className="text-gray-600">
+                                    <span className="text-gray-500">
                                         Previous
                                     </span>
                                 </div>
@@ -303,7 +394,7 @@ export default function UserGrowthChart({
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="md:w-2/5 bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="md:w-2/5 border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-3">
                         <div>
                             <h1 className="text-lg font-medium">
@@ -389,10 +480,10 @@ export default function UserGrowthChart({
                 </Card>
             </div>
             <div className="my-5">
-                <Card className="bg-white border border-gray-600 shadow-lg rounded-lg">
+                <Card className="border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-3">
                         <h1 className="text-lg font-medium">Latest Purchase</h1>
-                        <p className="text-gray-700 text-sm">
+                        <p className="text-gray-500 text-sm">
                             Here are the latest purchase of the courses.
                         </p>
                         <div className="overflow-x-auto w-full">
