@@ -42,7 +42,12 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
+export default function AdminSidebar({
+    isSidebarOpen,
+    setIsSidebarOpen,
+    darkMode,
+    setDarkMode,
+}) {
     return (
         <motion.div
             initial={{ x: -100, opacity: 0 }}
@@ -51,7 +56,11 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
             className="flex gap-3"
         >
             <div
-                className={`w-[80%] md:w-[50%] xl:w-[24%] bg-white flex flex-col pt-10 h-screen fixed top-0 transition-all duration-300 z-50
+                className={`w-[80%] md:w-[50%] xl:w-[24%]  ${
+                    darkMode
+                        ? "bg-[#121212] text-gray-100"
+                        : "bg-white text-black"
+                }  flex flex-col pt-10 h-screen fixed top-0 transition-all duration-300 z-50
                 ${isSidebarOpen ? "left-0" : "-left-[100%]"} 
             `}
             >
@@ -68,12 +77,24 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                             Home
                         </h2>
                         <Link to="/admin/dashboard">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <LayoutDashboard size={20} /> Dashboard
                             </div>
                         </Link>
                         <Link to="/admin/purchase">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <ReceiptText size={20} /> Purchase
                             </div>
                         </Link>
@@ -85,17 +106,35 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                             Courses
                         </h2>
                         <Link to="/admin/courses/add">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <Plus size={20} /> Create Course
                             </div>
                         </Link>
                         <Link to="/admin/courses/category">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <TagIcon size={20} /> Categories
                             </div>
                         </Link>
                         <Link to="/admin/courses">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <BookOpen size={20} /> Courses
                             </div>
                         </Link>
@@ -107,17 +146,35 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                             Blog
                         </h2>
                         <Link to="/admin/blogs/create">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <Plus size={20} /> Create Blog
                             </div>
                         </Link>
                         <Link to="/admin/blogs/category">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <TagIcon size={20} /> Categories
                             </div>
                         </Link>
                         <Link to="/admin/blogs">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <Newspaper size={20} /> Blogs
                             </div>
                         </Link>
@@ -126,22 +183,46 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                     {/* Other Links */}
                     <div className="mb-6 ml-3">
                         <Link to="/admin/users">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <Users size={20} /> Users
                             </div>
                         </Link>
                         <Link to="/admin/subscribers">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <Inbox size={20} /> Subscribers
                             </div>
                         </Link>
                         <Link to="/admin/reviews">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <MessageCircle size={20} /> Reviews
                             </div>
                         </Link>
                         <Link to="/admin/contacts">
-                            <div className="flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 border-l-white hover:border-l-accentRed transition-all duration-200 cursor-pointer">
+                            <div
+                                className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black hover:text-accentRed border-l-4 ${
+                                    darkMode
+                                        ? "text-white border-l-[#121212]"
+                                        : "text-black border-l-white"
+                                }  hover:border-l-accentRed transition-all duration-200 cursor-pointer`}
+                            >
                                 <Mail size={20} /> Contact
                             </div>
                         </Link>
@@ -151,13 +232,17 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
 
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black opacity-50 z-40 xl:hidden"
+                    className="fixed inset-0 bg-[#121212] opacity-50 z-40 xl:hidden"
                     onClick={() => setIsSidebarOpen(false)}
                 ></div>
             )}
 
             <nav
-                className={`px-6 py-3 md:py-4 pt-4 xl:pt-8 bg-white fixed top-0 w-full flex items-center justify-between shadow-md xl:shadow-none z-40
+                className={`px-6 py-3 md:py-4 pt-4 xl:pt-8 ${
+                    darkMode
+                        ? "bg-[#121212] text-gray-100"
+                        : "bg-white text-black"
+                }  fixed top-0 w-full flex items-center justify-between shadow-md xl:shadow-none z-40
                 ${
                     isSidebarOpen
                         ? "xl:w-[76%] xl:ml-[24%]"
@@ -188,7 +273,11 @@ export default function AdminSidebar({ isSidebarOpen, setIsSidebarOpen }) {
                 </div>
 
                 <div className="flex items-center md:gap-6 gap-3">
-                    <MoonStar size={20} className="text-gray-800" />
+                    <MoonStar
+                        size={20}
+                        className="text-gray-800 dark:text-gray-200 cursor-pointer"
+                        onClick={() => setDarkMode(!darkMode)}
+                    />
                     <Link to="/admin/settings">
                         <Settings size={20} className="text-gray-800" />
                     </Link>
