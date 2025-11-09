@@ -55,7 +55,7 @@ export default function Navbar() {
                             </li>
                             <li class="flex items-center justify-center">
                                 <Link
-                                    to=""
+                                    to="/courses"
                                     class="relative text-black cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-black before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-black after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]"
                                 >
                                     <span>Courses</span>
@@ -63,7 +63,7 @@ export default function Navbar() {
                             </li>
                             <li class="flex items-center justify-center">
                                 <Link
-                                    to=""
+                                    to="/blogs"
                                     class="relative text-black cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-black before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-black after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]"
                                 >
                                     <span>Blogs</span>
@@ -173,12 +173,18 @@ export default function Navbar() {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="" className="hover:text-gray-950">
+                                <Link
+                                    to="/courses"
+                                    className="hover:text-gray-950"
+                                >
                                     Courses
                                 </Link>
                             </li>
                             <li>
-                                <Link to="" className="hover:text-gray-950">
+                                <Link
+                                    to="/blogs"
+                                    className="hover:text-gray-950"
+                                >
                                     Blogs
                                 </Link>
                             </li>

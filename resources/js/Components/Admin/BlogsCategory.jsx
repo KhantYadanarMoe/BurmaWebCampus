@@ -390,7 +390,9 @@ export default function BlogsCategory() {
                                     </span>
                                 </div>
                             </li>
-                            <li className="basis-[30%]">27</li>
+                            <li className="basis-[30%]">
+                                {category.blogs_count}
+                            </li>
                             <li className="basis-[20%]">
                                 <Switch
                                     checked={

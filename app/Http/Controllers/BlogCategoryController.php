@@ -47,34 +47,37 @@ class BlogCategoryController extends Controller
         ]);
     }
     
-    public function index(Request $request){
-        $sort = $request->query('sort', 'newest'); // Default to 'newest' if no data is provided
-        $query = BlogCategory::query();
+    public function index(Request $request)
+{
+    $sort = $request->query('sort', 'newest'); // default sorting
 
-        // Apply sorting based on the requested sort option
-        switch ($sort) {
-            case 'oldest':
-                $query->orderBy('created_at', 'asc');
-                break;
-            case 'a-z':
-                $query->orderBy('name', 'asc');
-                break;
-            case 'z-a':
-                $query->orderBy('name', 'desc');
-                break;
-            case 'newest':
-            default:
-                $query->orderBy('created_at', 'desc');
-                break;
-        }
+    // Start query with blog count
+    $query = BlogCategory::withCount('blogs');
 
-        $categories = $query->get();
-
-        // send data to frontend
-        return response()->json([
-            'categories' => $categories
-        ]);
+    // Apply sorting based on category fields
+    switch ($sort) {
+        case 'oldest':
+            $query->orderBy('created_at', 'asc');
+            break;
+        case 'a-z':
+            $query->orderBy('name', 'asc');
+            break;
+        case 'z-a':
+            $query->orderBy('name', 'desc');
+            break;
+        case 'newest':
+        default:
+            $query->orderBy('created_at', 'desc');
+            break;
     }
+
+    $categories = $query->get();
+
+    return response()->json([
+        'categories' => $categories
+    ]);
+}
+
 
     public function show($id){
         $category = BlogCategory::find($id); // Find category by ID

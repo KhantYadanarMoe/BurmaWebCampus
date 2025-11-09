@@ -8,39 +8,39 @@ import { useEffect } from "react";
 export default function BlogDetails() {
     const { id } = useParams();
     const [blog, setBlog] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    if (!blog) {
-        return <p>Loading...</p>;
-    }
+    useEffect(() => {
+        const getDetails = async () => {
+            try {
+                const res = await axios.get(`/api/blog/${id}`);
+                setBlog(res.data.blog);
+            } catch (err) {
+                console.error("Error fetching blog:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    if (!blog?.paragraph) return null;
+        const incrementView = async () => {
+            try {
+                await axios.post(`/api/blog/${id}/view`);
+            } catch (err) {
+                console.error("Error incrementing view:", err);
+            }
+        };
 
-    const getDetails = async (id) => {
-        try {
-            let res = await axios.get("/api/blog/" + id);
-            setBlog(res.data.blog);
-        } catch (err) {
-            console.error("Error fetching blog:", err);
-        }
-    };
+        getDetails();
+        incrementView();
+    }, [id]);
 
-    const words = blog.paragraph.split(/\s+/);
+    if (loading) return <p>Loading...</p>;
+    if (!blog) return <p>Blog not found.</p>;
+
+    const words = (blog.paragraph || "").split(/\s+/);
     const mid = Math.ceil(words.length / 2);
     const firstHalf = words.slice(0, mid).join(" ");
     const secondHalf = words.slice(mid).join(" ");
-
-    const incrementView = async (id) => {
-        try {
-            await axios.post(`/api/blog/${id}/view`);
-        } catch (err) {
-            console.error("Error incrementing view:", err);
-        }
-    };
-
-    useEffect(() => {
-        getDetails(id);
-        incrementView(id);
-    }, [id]);
 
     return (
         <div className="px-4 md:px-5 lg:px-8 w-full md:w-[90%] lg:w-[80%] flex flex-col items-start mx-auto">
