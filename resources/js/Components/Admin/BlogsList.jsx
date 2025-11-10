@@ -34,7 +34,7 @@ import {
 import { Button } from "../ui/button";
 import { ChevronDown, Ellipsis, Plus } from "lucide-react";
 import BlogImg from "../../../assets/Blogs.jpg";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
@@ -51,6 +51,8 @@ export default function BlogsList() {
     const [currentPage, setCurrentPage] = useState(1);
 
     const rowsPerPage = 10;
+
+    const { darkMode } = useOutletContext();
 
     const getCategories = async () => {
         try {
@@ -173,7 +175,13 @@ export default function BlogsList() {
                     <div className="hidden md:block">
                         <DropdownMenu modal={false}>
                             <DropdownMenuTrigger asChild>
-                                <button className="flex gap-1 items-center px-2 py-1 border border-gray-800 rounded-md">
+                                <button
+                                    className={`flex gap-1 items-center px-2 py-1 border ${
+                                        darkMode
+                                            ? "border-gray-300"
+                                            : "border-gray-800"
+                                    } rounded-md`}
+                                >
                                     {
                                         {
                                             newest: "Filter By Newest",
@@ -232,7 +240,11 @@ export default function BlogsList() {
             </div>
             <div className="overflow-x-auto w-full">
                 <div className="min-w-[920px]">
-                    <ul className="flex items-center px-3 py-4 border-b border-b-gray-700 my-3">
+                    <ul
+                        className={`flex items-center px-3 py-4 border-b ${
+                            darkMode ? "border-b-gray-200" : "border-b-gray-700"
+                        } my-3`}
+                    >
                         <li className="basis-[4%]">ID</li>
                         <li className="basis-[40%]">Title</li>
                         <li className="basis-[13%] pl-2">Category</li>
@@ -242,7 +254,13 @@ export default function BlogsList() {
                         <li className="basis-[6%]"></li>
                     </ul>
                     {currentBlogs.map((blog) => (
-                        <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <ul
+                            className={`flex items-center px-3 py-3 border-b ${
+                                darkMode
+                                    ? "border-b-gray-700"
+                                    : "border-b-gray-300"
+                            } my-2`}
+                        >
                             <li className="basis-[4%]">{blog.id}</li>
                             <li className="basis-[40%] flex items-center gap-2">
                                 {blog.cover && (
@@ -292,7 +310,13 @@ export default function BlogsList() {
                             <li className="basis-[6%]">
                                 <DropdownMenu modal={false}>
                                     <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <button
+                                            className={`p-1 rounded-md ${
+                                                darkMode
+                                                    ? "hover:bg-gray-600"
+                                                    : "hover:bg-gray-100"
+                                            } outline-none`}
+                                        >
                                             <Ellipsis size={20} />
                                         </button>
                                     </DropdownMenuTrigger>
@@ -301,11 +325,11 @@ export default function BlogsList() {
                                         className="w-40"
                                     >
                                         <Link to={`/blog/${blog.id}`}>
-                                            <DropdownMenuItem className="text-accentGreen">
+                                            <DropdownMenuItem>
                                                 Read
                                             </DropdownMenuItem>
                                         </Link>
-                                        <DropdownMenuItem className="text-accentYellow">
+                                        <DropdownMenuItem>
                                             <Link
                                                 to={`/admin/blogs/${blog.id}/edit`}
                                             >
@@ -315,7 +339,13 @@ export default function BlogsList() {
                                         <DropdownMenuItem asChild>
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
-                                                    <button className="text-accentRed bg-white w-full text-left px-2 py-2">
+                                                    <button
+                                                        className={`text-accentRed ${
+                                                            darkMode
+                                                                ? "bg-[#09090B] hover:bg-[#212121]"
+                                                                : "bg-white hover:bg-gray-100"
+                                                        } w-full text-left text-sm px-2 py-2 rounded-md`}
+                                                    >
                                                         Delete
                                                     </button>
                                                 </AlertDialogTrigger>

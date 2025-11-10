@@ -26,7 +26,7 @@ import {
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ChevronDown, Ellipsis } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -60,6 +60,8 @@ export default function CoursesCategory() {
     const [errors, setErrors] = useState({});
 
     const [refreshFlag, setRefreshFlag] = useState(false);
+
+    const { darkMode } = useOutletContext();
 
     const fileInputRef = useRef(null);
 
@@ -321,7 +323,11 @@ export default function CoursesCategory() {
                 <h1 className="text-lg font-medium">Category</h1>
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
-                        <button className="flex gap-1 items-center px-2 py-1 border border-gray-800 rounded-md">
+                        <button
+                            className={`flex gap-1 items-center px-2 py-1 border ${
+                                darkMode ? "border-gray-300" : "border-gray-800"
+                            } rounded-md`}
+                        >
                             {
                                 {
                                     newest: "Filter By Newest",
@@ -368,7 +374,11 @@ export default function CoursesCategory() {
             </div>
             <div className="overflow-x-auto w-full">
                 <div className="min-w-[920px]">
-                    <ul className="flex items-center px-3 py-4 border-b border-b-gray-700 my-3">
+                    <ul
+                        className={`flex items-center px-3 py-4 border-b ${
+                            darkMode ? "border-b-gray-200" : "border-b-gray-700"
+                        } my-3`}
+                    >
                         <li className="basis-[5%]">ID</li>
                         <li className="basis-[40%]">Category</li>
                         <li className="basis-[30%]">Related Courses</li>
@@ -376,7 +386,13 @@ export default function CoursesCategory() {
                         <li className="basis-[5%]"></li>
                     </ul>
                     {categories.map((category) => (
-                        <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <ul
+                            className={`flex items-center px-3 py-3 border-b ${
+                                darkMode
+                                    ? "border-b-gray-600"
+                                    : "border-b-gray-300"
+                            } my-2`}
+                        >
                             <li className="basis-[5%]">{category.id}</li>
                             <li className="basis-[40%]">
                                 <div className="flex gap-2 items-center">
@@ -406,7 +422,13 @@ export default function CoursesCategory() {
                             <li className="basis-[5%]">
                                 <DropdownMenu modal={false}>
                                     <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <button
+                                            className={`p-1 rounded-md ${
+                                                darkMode
+                                                    ? "hover:bg-gray-600"
+                                                    : "hover:bg-gray-100"
+                                            } outline-none`}
+                                        >
                                             <Ellipsis size={20} />
                                         </button>
                                     </DropdownMenuTrigger>

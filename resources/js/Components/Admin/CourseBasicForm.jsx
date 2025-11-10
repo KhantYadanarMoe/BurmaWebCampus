@@ -72,7 +72,13 @@ export default function CourseBasicForm() {
 
                             <div className="absolute inset-0 flex items-center px-0">
                                 <div className="flex-1 flex justify-center relative">
-                                    <div className="flex items-center justify-center w-4 h-4 rounded-full ">
+                                    <div
+                                        className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                            darkMode
+                                                ? "bg-gray-800"
+                                                : "bg-white"
+                                        }`}
+                                    >
                                         <span className="block w-4 h-4 rounded-full transform" />
                                     </div>
                                     <div
@@ -88,7 +94,13 @@ export default function CourseBasicForm() {
                                 </div>
 
                                 <div className="flex-1 flex justify-center relative">
-                                    <div className="flex items-center justify-center w-4 h-4 rounded-full ">
+                                    <div
+                                        className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                            darkMode
+                                                ? "bg-gray-800"
+                                                : "bg-white"
+                                        }`}
+                                    >
                                         <span className="block w-4 h-4 rounded-full transform" />
                                     </div>
                                     <div
@@ -104,11 +116,21 @@ export default function CourseBasicForm() {
                                 </div>
 
                                 <div className="flex-1 flex justify-center relative">
-                                    <div className="flex items-center justify-center w-4 h-4 rounded-full ">
+                                    <div
+                                        className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                            darkMode
+                                                ? "bg-gray-800"
+                                                : "bg-white"
+                                        }`}
+                                    >
                                         <span className="block w-4 h-4 rounded-full transform" />
                                     </div>
                                     <div
-                                        className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ring-gray-300"
+                                        className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
+                                            darkMode
+                                                ? "ring-white"
+                                                : "ring-black"
+                                        }`}
                                         style={{
                                             transform: "translate(-50%, -50%)",
                                         }}

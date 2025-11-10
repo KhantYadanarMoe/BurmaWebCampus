@@ -22,11 +22,18 @@ import {
 } from "../ui/pagination";
 import { Button } from "../ui/button";
 import CourseImg from "../../../assets/Courses.jpg";
-import { Ellipsis, GraduationCap, Plus, Users } from "lucide-react";
+import {
+    ChevronDown,
+    Ellipsis,
+    GraduationCap,
+    Plus,
+    Users,
+} from "lucide-react";
 import BlogImg from "../../../assets/Blogs.jpg";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 
 export default function CoursesList() {
+    const { darkMode } = useOutletContext();
     return (
         <div>
             <h1 className="text-xl font-medium">Courses</h1>
@@ -50,25 +57,38 @@ export default function CoursesList() {
                 </div>
                 <div className="flex items-center justify-end md:justify-normal gap-2">
                     <div className="hidden md:block">
-                        <Select>
-                            <SelectTrigger className="w-[180px] border-gray-700">
-                                <SelectValue placeholder="Filter " />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="newest">
+                        <DropdownMenu modal={false}>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    className={`flex gap-1 items-center px-2 py-1 border ${
+                                        darkMode
+                                            ? "border-gray-300"
+                                            : "border-gray-800"
+                                    } rounded-md`}
+                                >
+                                    <ChevronDown size={16} />
+                                </button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent
+                                align="end"
+                                className="w-40"
+                                avoidCollisions={false}
+                            >
+                                <DropdownMenuItem className="cursor-pointer">
                                     Filter By Newest
-                                </SelectItem>
-                                <SelectItem value="oldest">
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer">
                                     Filter By Oldest
-                                </SelectItem>
-                                <SelectItem value="a-z">
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer">
                                     Filter By A-Z
-                                </SelectItem>
-                                <SelectItem value="z-a">
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer">
                                     Filter By Z-A
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                     <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
                         <Plus />
@@ -78,7 +98,11 @@ export default function CoursesList() {
             </div>
             <div className="overflow-x-auto w-full">
                 <div className="min-w-[920px]">
-                    <ul className="flex items-center px-3 py-4 border-b border-b-gray-700 my-3">
+                    <ul
+                        className={`flex items-center px-3 py-4 border-b ${
+                            darkMode ? "border-b-gray-200" : "border-b-gray-700"
+                        } my-3`}
+                    >
                         <li className="basis-[5%]">ID</li>
                         <li className="basis-[33%]">Course Name</li>
                         <li className="basis-[13%] pl-2">Category</li>
@@ -88,7 +112,11 @@ export default function CoursesList() {
                         <li className="basis-[10%]">Time</li>
                         <li className="basis-[5%]"></li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                    <ul
+                        className={`flex items-center px-3 py-3 border-b ${
+                            darkMode ? "border-b-gray-700" : "border-b-gray-300"
+                        } my-2`}
+                    >
                         <li className="basis-[5%]">1</li>
                         <li className="basis-[33%] flex items-center gap-2">
                             <img
@@ -112,7 +140,13 @@ export default function CoursesList() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-600"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -129,7 +163,11 @@ export default function CoursesList() {
                             </DropdownMenu>
                         </li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                    <ul
+                        className={`flex items-center px-3 py-3 border-b ${
+                            darkMode ? "border-b-gray-700" : "border-b-gray-300"
+                        } my-2`}
+                    >
                         <li className="basis-[5%]">1</li>
                         <li className="basis-[33%] flex items-center gap-2">
                             <img
@@ -153,7 +191,13 @@ export default function CoursesList() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-600"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -170,7 +214,11 @@ export default function CoursesList() {
                             </DropdownMenu>
                         </li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                    <ul
+                        className={`flex items-center px-3 py-3 border-b ${
+                            darkMode ? "border-b-gray-700" : "border-b-gray-300"
+                        } my-2`}
+                    >
                         <li className="basis-[5%]">1</li>
                         <li className="basis-[33%] flex items-center gap-2">
                             <img
@@ -194,7 +242,13 @@ export default function CoursesList() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-600"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -211,7 +265,11 @@ export default function CoursesList() {
                             </DropdownMenu>
                         </li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                    <ul
+                        className={`flex items-center px-3 py-3 border-b ${
+                            darkMode ? "border-b-gray-700" : "border-b-gray-300"
+                        } my-2`}
+                    >
                         <li className="basis-[5%]">1</li>
                         <li className="basis-[33%] flex items-center gap-2">
                             <img
@@ -235,7 +293,13 @@ export default function CoursesList() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-600"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -252,7 +316,11 @@ export default function CoursesList() {
                             </DropdownMenu>
                         </li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                    <ul
+                        className={`flex items-center px-3 py-3 border-b ${
+                            darkMode ? "border-b-gray-700" : "border-b-gray-300"
+                        } my-2`}
+                    >
                         <li className="basis-[5%]">1</li>
                         <li className="basis-[33%] flex items-center gap-2">
                             <img
@@ -276,7 +344,13 @@ export default function CoursesList() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-600"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -293,7 +367,11 @@ export default function CoursesList() {
                             </DropdownMenu>
                         </li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                    <ul
+                        className={`flex items-center px-3 py-3 border-b ${
+                            darkMode ? "border-b-gray-700" : "border-b-gray-300"
+                        } my-2`}
+                    >
                         <li className="basis-[5%]">1</li>
                         <li className="basis-[33%] flex items-center gap-2">
                             <img
@@ -317,7 +395,13 @@ export default function CoursesList() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-600"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -334,7 +418,11 @@ export default function CoursesList() {
                             </DropdownMenu>
                         </li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                    <ul
+                        className={`flex items-center px-3 py-3 border-b ${
+                            darkMode ? "border-b-gray-700" : "border-b-gray-300"
+                        } my-2`}
+                    >
                         <li className="basis-[5%]">1</li>
                         <li className="basis-[33%] flex items-center gap-2">
                             <img
@@ -358,7 +446,13 @@ export default function CoursesList() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-600"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>

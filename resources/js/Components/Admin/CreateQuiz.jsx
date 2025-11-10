@@ -9,7 +9,7 @@ import {
     Users,
 } from "lucide-react";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -41,13 +41,23 @@ export default function CreateQuiz() {
         setQuestions([...questions, { subtitle: "", files: [] }]);
     };
 
+    const { darkMode } = useOutletContext();
+
     return (
         <div>
             <div>
-                <div className="flex gap-1 items-end text-gray-800 text-sm">
+                <div
+                    className={`flex gap-1 items-end ${
+                        darkMode ? "text-gray-300" : "text-gray-800"
+                    } text-sm`}
+                >
                     <Link>Courses</Link>
                     <ChevronsRight size={18} />
-                    <Link className="text-black">Add new course</Link>
+                    <Link
+                        className={`${darkMode ? "text-white" : "text-black"}`}
+                    >
+                        Add new course
+                    </Link>
                 </div>
 
                 <div className="flex justify-between mt-6 mb-8">
@@ -55,7 +65,11 @@ export default function CreateQuiz() {
                         <h1 className="text-lg md:text-2xl font-medium">
                             Add a New Course
                         </h1>
-                        <p className="text-xs md:text-base text-gray-800">
+                        <p
+                            className={`text-xs md:text-base ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Please fill in all the details of your course.
                         </p>
                     </div>
@@ -64,22 +78,36 @@ export default function CreateQuiz() {
 
                 <div className="w-full">
                     <div className="relative">
-                        <div className="w-full bg-slate-200 rounded-full h-1.5" />
+                        <div
+                            className={`w-full ${
+                                darkMode ? "bg-slate-700" : "bg-slate-200"
+                            } rounded-full h-1.5`}
+                        />
 
                         <div
                             className="absolute left-0 top-0 bottom-0 rounded-full overflow-hidden pointer-events-none h-1.5"
                             style={{ width: `${percent}%` }}
                         >
-                            <div className="h-full bg-gray-800" />
+                            <div
+                                className={`h-full ${
+                                    darkMode ? "bg-gray-200" : "bg-gray-800"
+                                }`}
+                            />
                         </div>
 
                         <div className="absolute inset-0 flex items-center px-0">
                             <div className="flex-1 flex justify-center relative">
-                                <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white">
+                                <div
+                                    className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                        darkMode ? "bg-gray-800" : "bg-white"
+                                    }`}
+                                >
                                     <span className="block w-4 h-4 rounded-full transform" />
                                 </div>
                                 <div
-                                    className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ring-black"
+                                    className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
+                                        darkMode ? "ring-white" : "ring-black"
+                                    }`}
                                     style={{
                                         transform: "translate(-50%, -50%)",
                                     }}
@@ -87,11 +115,17 @@ export default function CreateQuiz() {
                             </div>
 
                             <div className="flex-1 flex justify-center relative">
-                                <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white">
+                                <div
+                                    className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                        darkMode ? "bg-gray-800" : "bg-white"
+                                    }`}
+                                >
                                     <span className="block w-4 h-4 rounded-full transform" />
                                 </div>
                                 <div
-                                    className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ring-black"
+                                    className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
+                                        darkMode ? "ring-white" : "ring-black"
+                                    }`}
                                     style={{
                                         transform: "translate(-50%, -50%)",
                                     }}
@@ -99,11 +133,17 @@ export default function CreateQuiz() {
                             </div>
 
                             <div className="flex-1 flex justify-center relative">
-                                <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white">
+                                <div
+                                    className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                        darkMode ? "bg-gray-800" : "bg-white"
+                                    }`}
+                                >
                                     <span className="block w-4 h-4 rounded-full transform" />
                                 </div>
                                 <div
-                                    className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ring-gray-300"
+                                    className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
+                                        darkMode ? "ring-white" : "ring-black"
+                                    }`}
                                     style={{
                                         transform: "translate(-50%, -50%)",
                                     }}
@@ -138,7 +178,13 @@ export default function CreateQuiz() {
                                 </h1>
                                 <DropdownMenu modal={false}>
                                     <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <button
+                                            className={`p-1 rounded-md ${
+                                                darkMode
+                                                    ? "hover:bg-gray-600"
+                                                    : "hover:bg-gray-100"
+                                            } outline-none`}
+                                        >
                                             <EllipsisVertical size={20} />
                                         </button>
                                     </DropdownMenuTrigger>
@@ -190,8 +236,21 @@ export default function CreateQuiz() {
                                             onClick={addOption}
                                             className="flex gap-1 items-center px-3 py-2 border border-dashed border-gray-600 rounded-md"
                                         >
-                                            <CopyPlus size={18} />
-                                            <p className="text-sm text-gray-800">
+                                            <CopyPlus
+                                                size={18}
+                                                className={`${
+                                                    darkMode
+                                                        ? "text-gray-400"
+                                                        : "text-gray-800"
+                                                }`}
+                                            />
+                                            <p
+                                                className={`text-sm ${
+                                                    darkMode
+                                                        ? "text-gray-400"
+                                                        : "text-gray-800"
+                                                }`}
+                                            >
                                                 Add More Option
                                             </p>
                                         </button>
@@ -208,8 +267,17 @@ export default function CreateQuiz() {
                             onClick={addQuestion}
                             className="flex gap-1 items-center px-3 py-2 border border-dashed border-gray-600 rounded-md"
                         >
-                            <CopyPlus size={18} />
-                            <p className="text-sm text-gray-800">
+                            <CopyPlus
+                                size={18}
+                                className={`${
+                                    darkMode ? "text-gray-400" : "text-gray-800"
+                                }`}
+                            />
+                            <p
+                                className={`text-sm ${
+                                    darkMode ? "text-gray-400" : "text-gray-800"
+                                }`}
+                            >
                                 Add More Question
                             </p>
                         </button>

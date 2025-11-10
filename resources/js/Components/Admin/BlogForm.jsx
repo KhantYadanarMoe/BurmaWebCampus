@@ -15,7 +15,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { Switch } from "../ui/switch";
 
 export default function BlogForm() {
@@ -25,10 +25,10 @@ export default function BlogForm() {
     let [isEdit, setIsEdit] = useState(false);
 
     const [cover, setCover] = useState(null);
-    const [coverUrl, setCoverUrl] = useState(null); 
+    const [coverUrl, setCoverUrl] = useState(null);
 
-    const [detailImg1, setDetailImg1] = useState(null); 
-    const [detailImg1Url, setDetailImg1Url] = useState(null); 
+    const [detailImg1, setDetailImg1] = useState(null);
+    const [detailImg1Url, setDetailImg1Url] = useState(null);
 
     const [detailImg2, setDetailImg2] = useState(null);
     const [detailImg2Url, setDetailImg2Url] = useState(null);
@@ -37,8 +37,10 @@ export default function BlogForm() {
 
     const [errors, setErrors] = useState({});
 
+    const { darkMode } = useOutletContext();
+
     const navigate = useNavigate();
-    
+
     const [form, setForm] = useState({
         title: "",
         cover: "",
@@ -77,7 +79,7 @@ export default function BlogForm() {
     useEffect(() => {
         getCategories();
     }, []);
-    
+
     useEffect(() => {
         console.log(id);
         setIsEdit(!!id);
@@ -194,7 +196,9 @@ export default function BlogForm() {
                             value={form.title}
                             onChange={handleInputChange}
                             type="text"
-                            className="border-gray-400 mt-1"
+                            className={`${
+                                darkMode ? "border-gray-300" : "border-gray-400"
+                            } mt-1`}
                             placeholder="Write the title of this blog"
                         />
                         {errors.title && (
@@ -203,7 +207,11 @@ export default function BlogForm() {
                             </p>
                         )}
                     </div>
-                    <div className="flex justify-center mt-5 px-4 py-4 border border-gray-400 bg-white rounded-md">
+                    <div
+                        className={`flex justify-center mt-5 px-4 py-4 border ${
+                            darkMode ? "border-gray-300" : "border-gray-400"
+                        }  rounded-md`}
+                    >
                         <div
                             className="w-full p-8 rounded-md text-center cursor-pointer"
                             onClick={() =>
@@ -218,7 +226,13 @@ export default function BlogForm() {
                             }}
                         >
                             <div className="flex flex-col items-center">
-                                <Upload className="text-gray-700 text-4xl mb-4" />
+                                <Upload
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-700"
+                                    } text-4xl mb-4`}
+                                />
                                 <p className="text-accentRed font-bold">
                                     Click to browse or drag & drop
                                 </p>
@@ -240,7 +254,11 @@ export default function BlogForm() {
                     </div>
 
                     <div className="flex gap-3 mt-3">
-                        <div className="w-1/2 flex justify-center px-4 py-4 border border-gray-400 bg-white rounded-md">
+                        <div
+                            className={`w-1/2 flex justify-center px-4 py-4 border ${
+                                darkMode ? "border-gray-300" : "border-gray-400"
+                            }  rounded-md`}
+                        >
                             <div
                                 className="w-full p-8 rounded-md text-center cursor-pointer"
                                 onClick={() =>
@@ -257,7 +275,13 @@ export default function BlogForm() {
                                 }}
                             >
                                 <div className="flex flex-col items-center">
-                                    <Upload className="text-gray-700 text-4xl" />
+                                    <Upload
+                                        className={`${
+                                            darkMode
+                                                ? "text-gray-200"
+                                                : "text-gray-700"
+                                        } text-4xl`}
+                                    />
                                 </div>
                                 <Input
                                     id="detail_img_1_upload"
@@ -272,7 +296,7 @@ export default function BlogForm() {
                             </div>
                         </div>
 
-                        <div className="w-1/2 flex justify-center px-4 py-4 border border-gray-400 bg-white rounded-md">
+                        <div className="w-1/2 flex justify-center px-4 py-4 border border-gray-400  rounded-md">
                             <div
                                 className="w-full p-8 rounded-md text-center cursor-pointer"
                                 onClick={() =>
@@ -289,7 +313,13 @@ export default function BlogForm() {
                                 }}
                             >
                                 <div className="flex flex-col items-center">
-                                    <Upload className="text-gray-700 text-4xl" />
+                                    <Upload
+                                        className={`${
+                                            darkMode
+                                                ? "text-gray-200"
+                                                : "text-gray-700"
+                                        } text-4xl`}
+                                    />
                                 </div>
                                 <Input
                                     id="detail_img_2_upload"
@@ -409,7 +439,13 @@ export default function BlogForm() {
                                 )
                             }
                         >
-                            <SelectTrigger className="mt-1 border-gray-400">
+                            <SelectTrigger
+                                className={`mt-1 ${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-400"
+                                }`}
+                            >
                                 <SelectValue placeholder="Select Category" />
                             </SelectTrigger>
 
@@ -438,9 +474,12 @@ export default function BlogForm() {
                                 onChange={(val) =>
                                     handleCustomChange("paragraph", val)
                                 }
-                                className="min-h-[300px] border border-gray-400 rounded-md"
+                                className={`min-h-[300px] border ${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-400"
+                                } rounded-md`}
                             />
-                            
                         </div>
                         {errors.paragraph && (
                             <p className="text-red-500 mt-1 text-sm">
@@ -484,7 +523,11 @@ export default function BlogForm() {
                     <span className="px-2 py-1 text-xs border border-gray-700 rounded-lg">
                         {selectedCategory ? selectedCategory.name : "Frontend"}
                     </span>
-                    <p className="py-2 text-xs text-gray-600">
+                    <p
+                        className={`py-2 text-xs ${
+                            darkMode ? "text-gray-200" : "text-gray-600"
+                        }`}
+                    >
                         {new Date().toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "long",
@@ -527,7 +570,13 @@ export default function BlogForm() {
                                 <h1 className="text-lg font-medium mb-3">
                                     Lorem ipsum dolor sit amet consectetur.
                                 </h1>
-                                <p className="text-sm text-gray-700">
+                                <p
+                                    className={`text-sm ${
+                                        darkMode
+                                            ? "text-gray-300"
+                                            : "text-gray-700"
+                                    }`}
+                                >
                                     Lorem ipsum dolor sit amet consectetur,
                                     adipisicing elit. Iste nesciunt corporis
                                     mollitia consequuntur ullam atque officiis
