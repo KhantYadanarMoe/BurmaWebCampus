@@ -1,6 +1,11 @@
 import React from "react";
 import Pf from "../../../assets/Profile.jpg";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+    Link,
+    useNavigate,
+    useOutletContext,
+    useParams,
+} from "react-router-dom";
 import { useState } from "react";
 import {
     ChevronLeft,
@@ -37,6 +42,8 @@ export default function ContactMessage() {
     let [contact, setContact] = useState([]);
 
     const { id } = useParams();
+
+    const { darkMode } = useOutletContext();
 
     const navigate = useNavigate();
 
@@ -171,7 +178,7 @@ export default function ContactMessage() {
             <div className="lg:w-1/3 relative border-r border-r-gray-300">
                 <button
                     className="fixed mt-4 left-0 z-20 flex items-center justify-center 
-             w-10 h-12 border border-gray-400 rounded-r-2xl bg-white
+             w-10 h-12 border border-gray-400 rounded-r-2xl 
              shadow-md lg:hidden"
                     onClick={() => setOpen(true)}
                 >
@@ -179,7 +186,7 @@ export default function ContactMessage() {
                 </button>
                 <div
                     className={`
-          fixed -mt-4 lg:-mt-0 left-0 h-full w-full md:w-1/2 bg-white shadow-lg transform transition-transform duration-300 z-30
+          fixed -mt-4 lg:-mt-0 left-0 h-full w-full md:w-1/2  shadow-lg transform transition-transform duration-300 z-30
           ${open ? "translate-x-0" : "-translate-x-full"}
           lg:w-full 
           lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] lg:translate-x-0 lg:shadow-none
@@ -209,7 +216,11 @@ export default function ContactMessage() {
                                     className={`flex gap-2 w-full text-left px-3 py-3 rounded-lg duration-300 cursor-pointer 
                 ${
                     selectedContact?.id === contact.id
-                        ? "bg-gray-100"
+                        ? darkMode
+                            ? "bg-gray-800"
+                            : "bg-gray-100"
+                        : darkMode
+                        ? "hover:bg-gray-700"
                         : "hover:bg-gray-50"
                 }`}
                                 >
@@ -244,7 +255,13 @@ export default function ContactMessage() {
                                                     ) : null}
                                                 </div>
                                             </div>
-                                            <span className="text-sm text-gray-700">
+                                            <span
+                                                className={`text-sm ${
+                                                    darkMode
+                                                        ? "text-gray-300"
+                                                        : "text-gray-700"
+                                                }`}
+                                            >
                                                 {formatDistanceToNow(
                                                     new Date(
                                                         contact?.created_at
@@ -253,7 +270,13 @@ export default function ContactMessage() {
                                                 )}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-gray-800 mt-1 line-clamp-2">
+                                        <p
+                                            className={`text-sm ${
+                                                darkMode
+                                                    ? "text-gray-200"
+                                                    : "text-gray-800"
+                                            } mt-1 line-clamp-2`}
+                                        >
                                             {contact.message}
                                         </p>
                                     </div>
@@ -265,7 +288,11 @@ export default function ContactMessage() {
             </div>
 
             <div className="lg:w-2/3 px-3 pb-4">
-                <div className="flex items-center justify-between text-gray-700 px-3 py-3 pl-6 lg:pl-0">
+                <div
+                    className={`flex items-center justify-between ${
+                        darkMode ? "text-gray-200" : "text-gray-600"
+                    } px-3 py-3 pl-6 lg:pl-0`}
+                >
                     <button
                         onClick={() =>
                             markContact(contact.id, Number(contact.marked))
@@ -279,7 +306,11 @@ export default function ContactMessage() {
                         {Number(contact.marked) === 1 ? (
                             <Flag className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                         ) : (
-                            <Flag className="w-5 h-5 text-gray-500" />
+                            <Flag
+                                className={`w-5 h-5 ${
+                                    darkMode ? "text-gray-200" : "text-gray-600"
+                                }`}
+                            />
                         )}
                     </button>
                     <div className="flex gap-1 items-center">
@@ -288,13 +319,21 @@ export default function ContactMessage() {
                             disabled={currentIndex <= 0}
                             className={`p-1 rounded ${
                                 currentIndex <= 0
-                                    ? "text-gray-400"
-                                    : "text-gray-700 hover:text-black"
+                                    ? darkMode
+                                        ? "text-gray-500" // disabled text in dark mode
+                                        : "text-gray-400" // disabled text in light mode
+                                    : darkMode
+                                    ? "text-gray-200 hover:text-white bg-gray-600"
+                                    : "text-gray-700 hover:text-black bg-gray-200"
                             }`}
                         >
                             <ChevronLeft size={18} />
                         </button>
-                        <span className="text-sm text-gray-700">
+                        <span
+                            className={`text-sm ${
+                                darkMode ? "text-gray-200" : "text-gray-600"
+                            }`}
+                        >
                             {contacts.length > 0
                                 ? `${currentIndex + 1} of ${contacts.length}`
                                 : "0 of 0"}
@@ -304,8 +343,12 @@ export default function ContactMessage() {
                             disabled={currentIndex >= contacts.length - 1}
                             className={`p-1 rounded ${
                                 currentIndex >= contacts.length - 1
-                                    ? "text-gray-400"
-                                    : "text-gray-700 hover:text-black"
+                                    ? darkMode
+                                        ? "text-gray-500" // disabled text in dark mode
+                                        : "text-gray-400" // disabled text in light mode
+                                    : darkMode
+                                    ? "text-gray-200 hover:text-white bg-gray-600"
+                                    : "text-gray-700 hover:text-black bg-gray-200"
                             }`}
                         >
                             <ChevronRight size={18} />
@@ -349,10 +392,22 @@ export default function ContactMessage() {
                             />
                             <div>
                                 <h1 className="font-medium">{contact?.name}</h1>
-                                <p className="text-sm text-gray-700">to BWC</p>
+                                <p
+                                    className={`text-sm ${
+                                        darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-700"
+                                    }`}
+                                >
+                                    to BWC
+                                </p>
                             </div>
                         </div>
-                        <p className="text-gray-700">
+                        <p
+                            className={`${
+                                darkMode ? "text-gray-200" : "text-gray-700"
+                            }`}
+                        >
                             {contact?.created_at
                                 ? formatDistanceToNow(
                                       new Date(contact.created_at),
@@ -361,14 +416,22 @@ export default function ContactMessage() {
                                 : ""}
                         </p>
                     </div>
-                    <div className="p-2 py-3 md:p-6 text-gray-900 text-sm leading-relaxed">
+                    <div
+                        className={`p-2 py-3 md:p-6 ${
+                            darkMode ? "text-gray-100" : "text-gray-900"
+                        } text-sm leading-relaxed`}
+                    >
                         <p className="mb-4">Hello Admin,</p>
                         <p className="mb-4">
                             You’ve received a new contact message from{" "}
                             <strong>{contact?.name}</strong>.
                         </p>
 
-                        <div className="bg-gray-100 rounded-md p-4 space-y-2 text-sm">
+                        <div
+                            className={`${
+                                darkMode ? "bg-gray-900" : "bg-gray-100"
+                            } rounded-md p-4 space-y-2 text-sm`}
+                        >
                             <div className="flex gap-6">
                                 <span className="font-semibold w-12">
                                     Name:
@@ -401,7 +464,13 @@ export default function ContactMessage() {
                         </p>
                     </div>
 
-                    <div className="bg-gray-200 text-center text-gray-600 text-xs py-3">
+                    <div
+                        className={`${
+                            darkMode
+                                ? "bg-gray-800 text-gray-300"
+                                : "bg-gray-200 text-gray-600"
+                        } text-center text-xs py-3`}
+                    >
                         &copy; 2025 BurmaWebCampus. All rights reserved.
                     </div>
 
@@ -415,7 +484,7 @@ export default function ContactMessage() {
                     </div>
 
                     {showReply && (
-                        <div className="mt-4 bg-white border-l-2 border-l-accentRed px-3 md:px-4 py-4 md:py-8 rounded-md shadow-md">
+                        <div className="mt-4  border-l-2 border-l-accentRed px-3 md:px-4 py-4 md:py-8 rounded-md shadow-md">
                             <Textarea
                                 placeholder="Type your reply here..."
                                 className="w-full"

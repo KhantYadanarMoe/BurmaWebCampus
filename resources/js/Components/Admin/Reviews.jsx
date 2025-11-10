@@ -6,7 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
 import { ChevronDown, EllipsisVertical, Flag, Star } from "lucide-react";
 import Profile from "../../../assets/Profile.jpg";
@@ -141,13 +141,19 @@ export default function Reviews() {
         }
     };
 
+    const { darkMode } = useOutletContext();
+
     return (
         <div>
             <div className="flex justify-between mb-7">
                 <h1 className="text-xl font-medium">Reviews</h1>
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
-                        <button className="flex gap-1 items-center px-2 py-1 border border-gray-800 rounded-md">
+                        <button
+                            className={`flex gap-1 items-center px-2 py-1 border ${
+                                darkMode ? "border-gray-300" : "border-gray-800"
+                            } rounded-md`}
+                        >
                             {
                                 {
                                     newest: "Filter By Newest",
@@ -228,7 +234,7 @@ export default function Reviews() {
             </ul>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5 md:mt-0">
                 {currentReviews.map((review) => (
-                    <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                    <Card className="relative border border-gray-600 shadow-lg rounded-lg">
                         <CardContent className="p-4">
                             <div className="flex justify-between">
                                 <div className="flex gap-1 items-center mb-4">
@@ -240,7 +246,13 @@ export default function Reviews() {
                                 <div>
                                     <DropdownMenu modal={false}>
                                         <DropdownMenuTrigger asChild>
-                                            <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                            <button
+                                                className={`p-1 rounded-md ${
+                                                    darkMode
+                                                        ? "hover:bg-gray-600"
+                                                        : "hover:bg-gray-100"
+                                                } outline-none`}
+                                            >
                                                 <EllipsisVertical size={18} />
                                             </button>
                                         </DropdownMenuTrigger>
@@ -290,7 +302,11 @@ export default function Reviews() {
                                     </DropdownMenu>
                                 </div>
                             </div>
-                            <q className="text-gray-900 text-sm">
+                            <q
+                                className={`${
+                                    darkMode ? "text-gray-200" : "text-gray-800"
+                                } text-sm`}
+                            >
                                 {review.review}
                             </q>
                             <hr className="my-4 border-t-gray-400" />
@@ -306,10 +322,22 @@ export default function Reviews() {
                                             {review.name}
                                         </h1>
                                         <div className="flex gap-2 items-center mt-2">
-                                            <p className="text-xs text-gray-600">
+                                            <p
+                                                className={`text-xs ${
+                                                    darkMode
+                                                        ? "text-gray-400"
+                                                        : "text-gray-800"
+                                                }`}
+                                            >
                                                 Review to:
                                             </p>
-                                            <p className="text-xs text-gray-800 font-medium">
+                                            <p
+                                                className={`text-xs ${
+                                                    darkMode
+                                                        ? "text-gray-300"
+                                                        : "text-gray-800"
+                                                } font-medium`}
+                                            >
                                                 {review.course_id}
                                             </p>
                                         </div>

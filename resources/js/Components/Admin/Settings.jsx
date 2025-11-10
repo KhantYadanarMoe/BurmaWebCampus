@@ -1,6 +1,6 @@
 import React from "react";
 import Pf from "../../../assets/Profile.jpg";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import {
     BellRing,
@@ -22,19 +22,32 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 
 export default function Settings() {
     const [open, setOpen] = useState(false);
+    const { darkMode } = useOutletContext();
     const [showReply, setShowReply] = useState(false);
     return (
         <div>
             <h1 className="text-2xl font-medium">Settings</h1>
-            <p className="text-sm text-gray-700 mt-1 mb-6">
+            <p
+                className={`text-sm ${
+                    darkMode ? "text-gray-300" : "text-gray-700"
+                } mt-1 mb-6`}
+            >
                 Manage your website settings.
             </p>
             <hr className="my-3 border-t-gray-400" />
-            <ul className="flex space-x-2 overflow-x-scroll overflow-y-hidden no-scrollbar items-center bg-gray-100 rounded-md py-1 px-1">
+            <ul
+                className={`flex space-x-2 overflow-x-scroll overflow-y-hidden no-scrollbar items-center ${
+                    darkMode ? "bg-gray-900" : "bg-gray-100"
+                } rounded-md py-1 px-1`}
+            >
                 <li>
                     <Link
                         to=""
-                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                        className={`whitespace-nowrap px-2 py-2 rounded-md ${
+                            darkMode
+                                ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
+                                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        } duration-300 block`}
                     >
                         Site info
                     </Link>
@@ -42,7 +55,11 @@ export default function Settings() {
                 <li>
                     <Link
                         to=""
-                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                        className={`whitespace-nowrap px-2 py-2 rounded-md ${
+                            darkMode
+                                ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
+                                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        } duration-300 block`}
                     >
                         Appearance
                     </Link>
@@ -50,7 +67,11 @@ export default function Settings() {
                 <li>
                     <Link
                         to=""
-                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                        className={`whitespace-nowrap px-2 py-2 rounded-md ${
+                            darkMode
+                                ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
+                                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        } duration-300 block`}
                     >
                         Localization
                     </Link>
@@ -58,7 +79,11 @@ export default function Settings() {
                 <li>
                     <Link
                         to=""
-                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                        className={`whitespace-nowrap px-2 py-2 rounded-md ${
+                            darkMode
+                                ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
+                                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        } duration-300 block`}
                     >
                         Notifications
                     </Link>
@@ -66,7 +91,11 @@ export default function Settings() {
                 <li>
                     <Link
                         to=""
-                        className="whitespace-nowrap text-gray-800 px-2 py-2 rounded-md bg-gray-100 hover:bg-gray-200 duration-300 block"
+                        className={`whitespace-nowrap px-2 py-2 rounded-md ${
+                            darkMode
+                                ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
+                                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        } duration-300 block`}
                     >
                         Security
                     </Link>
@@ -76,7 +105,11 @@ export default function Settings() {
                 <div className="flex justify-between">
                     <div className="mb-5">
                         <h1 className="text-lg font-medium">Site Info</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update the general information of the site.
                         </p>
                     </div>
@@ -85,11 +118,19 @@ export default function Settings() {
                         <Button>Save Changes</Button>
                     </div>
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Site Name</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update your site name here.
                         </p>
                     </div>
@@ -98,11 +139,19 @@ export default function Settings() {
                         placeholder="Enter your site name"
                     />
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Logo</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update your site logo image here.
                         </p>
                     </div>
@@ -112,11 +161,19 @@ export default function Settings() {
                         placeholder="Choose one"
                     />
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Header</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update your site hero header here.
                         </p>
                     </div>
@@ -125,11 +182,19 @@ export default function Settings() {
                         placeholder="Enter hero header"
                     />
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Description</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update your site hero desc here.
                         </p>
                     </div>
@@ -144,7 +209,11 @@ export default function Settings() {
                 <div className="flex justify-between">
                     <div className="mb-5">
                         <h1 className="text-lg font-medium">Appearance</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update the appearance of the website.
                         </p>
                     </div>
@@ -153,11 +222,19 @@ export default function Settings() {
                         <Button>Save Changes</Button>
                     </div>
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Theme Color</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update the theme color of the website.
                         </p>
                     </div>
@@ -167,11 +244,19 @@ export default function Settings() {
                         placeholder="Enter your site name"
                     />
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Font style</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update the font style of the website.
                         </p>
                     </div>
@@ -191,7 +276,11 @@ export default function Settings() {
                 <div className="flex justify-between">
                     <div className="mb-5">
                         <h1 className="text-lg font-medium">Localization</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Set localization for better experience.
                         </p>
                     </div>
@@ -200,11 +289,19 @@ export default function Settings() {
                         <Button>Save Changes</Button>
                     </div>
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Default Language</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Choose the default language for your website.
                         </p>
                     </div>
@@ -232,7 +329,11 @@ export default function Settings() {
                         <h1 className="text-lg font-medium">
                             Email & Notification
                         </h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Update email and notification settings.
                         </p>
                     </div>
@@ -241,11 +342,19 @@ export default function Settings() {
                         <Button>Save Changes</Button>
                     </div>
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Admin Email</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Enter the email to get the update of this website.
                         </p>
                     </div>
@@ -255,11 +364,19 @@ export default function Settings() {
                         placeholder="Enter your email"
                     />
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Sender Name</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             The name which will display in the emails send to
                             students.
                         </p>
@@ -270,12 +387,20 @@ export default function Settings() {
                     />
                 </div>
             </div>
-            <hr className="border-t-gray-700 my-8" />
+            <hr
+                className={`${
+                    darkMode ? "border-t-gray-600" : "border-t-gray-300"
+                } my-8`}
+            />
             <div className="my-8">
                 <div className="flex justify-between">
                     <div className="mb-5">
                         <h1 className="text-lg font-medium">Security</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Set security for this website.
                         </p>
                     </div>
@@ -284,11 +409,19 @@ export default function Settings() {
                         <Button>Save Changes</Button>
                     </div>
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">Password length (min)</h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Set min-length of password for login.
                         </p>
                     </div>
@@ -297,13 +430,21 @@ export default function Settings() {
                         placeholder="Enter the length of password"
                     />
                 </div>
-                <hr className="border-t-gray-300" />
+                <hr
+                    className={`${
+                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
+                    }`}
+                />
                 <div className="md:flex gap-3 my-4 md:my-6">
                     <div className="md:w-1/2">
                         <h1 className="font-medium">
                             Session Timeout Duration (sec)
                         </h1>
-                        <p className="hidden md:block text-sm text-gray-800">
+                        <p
+                            className={`hidden md:block text-sm ${
+                                darkMode ? "text-gray-300" : "text-gray-800"
+                            }`}
+                        >
                             Set auto-logout time.
                         </p>
                     </div>

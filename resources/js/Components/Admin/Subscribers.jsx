@@ -28,7 +28,7 @@ import {
     Plus,
     Users,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
@@ -37,6 +37,8 @@ export default function Subscribers() {
     let [subscribers, setSubscribers] = useState([]);
     // state for filter
     const [selectedFilter, setSelectedFilter] = useState("newest");
+
+    const { darkMode } = useOutletContext();
 
     let getSubscribers = async () => {
         try {
@@ -98,7 +100,13 @@ export default function Subscribers() {
                 <div className="hidden md:block">
                     <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
-                            <button className="flex gap-1 items-center px-2 py-1 border border-gray-800 rounded-md">
+                            <button
+                                className={`flex gap-1 items-center px-2 py-1 border ${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-800"
+                                } rounded-md`}
+                            >
                                 {
                                     {
                                         newest: "Filter By Newest",
@@ -146,7 +154,11 @@ export default function Subscribers() {
             </div>
             <div className="overflow-x-auto w-full">
                 <div className="min-w-[920px]">
-                    <ul className="flex items-center px-3 py-4 border-b border-b-gray-700 my-3">
+                    <ul
+                        className={`flex items-center px-3 py-4 border-b ${
+                            darkMode ? "border-b-gray-200" : "border-b-gray-700"
+                        } my-3`}
+                    >
                         <li className="basis-[5%]">ID</li>
                         <li className="basis-[35%]">Email</li>
                         <li className="basis-[15%] pl-2">User ID</li>
@@ -155,7 +167,13 @@ export default function Subscribers() {
                         <li className="basis-[5%]"></li>
                     </ul>
                     {currentSubscribers?.map((subscriber) => (
-                        <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                        <ul
+                            className={`flex items-center px-3 py-3 border-b ${
+                                darkMode
+                                    ? "border-b-gray-700"
+                                    : "border-b-gray-300"
+                            } my-2`}
+                        >
                             <li className="basis-[5%]">{subscriber.id}</li>
                             <li className="basis-[35%]">{subscriber.email}</li>
                             <li className="basis-[15%] pl-2">46</li>
@@ -176,7 +194,13 @@ export default function Subscribers() {
                             <li className="basis-[5%]">
                                 <DropdownMenu modal={false}>
                                     <DropdownMenuTrigger asChild>
-                                        <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                        <button
+                                            className={`p-1 rounded-md ${
+                                                darkMode
+                                                    ? "hover:bg-gray-600"
+                                                    : "hover:bg-gray-100"
+                                            } outline-none`}
+                                        >
                                             <Ellipsis size={20} />
                                         </button>
                                     </DropdownMenuTrigger>
