@@ -75,7 +75,7 @@ export default function CourseDetailsForm() {
 
                             <div className="absolute inset-0 flex items-center px-0">
                                 <div className="flex-1 flex justify-center relative">
-                                    <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white">
+                                    <div className="flex items-center justify-center w-4 h-4 rounded-full ">
                                         <span className="block w-4 h-4 rounded-full transform" />
                                     </div>
                                     <div
@@ -87,7 +87,7 @@ export default function CourseDetailsForm() {
                                 </div>
 
                                 <div className="flex-1 flex justify-center relative">
-                                    <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white">
+                                    <div className="flex items-center justify-center w-4 h-4 rounded-full ">
                                         <span className="block w-4 h-4 rounded-full transform" />
                                     </div>
                                     <div
@@ -99,7 +99,7 @@ export default function CourseDetailsForm() {
                                 </div>
 
                                 <div className="flex-1 flex justify-center relative">
-                                    <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white">
+                                    <div className="flex items-center justify-center w-4 h-4 rounded-full">
                                         <span className="block w-4 h-4 rounded-full transform" />
                                     </div>
                                     <div

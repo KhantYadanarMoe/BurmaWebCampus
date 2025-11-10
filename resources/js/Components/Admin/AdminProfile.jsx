@@ -1,6 +1,6 @@
 import { Bell, ChevronsRight, X } from "lucide-react";
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import Pf from "../../../assets/Profile.jpg";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -23,6 +23,7 @@ export default function AdminProfile() {
     const [open, setOpen] = useState(false);
     const { user, setUser } = useAuth();
     const [image, setImage] = useState(null);
+    const { darkMode } = useOutletContext();
     // prepare state to store form data
     const [form, setForm] = useState({
         firstName: "",
@@ -189,12 +190,20 @@ export default function AdminProfile() {
     return (
         <div className="flex lg:gap-3">
             <div className="w-full lg:w-3/5">
-                <div className="flex gap-1 items-end text-gray-800 text-sm">
+                <div
+                    className={`flex gap-1 items-end ${
+                        darkMode ? "text-gray-200" : "text-gray-800"
+                    } text-sm`}
+                >
                     <Link to="/">Home</Link>
                     <ChevronsRight size={18} />
                     <Link to="/admin">Dashboard</Link>
                     <ChevronsRight size={18} />
-                    <Link className="text-black">Profile</Link>
+                    <Link
+                        className={`${darkMode ? "text-white" : "text-black"}`}
+                    >
+                        Profile
+                    </Link>
                 </div>
                 <h1 className="text-xl font-medium my-5">Admin Profile</h1>
                 <div className="flex items-center gap-3">
@@ -207,7 +216,9 @@ export default function AdminProfile() {
                                 : Pf
                         }
                         alt=""
-                        className="w-20 h-20 object-cover rounded-full p-0.5 border border-gray-800"
+                        className={`w-20 h-20 object-cover rounded-full p-0.5 border ${
+                            darkMode ? "border-gray-100" : "border-gray-800"
+                        }`}
                     />
                     <div className="flex gap-2 md:justify-start mt-3">
                         <Input
@@ -237,7 +248,11 @@ export default function AdminProfile() {
                                 type="text"
                                 value={form.firstName}
                                 onChange={handleInputChange}
-                                className="border-gray-400 mt-1"
+                                className={`${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-500"
+                                } mt-1`}
                                 placeholder="Enter your first name"
                             />
                         </div>
@@ -249,7 +264,11 @@ export default function AdminProfile() {
                                 type="text"
                                 value={form.lastName}
                                 onChange={handleInputChange}
-                                className="border-gray-400 mt-1"
+                                className={`${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-500"
+                                } mt-1`}
                                 placeholder="Enter your last name"
                             />
                         </div>
@@ -258,7 +277,11 @@ export default function AdminProfile() {
                         <div className="my-3 md:w-1/2">
                             <Label>Email</Label>
                             <Input
-                                className="border-gray-400 mt-1"
+                                className={`${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-500"
+                                } mt-1`}
                                 id="email"
                                 name="email"
                                 type="text"
@@ -276,7 +299,11 @@ export default function AdminProfile() {
                                 value={form.phone}
                                 onChange={handleInputChange}
                                 placeholder="Enter your phone"
-                                className="border-gray-400 mt-1"
+                                className={`${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-500"
+                                } mt-1`}
                             />
                         </div>
                     </div>
@@ -297,7 +324,9 @@ export default function AdminProfile() {
                             placeholder="Enter your password"
                             value={passwordForm.currentPassword}
                             onChange={handlePasswordChange}
-                            className="border-gray-400 mt-1"
+                            className={`${
+                                darkMode ? "border-gray-300" : "border-gray-500"
+                            } mt-1`}
                         />
                         {passwordErrors.general && (
                             <p className="text-red-500 mt-1 text-sm">
@@ -315,7 +344,11 @@ export default function AdminProfile() {
                                 value={passwordForm.newPassword}
                                 onChange={handlePasswordChange}
                                 placeholder="Enter your new password"
-                                className="border-gray-400 mt-1"
+                                className={`${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-500"
+                                } mt-1`}
                             />
                             {passwordErrors.confirmPassword && (
                                 <p className="text-red-500 mt-1 text-sm">
@@ -332,7 +365,11 @@ export default function AdminProfile() {
                                 value={passwordForm.confirmPassword}
                                 onChange={handlePasswordChange}
                                 placeholder="Confirm your password"
-                                className="border-gray-400 mt-1"
+                                className={`${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-500"
+                                } mt-1`}
                             />
                         </div>
                     </div>
@@ -369,7 +406,7 @@ export default function AdminProfile() {
             <div className="lg:w-2/5 relative">
                 <button
                     className="fixed mt-4 right-0 z-20 flex items-center justify-center 
-    w-10 h-12 border border-gray-400 rounded-l-2xl bg-white
+    w-10 h-12 border border-gray-400 rounded-l-2xl
     shadow-md lg:hidden"
                     onClick={() => setOpen(true)}
                 >
@@ -377,7 +414,7 @@ export default function AdminProfile() {
                 </button>
                 <div
                     className={`
-          fixed -mt-4 lg:-mt-0 right-0 h-full w-full md:w-1/2 bg-white shadow-lg 
+          fixed -mt-4 lg:-mt-0 right-0 h-full w-full md:w-1/2  shadow-lg 
     transform transition-transform duration-300 z-30
     ${open ? "translate-x-0" : "translate-x-full"}
     lg:w-full lg:sticky lg:top-20 
@@ -403,15 +440,19 @@ export default function AdminProfile() {
                             {[1, 2, 3].map((i) => (
                                 <div
                                     key={i}
-                                    className="py-3 px-2 my-1 bg-white hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
+                                    className="py-3 px-2 my-1  hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
                                 >
                                     <div className="flex gap-2">
                                         <img
                                             src={Pf}
                                             alt="profile"
-                                            className="w-12 h-12 object-cover rounded-full p-0.5 border border-gray-500"
+                                            className={`w-12 h-12 object-cover rounded-full p-0.5 border ${
+                                                darkMode
+                                                    ? "border-gray-100"
+                                                    : "border-gray-500"
+                                            }`}
                                         />
-                                        <p className="text-sm text-gray-800">
+                                        <p className="text-sm">
                                             <strong>Khant Yadanar Moe</strong>{" "}
                                             commented on Full-stack Web
                                             Development Pathway's unit-7.
@@ -429,7 +470,7 @@ export default function AdminProfile() {
                             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
                                 <div
                                     key={i}
-                                    className="py-3 px-2 my-1 bg-white hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
+                                    className="py-3 px-2 my-1  hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
                                 >
                                     <div className="flex gap-2">
                                         <img
@@ -437,7 +478,7 @@ export default function AdminProfile() {
                                             alt="profile"
                                             className="w-12 h-12 object-cover rounded-full p-0.5 border border-gray-500"
                                         />
-                                        <p className="text-sm text-gray-800">
+                                        <p className="text-sm">
                                             <strong>Khant Yadanar Moe</strong>{" "}
                                             liked your post on unit-5.
                                         </p>

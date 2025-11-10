@@ -24,9 +24,10 @@ import { Button } from "../ui/button";
 import CourseImg from "../../../assets/Courses.jpg";
 import { Ellipsis, GraduationCap, Plus, Users } from "lucide-react";
 import BlogImg from "../../../assets/Blogs.jpg";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 
 export default function Purchase() {
+    const { darkMode } = useOutletContext();
     return (
         <div>
             <h1 className="text-xl font-medium">Purchased Courses</h1>
@@ -50,7 +51,7 @@ export default function Purchase() {
                 </div>
                 <div className="hidden md:block">
                     <Select>
-                        <SelectTrigger className="w-[180px] border-gray-700">
+                        <SelectTrigger className="w-[180px] border-gray-600">
                             <SelectValue placeholder="Filter " />
                         </SelectTrigger>
                         <SelectContent>
@@ -99,7 +100,13 @@ export default function Purchase() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-800"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -139,7 +146,13 @@ export default function Purchase() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-800"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -179,7 +192,13 @@ export default function Purchase() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-800"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -219,7 +238,13 @@ export default function Purchase() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-800"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -259,7 +284,13 @@ export default function Purchase() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-800"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -299,7 +330,13 @@ export default function Purchase() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-800"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -339,7 +376,13 @@ export default function Purchase() {
                         <li className="basis-[5%]">
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-800"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
                                         <Ellipsis size={20} />
                                     </button>
                                 </DropdownMenuTrigger>
