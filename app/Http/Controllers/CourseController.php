@@ -10,8 +10,7 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
- public function store(Request $request)
-{
+ public function store(Request $request){
     // 1️⃣ Decode JSON arrays
     $details = json_decode($request->input('details', '[]'), true);
     $quiz = json_decode($request->input('quiz', '[]'), true);
@@ -25,13 +24,23 @@ class CourseController extends Controller
         'outcomes' => $request->input('outcomes', ''),
     ]);
 
-    // 3️⃣ Save course outlines
+    
     foreach ($details as $unit) {
-        $course->outlines()->create([
-            'title' => $unit['title'] ?? '',
-            'subtitles' => $unit['sublectures'] ?? [] // note: map to 'subtitles'
+    // Create the outline (Unit)
+    $outline = $course->outlines()->create([
+        'title' => $unit['title'] ?? '',
+    ]);
+
+    // Now add each subtitle (sublecture/video) under this outline
+    foreach ($unit['sublectures'] ?? [] as $sub) {
+        $outline->subtitles()->create([
+            'subtitle' => $sub['subtitle'] ?? '',
+            'video_path' => $sub['video_path'] ?? null, 
         ]);
     }
+}
+
+
 
     // 4️⃣ Save quizzes
     foreach ($quiz as $q) {

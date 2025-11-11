@@ -128,7 +128,7 @@ export default function CreateQuiz() {
             formData.append("category", basic.category_id);
             formData.append("price", basic.price);
             formData.append("description", basic.description);
-            formData.append("learning_outcomes", basic.learningOutcomes);
+            formData.append("outcomes", basic.outcomes);
 
             // Image file (if exists)
             if (basic.image) {
