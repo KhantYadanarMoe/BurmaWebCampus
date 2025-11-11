@@ -11,4 +11,9 @@ class CourseCategories extends Model
         'icon',
         'is_visible',
     ];
+
+    public function courses()
+    {
+        return $this->hasMany(Courses::class, 'category_id');
+    }
 }

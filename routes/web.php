@@ -5,6 +5,7 @@ use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseCategoryController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubscribeController;
@@ -58,6 +59,8 @@ Route::post("/api/course/category/create", [CourseCategoryController::class, 'st
  Route::get('/api/course/category/{id}', [CourseCategoryController::class, 'show']);
 Route::put('/api/course/category/{category}', [CourseCategoryController::class, 'update']);
 Route::delete('/api/course/category/{category}', [CourseCategoryController::class, 'delete']);
+
+Route::post('/api/courses/create', [CourseController::class, 'store']);
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);

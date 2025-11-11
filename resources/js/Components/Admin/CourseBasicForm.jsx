@@ -1,17 +1,108 @@
 import { ChevronsRight, Clock, Upload, Users } from "lucide-react";
-import React from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../ui/select";
 import CourseImg from "../../../assets/Courses.jpg";
 import { Textarea } from "../ui/textarea";
 import { Card, CardContent } from "../ui/card";
+import axios from "axios";
 
 export default function CourseBasicForm() {
     const { darkMode } = useOutletContext();
-    const percent = 50;
+    const navigate = useNavigate();
+    const percent = 33; // progress bar step 1
+
+    const [categories, setCategories] = useState([]);
+    const [errors, setErrors] = useState({});
+
+    const [form, setForm] = useState({
+        image: null,
+        imagePreview: "",
+        title: "",
+        category_id: "",
+        price: "",
+        description: "",
+        outcomes: "",
+    });
+
+    const getCategories = async () => {
+        try {
+            const res = await axios.get("/api/course/categories");
+            setCategories(res.data.categories || []);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
+    // --- restore from localStorage if exists ---
+    useEffect(() => {
+        const saved = localStorage.getItem("course_basic");
+        if (saved) {
+            const data = JSON.parse(saved);
+            setForm((prev) => ({
+                ...prev,
+                ...data,
+                imagePreview: data.imagePreview || "",
+            }));
+        }
+    }, []);
+
+    // --- handle change ---
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleCustomChange = (name, value) => {
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    // --- handle image upload ---
+    const handleImage = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const preview = URL.createObjectURL(file);
+            setForm((prev) => ({
+                ...prev,
+                image: file,
+                imagePreview: preview,
+            }));
+        }
+    };
+
+    // --- handle Next button ---
+    const handleNext = (e) => {
+        e.preventDefault();
+
+        if (!form.title || !form.category_id) {
+            alert("Please fill out required fields before continuing.");
+            return;
+        }
+
+        // Save to localStorage
+        localStorage.setItem(
+            "course_basic",
+            JSON.stringify({
+                ...form,
+                image: null, // can’t store File in localStorage
+            })
+        );
+
+        navigate("/admin/courses/create/details");
+    };
 
     return (
         <div className="lg:flex gap-3">
@@ -46,7 +137,10 @@ export default function CourseBasicForm() {
                                 Please fill in all the details of your course.
                             </p>
                         </div>
-                        <Button className="flex gap-1 items-center">
+                        <Button
+                            onClick={handleNext}
+                            className="flex gap-1 items-center"
+                        >
                             Next <ChevronsRight size={18} className="mt-0.5" />
                         </Button>
                     </div>
@@ -155,100 +249,138 @@ export default function CourseBasicForm() {
                 </div>
                 <div className="mt-8">
                     <h1 className="text-lg font-medium">Course Information</h1>
-                    <form action="">
-                        <div className="flex justify-center mt-5 px-4 py-4 border border-gray-400  rounded-md">
-                            <div className="w-full p-8 rounded-md text-center">
+                    <form onSubmit={handleNext}>
+                        {/* Image upload */}
+                        <div className="my-4 border border-gray-400 p-6 rounded-md text-center">
+                            {form.imagePreview ? (
+                                <div className="flex flex-col items-center">
+                                    <img
+                                        src={form.imagePreview}
+                                        alt="preview"
+                                        className="w-48 h-32 object-cover rounded-md mb-3"
+                                    />
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                            setForm((prev) => ({
+                                                ...prev,
+                                                image: null,
+                                                imagePreview: "",
+                                            }))
+                                        }
+                                    >
+                                        Remove
+                                    </Button>
+                                </div>
+                            ) : (
                                 <div className="flex flex-col items-center">
                                     <Upload
                                         className={`${
                                             darkMode
                                                 ? "text-gray-300"
                                                 : "text-gray-700"
-                                        } text-4xl mb-4`}
+                                        } text-4xl mb-3`}
                                     />
-
                                     <Label
                                         htmlFor="image-upload"
-                                        className={`flex items-center gap-1 justify-center cursor-pointer ${
+                                        className={`cursor-pointer ${
                                             darkMode
                                                 ? "text-gray-300"
                                                 : "text-gray-700"
                                         }`}
                                     >
-                                        <p className="hidden md:block">
-                                            Drop your image here or
-                                        </p>
-                                        <p className="text-accentRed font-bold">
-                                            Click to browse
-                                        </p>
+                                        Click to upload or drag an image
                                     </Label>
                                     <Input
                                         id="image-upload"
                                         name="image"
                                         type="file"
+                                        accept="image/*"
+                                        onChange={handleImage}
                                         className="hidden"
                                     />
-                                    <p className="mt-4 text-sm">
-                                        or drag and drop an image
-                                    </p>
                                 </div>
-                            </div>
+                            )}
                         </div>
-                        <div className="md:flex items-center gap-2">
+
+                        {/* Title & Category */}
+                        <div className="md:flex gap-2">
                             <div className="my-3 md:w-1/2">
                                 <Label>Course Title</Label>
                                 <Input
+                                    name="title"
+                                    value={form.title}
+                                    onChange={handleInputChange}
                                     className="border-gray-400 mt-1"
                                     placeholder="Write the title of your course"
                                 />
                             </div>
                             <div className="my-3 md:w-1/2">
-                                <Label htmlFor="category_id">Category</Label>
-                                <Select>
-                                    <SelectTrigger
-                                        id="category_id"
-                                        name="category_id"
-                                        className="mt-1 border-gray-400"
-                                    >
-                                        <span>Select Category</span>{" "}
+                                <Label>Category</Label>
+                                <Select
+                                    onValueChange={(val) =>
+                                        handleCustomChange("category_id", val)
+                                    }
+                                >
+                                    <SelectTrigger className="mt-1 border-gray-400">
+                                        <SelectValue placeholder="Select Category" />
                                     </SelectTrigger>
-                                    <SelectContent className="w-96 max-h-60">
-                                        <SelectItem value="frontend">
-                                            Frontend
-                                        </SelectItem>
-                                        <SelectItem value="backend">
-                                            Backend
-                                        </SelectItem>
-                                        <SelectItem value="fullstack">
-                                            Fullstack
-                                        </SelectItem>
+                                    <SelectContent className="max-h-60">
+                                        {categories.map((cat) => (
+                                            <SelectItem
+                                                key={cat.id}
+                                                value={cat.id.toString()}
+                                            >
+                                                {cat.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
                         </div>
+
+                        {/* Price */}
                         <div className="my-3">
                             <Label>Price</Label>
                             <Input
+                                name="price"
+                                type="number"
+                                value={form.price}
+                                onChange={handleInputChange}
                                 className="border-gray-400 mt-1"
-                                placeholder="Enter the price"
+                                placeholder="Enter course price"
                             />
                         </div>
+
+                        {/* Description */}
                         <div className="my-3">
                             <Label>About this course</Label>
                             <Textarea
+                                name="description"
+                                value={form.description}
+                                onChange={handleInputChange}
                                 className="border-gray-400 mt-1"
                                 placeholder="Explain about your course"
-                            ></Textarea>
+                            />
                         </div>
+
+                        {/* Outcomes */}
                         <div className="my-3">
-                            <Label>What you'll learn</Label>
+                            <Label>What you’ll learn</Label>
                             <Textarea
+                                name="outcomes"
+                                value={form.outcomes}
+                                onChange={handleInputChange}
                                 className="border-gray-400 mt-1"
                                 placeholder="Skills students will gain from this course"
-                            ></Textarea>
+                            />
                         </div>
+
                         <div className="flex justify-end">
-                            <Button className="mt-5">Next</Button>
+                            <Button type="submit" className="mt-5">
+                                Next
+                            </Button>
                         </div>
                     </form>
                 </div>

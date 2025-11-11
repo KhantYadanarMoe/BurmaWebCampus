@@ -8,8 +8,8 @@ import {
     Upload,
     Users,
 } from "lucide-react";
-import React from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -20,22 +20,86 @@ import { Card, CardContent } from "../ui/card";
 import { useState } from "react";
 
 export default function CourseDetailsForm() {
-    const percent = 50;
-
-    // State for dynamic outline rows
-    const [sublecture, setsublecture] = useState([{ subtitle: "", files: [] }]);
-
+    const percent = 66; // step 2 of 3
+    const navigate = useNavigate();
     const { darkMode } = useOutletContext();
 
-    const addSublecture = () => {
-        setsublecture([...sublecture, { subtitle: "", files: [] }]);
+    // --- outline structure ---
+    const [outlines, setOutlines] = useState([
+        { title: "", sublectures: [{ subtitle: "", files: [] }] },
+    ]);
+
+    // --- restore saved outlines from localStorage ---
+    useEffect(() => {
+        const saved = localStorage.getItem("course_details");
+        if (saved) {
+            setOutlines(JSON.parse(saved));
+        }
+    }, []);
+
+    // --- save outlines to localStorage whenever they change ---
+    useEffect(() => {
+        localStorage.setItem("course_details", JSON.stringify(outlines));
+    }, [outlines]);
+
+    // --- handle outline title change ---
+    const handleOutlineTitle = (index, value) => {
+        const updated = [...outlines];
+        updated[index].title = value;
+        setOutlines(updated);
     };
 
-    // State for dynamic outline rows
-    const [outlines, setOutlines] = useState([{ subtitle: "", files: [] }]);
+    // --- handle subtitle change ---
+    const handleSubtitle = (outlineIndex, subIndex, value) => {
+        const updated = [...outlines];
+        updated[outlineIndex].sublectures[subIndex].subtitle = value;
+        setOutlines(updated);
+    };
 
-    const addOutlineRow = () => {
-        setOutlines([...outlines, { subtitle: "", files: [] }]);
+    // --- handle file upload ---
+    const handleFileUpload = (outlineIndex, subIndex, e) => {
+        const files = Array.from(e.target.files);
+        const updated = [...outlines];
+        updated[outlineIndex].sublectures[subIndex].files = files;
+        setOutlines(updated);
+    };
+
+    // --- add new outline (unit) ---
+    const addOutline = () => {
+        setOutlines([
+            ...outlines,
+            { title: "", sublectures: [{ subtitle: "", files: [] }] },
+        ]);
+    };
+
+    // --- add new sublecture (chapter) under an outline ---
+    const addSublecture = (outlineIndex) => {
+        const updated = [...outlines];
+        updated[outlineIndex].sublectures.push({ subtitle: "", files: [] });
+        setOutlines(updated);
+    };
+
+    // --- handle Next button ---
+    const handleNext = (e) => {
+        e.preventDefault();
+
+        // simple validation
+        const hasEmpty = outlines.some(
+            (outline) =>
+                !outline.title.trim() ||
+                outline.sublectures.some((s) => !s.subtitle.trim())
+        );
+        if (hasEmpty) {
+            alert(
+                "Please fill all outline and subtitle fields before continuing."
+            );
+            return;
+        }
+
+        // save everything in localStorage
+        localStorage.setItem("course_details", JSON.stringify(outlines));
+
+        navigate("/admin/courses/create/quiz");
     };
 
     return (
@@ -182,144 +246,145 @@ export default function CourseDetailsForm() {
                 </div>
                 <div className="mt-8">
                     <h1 className="text-lg font-medium">Course Outline</h1>
-                    <form>
-                        {outlines.map((outline, index) => (
+                    <form onSubmit={handleNext}>
+                        {outlines.map((outline, outlineIndex) => (
                             <Card
-                                className="px-4 py-3 mt-3 border border-gray-400"
-                                key={index}
+                                key={outlineIndex}
+                                className="px-4 py-3 mt-4 border border-gray-400"
                             >
                                 <div className="mb-3">
-                                    <Label>Outline {index + 1}</Label>
+                                    <Label>Outline {outlineIndex + 1}</Label>
                                     <Input
+                                        value={outline.title}
+                                        onChange={(e) =>
+                                            handleOutlineTitle(
+                                                outlineIndex,
+                                                e.target.value
+                                            )
+                                        }
+                                        placeholder="Write the title of outline"
                                         className={`${
                                             darkMode
                                                 ? "border-gray-200"
                                                 : "border-gray-400"
                                         } mt-2`}
-                                        placeholder="Write the title of outline"
                                     />
                                 </div>
-                                <div className="ml-8 md:ml-12">
-                                    <div className="my-2">
-                                        {sublecture.map((outline, index) => (
-                                            <div className="flex gap-2">
-                                                <div className="w-4/5 md:w-2/3">
+
+                                <div className="ml-8 md:ml-12 mt-4">
+                                    {outline.sublectures.map(
+                                        (sub, subIndex) => (
+                                            <div
+                                                className="flex flex-col md:flex-row gap-3 mb-4"
+                                                key={subIndex}
+                                            >
+                                                <div className="w-full md:w-2/3">
                                                     <Input
+                                                        value={sub.subtitle}
+                                                        onChange={(e) =>
+                                                            handleSubtitle(
+                                                                outlineIndex,
+                                                                subIndex,
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        placeholder="Write the subtitle"
                                                         className={`${
                                                             darkMode
                                                                 ? "border-gray-200"
                                                                 : "border-gray-400"
-                                                        } mt-2`}
-                                                        placeholder="Write the subtitle"
+                                                        }`}
                                                     />
                                                 </div>
-                                                <div className="w-1/5 md:w-1/3">
-                                                    <div className="flex flex-col w-full">
-                                                        <div
-                                                            className={`flex items-center justify-center gap-2 border ${
+                                                <div className="w-full md:w-1/3">
+                                                    <div
+                                                        className={`flex items-center justify-center gap-2 border ${
+                                                            darkMode
+                                                                ? "border-gray-200"
+                                                                : "border-gray-400"
+                                                        } p-2 rounded-md cursor-pointer`}
+                                                    >
+                                                        <FilePlus2
+                                                            size={20}
+                                                            className={`${
                                                                 darkMode
-                                                                    ? "border-gray-200"
-                                                                    : "border-gray-400"
-                                                            } p-2 rounded-md mt-2 cursor-pointer`}
+                                                                    ? "text-gray-400"
+                                                                    : "text-gray-700"
+                                                            }`}
+                                                        />
+                                                        <Label
+                                                            htmlFor={`lecture-upload-${outlineIndex}-${subIndex}`}
+                                                            className={`cursor-pointer ${
+                                                                darkMode
+                                                                    ? "text-gray-400"
+                                                                    : "text-gray-700"
+                                                            }`}
                                                         >
-                                                            <FilePlus2
-                                                                size={20}
-                                                                className={`${
-                                                                    darkMode
-                                                                        ? "text-gray-400"
-                                                                        : "text-gray-700"
-                                                                }`}
-                                                            />
-                                                            <Label
-                                                                htmlFor={`lecture-upload-${index}`}
-                                                                className={`${
-                                                                    darkMode
-                                                                        ? "text-gray-400"
-                                                                        : "text-gray-700"
-                                                                } cursor-pointer`}
-                                                            >
-                                                                <p className="hidden md:block">
-                                                                    Add Files /
-                                                                    Media
-                                                                </p>
-                                                            </Label>
-                                                            <Input
-                                                                id={`lecture-upload-${index}`}
-                                                                type="file"
-                                                                className="hidden"
-                                                            />
-                                                        </div>
+                                                            <p className="hidden md:block">
+                                                                Add Files /
+                                                                Media
+                                                            </p>
+                                                        </Label>
+                                                        <Input
+                                                            id={`lecture-upload-${outlineIndex}-${subIndex}`}
+                                                            type="file"
+                                                            multiple
+                                                            onChange={(e) =>
+                                                                handleFileUpload(
+                                                                    outlineIndex,
+                                                                    subIndex,
+                                                                    e
+                                                                )
+                                                            }
+                                                            className="hidden"
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))}
-                                        {/* <div className="flex gap-1 mt-2">
-                                            <div className="px-3 py-2 border border-gray-500 rounded-md bg-gray-200 w-1/3">
-                                                <div className="flex gap-1 items-start">
-                                                    <Film size={20} />{" "}
-                                                    <div>
-                                                        <p className="text-sm text-gray-800 font-medium">
-                                                            Recording47.mp4
-                                                        </p>
-                                                        <span className="text-xs text-gray-600">
-                                                            234.8mb
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="px-3 py-2 border border-gray-500 rounded-md bg-gray-200 w-1/3">
-                                                <div className="flex gap-1 items-start">
-                                                    <File size={20} />{" "}
-                                                    <div>
-                                                        <p className="text-sm text-gray-800 font-medium">
-                                                            Notes.pdf
-                                                        </p>
-                                                        <span className="text-xs text-gray-600">
-                                                            234.8mb
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> */}
-                                        <div className="flex justify-end mt-5">
-                                            <button
-                                                type="button"
-                                                onClick={addSublecture}
-                                                className={`flex gap-1 items-center px-3 py-2 border border-dashed ${
+                                        )
+                                    )}
+
+                                    {/* Add Sublecture Button */}
+                                    <div className="flex justify-end mt-5">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                addSublecture(outlineIndex)
+                                            }
+                                            className={`flex gap-1 items-center px-3 py-2 border border-dashed ${
+                                                darkMode
+                                                    ? "border-gray-300"
+                                                    : "border-gray-600"
+                                            } rounded-md`}
+                                        >
+                                            <CopyPlus
+                                                size={18}
+                                                className={`${
                                                     darkMode
-                                                        ? "border-gray-300"
-                                                        : "border-gray-600"
-                                                } rounded-md`}
+                                                        ? "text-gray-400"
+                                                        : "text-gray-800"
+                                                }`}
+                                            />
+                                            <p
+                                                className={`text-sm ${
+                                                    darkMode
+                                                        ? "text-gray-400"
+                                                        : "text-gray-800"
+                                                }`}
                                             >
-                                                <CopyPlus
-                                                    size={18}
-                                                    className={`${
-                                                        darkMode
-                                                            ? "text-gray-400"
-                                                            : "text-gray-800"
-                                                    }`}
-                                                />
-                                                <p
-                                                    className={`text-sm ${
-                                                        darkMode
-                                                            ? "text-gray-400"
-                                                            : "text-gray-800"
-                                                    }`}
-                                                >
-                                                    Add More Sub-lecture
-                                                </p>
-                                            </button>
-                                        </div>
+                                                Add More Sub-lecture
+                                            </p>
+                                        </button>
                                     </div>
                                 </div>
                             </Card>
                         ))}
 
-                        {/* Add More Button */}
-                        <div className="flex justify-end mt-3">
+                        {/* Add Outline Button */}
+                        <div className="flex justify-end mt-4">
                             <button
                                 type="button"
-                                onClick={addOutlineRow}
+                                onClick={addOutline}
                                 className={`flex gap-1 items-center px-3 py-2 border border-dashed ${
                                     darkMode
                                         ? "border-gray-300"
@@ -345,8 +410,10 @@ export default function CourseDetailsForm() {
                                 </p>
                             </button>
                         </div>
-                        <div className="flex justify-end">
-                            <Button className="mt-12">Next</Button>
+
+                        {/* Next Button */}
+                        <div className="flex justify-end mt-12">
+                            <Button type="submit">Next</Button>
                         </div>
                     </form>
                 </div>

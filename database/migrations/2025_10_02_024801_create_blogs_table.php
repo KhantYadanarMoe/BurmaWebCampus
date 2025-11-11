@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('cover')->nullable();
             $table->string('detail_image_1')->nullable();
             $table->string('detail_image_2')->nullable();
-            $table->foreignId('category_id')->constrained('blog_categories')->onDelete('cascade');
             $table->longText('paragraph'); 
             $table->boolean('visibility')->nullable();  
             $table->unsignedInteger('view')->default(0);
