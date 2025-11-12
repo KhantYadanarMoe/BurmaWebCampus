@@ -15,12 +15,12 @@ class CourseController extends Controller
     $quiz = json_decode($request->input('quiz', '[]'), true);
 
      $imagePath = null;
-    if ($request->hasFile('image')) {
-        $file = $request->file('image');
-        if ($file->isValid()) {
-            $imagePath = $file->store('course_images', 'public');
-        }
-    }
+     if ($request->hasFile('image')) {
+         $file = $request->file('image');
+         if ($file->isValid()) {
+             $imagePath = $file->store('course_images', 'public');
+         }
+     }
 
     // 2️⃣ Save main course
     $course = Courses::create([
@@ -77,6 +77,20 @@ class CourseController extends Controller
     return response()->json(['success' => true]);
 }
 
+public function index(Request $request)
+{
+    // Fetch all courses with related models
+    $courses = Courses::with([
+        'category',           // course category
+        'outlines.subtitles', // outlines and their subtitles
+        'quizzes.options'     // quizzes and their options
+    ])->latest()->get();
+
+    // Return as JSON directly
+    return response()->json([
+        'courses' => $courses
+    ]);
+}
 
 
 

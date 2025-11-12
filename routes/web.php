@@ -60,6 +60,7 @@ Route::post("/api/course/category/create", [CourseCategoryController::class, 'st
 Route::put('/api/course/category/{category}', [CourseCategoryController::class, 'update']);
 Route::delete('/api/course/category/{category}', [CourseCategoryController::class, 'delete']);
 
+Route::get('/api/courses', [CourseController::class, 'index']);
 Route::post('/api/courses/create', [CourseController::class, 'store']);
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);

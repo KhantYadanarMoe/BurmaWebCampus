@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Pagination,
     PaginationContent,
@@ -20,8 +20,38 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import axios from "axios";
 
 export default function AllCourses() {
+    const [courses, setCourses] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const rowsPerPage = 6;
+
+    const getCourses = async () => {
+        try {
+            const res = await axios.get("/api/courses");
+            setCourses(res.data.courses);
+        } catch (error) {
+            console.error("Failed to fetch courses:", error);
+        }
+    };
+
+    useEffect(() => {
+        getCourses();
+    }, []);
+
+    const indexOfLastCourse = currentPage * rowsPerPage;
+    const indexOfFirstCourse = indexOfLastCourse - rowsPerPage;
+    const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
+
+    const totalPages = Math.ceil(courses.length / rowsPerPage);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-6">
@@ -46,192 +76,45 @@ export default function AllCourses() {
                 </Select>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div>
-                            <img
-                                src={CoursesImg}
-                                alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                            />
-                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                Frontend
-                            </span>
-                            <h1 className="my-3 font-medium text-lg">
-                                Fluent in Javascript and its framework, ReactJS
-                            </h1>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Users size={16} /> 27 students enrolled
-                            </div>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Clock size={16} /> 18 hours long
-                            </div>
-                            <div className="py-3">
-                                <div className="flex justify-between">
-                                    <h1 className="text-gray-700">Progress</h1>
-                                    <p className="text-black font-medium">0%</p>
+                {currentCourses.map((course) => (
+                    <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                        <CardContent className="p-4">
+                            <div>
+                                <img
+                                    src={`/storage/${course.image}`}
+                                    alt=""
+                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
+                                />
+                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                    {course.category.name}
+                                </span>
+                                <h1 className="my-3 font-medium text-lg">
+                                    {course.title}
+                                </h1>
+                                <div className="flex items-center gap-1 text-sm py-2">
+                                    <Users size={16} /> 27 students enrolled
                                 </div>
-                                <Progress value={0} className="mt-2" />
-                            </div>
-                            <Button className="w-full mt-3">Enroll Now</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div>
-                            <img
-                                src={CoursesImg}
-                                alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                            />
-                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                Frontend
-                            </span>
-                            <h1 className="my-3 font-medium text-lg">
-                                Fluent in Javascript and its framework, ReactJS
-                            </h1>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Users size={16} /> 27 students enrolled
-                            </div>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Clock size={16} /> 18 hours long
-                            </div>
-                            <div className="py-3">
-                                <div className="flex justify-between">
-                                    <h1 className="text-gray-700">Progress</h1>
-                                    <p className="text-black font-medium">0%</p>
+                                <div className="flex items-center gap-1 text-sm py-2">
+                                    <Clock size={16} /> 18 hours long
                                 </div>
-                                <Progress value={0} className="mt-2" />
-                            </div>
-                            <Button className="w-full mt-3">Enroll Now</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div>
-                            <img
-                                src={CoursesImg}
-                                alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                            />
-                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                Frontend
-                            </span>
-                            <h1 className="my-3 font-medium text-lg">
-                                Fluent in Javascript and its framework, ReactJS
-                            </h1>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Users size={16} /> 27 students enrolled
-                            </div>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Clock size={16} /> 18 hours long
-                            </div>
-                            <div className="py-3">
-                                <div className="flex justify-between">
-                                    <h1 className="text-gray-700">Progress</h1>
-                                    <p className="text-black font-medium">0%</p>
+                                <div className="py-3">
+                                    <div className="flex justify-between">
+                                        <h1 className="text-gray-700">
+                                            Progress
+                                        </h1>
+                                        <p className="text-black font-medium">
+                                            0%
+                                        </p>
+                                    </div>
+                                    <Progress value={0} className="mt-2" />
                                 </div>
-                                <Progress value={0} className="mt-2" />
+                                <Button className="w-full mt-3">
+                                    Enroll Now
+                                </Button>
                             </div>
-                            <Button className="w-full mt-3">Enroll Now</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div>
-                            <img
-                                src={CoursesImg}
-                                alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                            />
-                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                Frontend
-                            </span>
-                            <h1 className="my-3 font-medium text-lg">
-                                Fluent in Javascript and its framework, ReactJS
-                            </h1>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Users size={16} /> 27 students enrolled
-                            </div>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Clock size={16} /> 18 hours long
-                            </div>
-                            <div className="py-3">
-                                <div className="flex justify-between">
-                                    <h1 className="text-gray-700">Progress</h1>
-                                    <p className="text-black font-medium">0%</p>
-                                </div>
-                                <Progress value={0} className="mt-2" />
-                            </div>
-                            <Button className="w-full mt-3">Enroll Now</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div>
-                            <img
-                                src={CoursesImg}
-                                alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                            />
-                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                Frontend
-                            </span>
-                            <h1 className="my-3 font-medium text-lg">
-                                Fluent in Javascript and its framework, ReactJS
-                            </h1>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Users size={16} /> 27 students enrolled
-                            </div>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Clock size={16} /> 18 hours long
-                            </div>
-                            <div className="py-3">
-                                <div className="flex justify-between">
-                                    <h1 className="text-gray-700">Progress</h1>
-                                    <p className="text-black font-medium">0%</p>
-                                </div>
-                                <Progress value={0} className="mt-2" />
-                            </div>
-                            <Button className="w-full mt-3">Enroll Now</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                    <CardContent className="p-4">
-                        <div>
-                            <img
-                                src={CoursesImg}
-                                alt=""
-                                className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                            />
-                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                Frontend
-                            </span>
-                            <h1 className="my-3 font-medium text-lg">
-                                Fluent in Javascript and its framework, ReactJS
-                            </h1>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Users size={16} /> 27 students enrolled
-                            </div>
-                            <div className="flex items-center gap-1 text-sm py-2">
-                                <Clock size={16} /> 18 hours long
-                            </div>
-                            <div className="py-3">
-                                <div className="flex justify-between">
-                                    <h1 className="text-gray-700">Progress</h1>
-                                    <p className="text-black font-medium">0%</p>
-                                </div>
-                                <Progress value={0} className="mt-2" />
-                            </div>
-                            <Button className="w-full mt-3">Enroll Now</Button>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
             <div className="my-4">
                 <Pagination>
