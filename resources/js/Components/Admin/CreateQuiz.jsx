@@ -122,6 +122,16 @@ export default function CreateQuiz() {
         }
 
         try {
+            let imageFile = null;
+
+            // Try to restore from memory
+            if (window._courseImageFile) {
+                imageFile = window._courseImageFile;
+            } else {
+                // Optional fallback if you want to reselect or reload later
+                const storedName = sessionStorage.getItem("course_image_name");
+                console.log("Image name from session:", storedName);
+            }
             const formData = new FormData();
 
             // 🪄 Append basic info
@@ -131,8 +141,8 @@ export default function CreateQuiz() {
             formData.append("description", basic.description);
             formData.append("outcomes", basic.outcomes);
 
-            if (basic.image) {
-                formData.append("image", basic.image);
+            if (imageFile) {
+                formData.append("image", imageFile);
             }
 
             // 🪄 Append course details (JSON)

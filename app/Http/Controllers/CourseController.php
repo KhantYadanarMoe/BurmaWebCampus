@@ -14,6 +14,14 @@ class CourseController extends Controller
     $details = json_decode($request->input('details', '[]'), true);
     $quiz = json_decode($request->input('quiz', '[]'), true);
 
+     $imagePath = null;
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        if ($file->isValid()) {
+            $imagePath = $file->store('course_images', 'public');
+        }
+    }
+
     // 2️⃣ Save main course
     $course = Courses::create([
         'title' => $request->input('title', ''),
@@ -21,6 +29,7 @@ class CourseController extends Controller
         'price' => $request->input('price', 0),
         'description' => $request->input('description', ''),
         'outcomes' => $request->input('outcomes', ''),
+        'image'   => $imagePath, 
     ]);
 
     

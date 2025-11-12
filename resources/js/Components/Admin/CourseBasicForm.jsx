@@ -20,6 +20,8 @@ export default function CourseBasicForm() {
     const { darkMode } = useOutletContext();
     const navigate = useNavigate();
     const percent = 33; // progress bar step 1
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState("");
 
     const [categories, setCategories] = useState([]);
     const [errors, setErrors] = useState({});
@@ -74,12 +76,8 @@ export default function CourseBasicForm() {
     const handleImage = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const preview = URL.createObjectURL(file);
-            setForm((prev) => ({
-                ...prev,
-                image: file,
-                imagePreview: preview,
-            }));
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
         }
     };
 
@@ -92,14 +90,20 @@ export default function CourseBasicForm() {
             return;
         }
 
-        // Save to localStorage
+        // Save form (without file) to localStorage
         localStorage.setItem(
             "course_basic",
             JSON.stringify({
                 ...form,
-                image: null, // can’t store File in localStorage
+                imagePreview, // just for display if needed
             })
         );
+
+        // Save actual file temporarily to sessionStorage (for reload safety)
+        if (imageFile) {
+            sessionStorage.setItem("course_image_name", imageFile.name);
+            window._courseImageFile = imageFile; // store in memory globally
+        }
 
         navigate("/admin/courses/create/details");
     };
@@ -262,13 +266,10 @@ export default function CourseBasicForm() {
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() =>
-                                            setForm((prev) => ({
-                                                ...prev,
-                                                image: null,
-                                                imagePreview: "",
-                                            }))
-                                        }
+                                        onClick={() => {
+                                            setImageFile(null);
+                                            setImagePreview("");
+                                        }}
                                     >
                                         Remove
                                     </Button>
