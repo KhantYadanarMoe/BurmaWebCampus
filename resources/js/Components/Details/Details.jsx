@@ -7,11 +7,13 @@ import {
     Trophy,
     X,
 } from "lucide-react";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Button } from "../ui/button";
 import Course from "../../../assets/Courses.jpg";
 import { Progress } from "@/components/ui/progress";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 import {
     Accordion,
@@ -23,10 +25,37 @@ import { useState } from "react";
 import { Textarea } from "../ui/textarea";
 import Pf from "../../../assets/Profile.jpg";
 import ReviewModal from "../ReviewModal";
+import axios from "axios";
 
 export default function Details() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [showReply, setShowReply] = useState(false);
+    const { id } = useParams();
+    const [course, setCourse] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const getDetails = async () => {
+            try {
+                const res = await axios.get(`/api/course/${id}`);
+                setCourse(res.data.course);
+            } catch (err) {
+                console.error("Error fetching course:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getDetails();
+    }, [id]);
+
+    dayjs.extend(localizedFormat);
+
+    const formatDate = (date) => dayjs(date).format("D MMM YYYY, h:mm A");
+
+    if (loading) return <p>Loading...</p>;
+    if (!course) return <p>Course not found.</p>;
+
     return (
         <div className="px-5 lg:px-8">
             <div className="pb-12 flex gap-3">
@@ -39,13 +68,19 @@ export default function Details() {
                 >
                     <ul className="flex text-gray-800 mb-8">
                         <li>
-                            <Link className="flex items-center text-gray-600 text-xs md:text-sm">
+                            <Link
+                                to="/"
+                                className="flex items-center text-gray-600 text-xs md:text-sm"
+                            >
                                 <span className="mb-1">Home</span>{" "}
                                 <ChevronsRight size={20} />
                             </Link>
                         </li>
                         <li>
-                            <Link className="flex items-center text-gray-600 text-xs md:text-sm">
+                            <Link
+                                to="/courses"
+                                className="flex items-center text-gray-600 text-xs md:text-sm"
+                            >
                                 <span className="mb-1">Courses</span>{" "}
                                 <ChevronsRight size={20} />
                             </Link>
@@ -53,7 +88,7 @@ export default function Details() {
                         <li>
                             <Link className="flex items-center text-xs md:text-sm">
                                 <span className="mb-1 text-black">
-                                    Full-Stack Web Development Pathway
+                                    {course.title}
                                 </span>{" "}
                             </Link>
                         </li>
@@ -61,10 +96,10 @@ export default function Details() {
                     <div className="md:flex justify-between items-start">
                         <div>
                             <h1 className="text-xl md:text-2xl font-medium mb-1">
-                                How backend works in real life
+                                {course.title}
                             </h1>
                             <p className="text-sm text-gray-600">
-                                18th Jun 2025, 6:35 PM
+                                {formatDate(course.created_at)}
                             </p>
                         </div>
                         <div>
@@ -94,7 +129,7 @@ export default function Details() {
                         className="w-full h-64 md:h-96 object-cover my-5"
                     />
 
-                    <div className="my-3">
+                    {/* <div className="my-3">
                         <h1 className="text-lg font-medium">Resources</h1>
                         <ul className="list-disc my-3">
                             <li className="ml-4 my-2">
@@ -141,7 +176,7 @@ export default function Details() {
                                 </Link>
                             </li>
                         </ul>
-                    </div>
+                    </div> */}
                     <hr className="mt-7 border-t-gray-500" />
                     <div className="my-3">
                         <h1 className="text-lg font-medium mb-3">Comments</h1>
@@ -326,7 +361,7 @@ export default function Details() {
                     >
                         <div className="flex justify-between items-center">
                             <h1 className="text-base md:text-lg font-medium mb-1">
-                                Full-Stack Web Development Pathway
+                                {course.title}
                             </h1>
                             <button
                                 className="px-1 py-1 bg-black text-white rounded-full"
@@ -350,311 +385,29 @@ export default function Details() {
                                 collapsible
                                 className="mt-5"
                             >
-                                <AccordionItem
-                                    value="item-1"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-1: Introduction to Web
-                                        Development
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-2"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-2: Frontend Fundamentals (HTML &
-                                        CSS)
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>
-                                                HTML basics: structure, tags,
-                                                and attributes
-                                            </p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>
-                                                Creating forms and input fields
-                                            </p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                CSS basics: selectors,
-                                                properties, and values
-                                            </p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                4
-                                            </p>
-                                            <p>
-                                                The CSS box model and layout
-                                                techniques
-                                            </p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                5
-                                            </p>
-                                            <p>
-                                                Responsive design with media
-                                                queries
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-3"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-3: JavaScript Essentials
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-4"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-4: Introduction to Backend
-                                        Development
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-5"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-5: Advanced PHP Concepts
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-6"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-6: Advanced PHP Concepts
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-7"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-7: Advanced PHP Concepts
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-8"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-8: Advanced PHP Concepts
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-9"
-                                    className="px-2 py-2 rounded-lg border-b-gray-300"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-9: Advanced PHP Concepts
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                1
-                                            </p>
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                2
-                                            </p>
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-2 items-center py-2">
-                                            <p className="px-4 py-2 rounded-full border-2 border-gray-800">
-                                                3
-                                            </p>
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
+                                {course.outlines.map((outline, index) => (
+                                    <AccordionItem
+                                        key={outline.id}
+                                        value={`item-${index + 1}`}
+                                        className="px-2 py-2 rounded-lg border-b-gray-300"
+                                    >
+                                        <AccordionTrigger>
+                                            Chapter-{index + 1}: {outline.title}
+                                        </AccordionTrigger>
+                                        <AccordionContent>
+                                            {outline.subtitles?.map(
+                                                (sub, index) => (
+                                                    <Link className="flex gap-2 items-center py-2">
+                                                        <p className="px-4 py-2 rounded-full border-2 border-gray-800">
+                                                            {index + 1}
+                                                        </p>
+                                                        <p>{sub.subtitle}</p>
+                                                    </Link>
+                                                )
+                                            )}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
                             </Accordion>
                         </div>
                     </div>
