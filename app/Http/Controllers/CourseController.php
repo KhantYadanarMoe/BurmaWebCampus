@@ -75,23 +75,34 @@ class CourseController extends Controller
     }
 
     return response()->json(['success' => true]);
-}
+ }
 
-public function index(Request $request)
-{
-    // Fetch all courses with related models
-    $courses = Courses::with([
-        'category',           // course category
-        'outlines.subtitles', // outlines and their subtitles
-        'quizzes.options'     // quizzes and their options
-    ])->latest()->get();
+    public function index(Request $request)
+    {
+        // Fetch all courses with related models
+        $courses = Courses::with([
+            'category',           // course category
+            'outlines.subtitles', // outlines and their subtitles
+            'quizzes.options'     // quizzes and their options
+        ])->latest()->get();
 
-    // Return as JSON directly
-    return response()->json([
-        'courses' => $courses
-    ]);
-}
+        // Return as JSON directly
+        return response()->json([
+            'courses' => $courses
+        ]);
+    }
 
+
+public function show($id){
+        $course = Courses::with('category', 'outlines.subtitles', // outlines and their subtitles
+            'quizzes.options' )->findOrFail($id); 
+
+        if ($course) {
+            return response()->json(['course' => $course]);
+        } else {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+    }
 
 
 }

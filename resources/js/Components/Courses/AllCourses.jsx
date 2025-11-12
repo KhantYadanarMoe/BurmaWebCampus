@@ -21,6 +21,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function AllCourses() {
     const [courses, setCourses] = useState([]);
@@ -77,62 +78,96 @@ export default function AllCourses() {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {currentCourses.map((course) => (
-                    <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                        <CardContent className="p-4">
-                            <div>
-                                <img
-                                    src={`/storage/${course.image}`}
-                                    alt=""
-                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                                />
-                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                    {course.category.name}
-                                </span>
-                                <h1 className="my-3 font-medium text-lg">
-                                    {course.title}
-                                </h1>
-                                <div className="flex items-center gap-1 text-sm py-2">
-                                    <Users size={16} /> 27 students enrolled
-                                </div>
-                                <div className="flex items-center gap-1 text-sm py-2">
-                                    <Clock size={16} /> 18 hours long
-                                </div>
-                                <div className="py-3">
-                                    <div className="flex justify-between">
-                                        <h1 className="text-gray-700">
-                                            Progress
-                                        </h1>
-                                        <p className="text-black font-medium">
-                                            0%
-                                        </p>
+                    <Link to={`/course/${course.id}`}>
+                        <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                            <CardContent className="p-4">
+                                <div>
+                                    <img
+                                        src={`/storage/${course.image}`}
+                                        alt=""
+                                        className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
+                                    />
+                                    <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                        {course.category.name}
+                                    </span>
+                                    <h1 className="my-3 font-medium text-lg">
+                                        {course.title}
+                                    </h1>
+                                    <div className="flex items-center gap-1 text-sm py-2">
+                                        <Users size={16} /> 27 students enrolled
                                     </div>
-                                    <Progress value={0} className="mt-2" />
+                                    <div className="flex items-center gap-1 text-sm py-2">
+                                        <Clock size={16} /> 18 hours long
+                                    </div>
+                                    <div className="py-3">
+                                        <div className="flex justify-between">
+                                            <h1 className="text-gray-700">
+                                                Progress
+                                            </h1>
+                                            <p className="text-black font-medium">
+                                                0%
+                                            </p>
+                                        </div>
+                                        <Progress value={0} className="mt-2" />
+                                    </div>
+                                    <Button className="w-full mt-3">
+                                        Enroll Now
+                                    </Button>
                                 </div>
-                                <Button className="w-full mt-3">
-                                    Enroll Now
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    </Link>
                 ))}
             </div>
             <div className="my-4">
-                <Pagination>
+                <Pagination className="text-accentRed">
                     <PaginationContent>
                         <PaginationItem>
-                            <PaginationPrevious href="#" />
+                            <PaginationPrevious
+                                onClick={() =>
+                                    handlePageChange(currentPage - 1)
+                                }
+                                disabled={currentPage === 1}
+                                className={`cursor-pointer ${
+                                    currentPage === 1
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                }`}
+                            />
                         </PaginationItem>
+                        {Array.from(
+                            {
+                                length: Math.ceil(courses.length / rowsPerPage),
+                            },
+                            (_, index) => (
+                                <PaginationItem key={index}>
+                                    <PaginationLink
+                                        onClick={() =>
+                                            handlePageChange(index + 1)
+                                        }
+                                        isActive={currentPage === index + 1}
+                                        className="cursor-pointer"
+                                    >
+                                        {index + 1}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            )
+                        )}
                         <PaginationItem>
-                            <PaginationLink href="#">1</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#">2</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#">3</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationNext href="#" />
+                            <PaginationNext
+                                onClick={() =>
+                                    handlePageChange(currentPage + 1)
+                                }
+                                className={`cursor-pointer ${
+                                    currentPage === totalPages
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                }`}
+                                disabled={
+                                    currentPage ===
+                                    Math.ceil(courses.length / rowsPerPage)
+                                }
+                            />
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>

@@ -67,7 +67,7 @@ const routes = createBrowserRouter([
                 element: <Checkout />,
             },
             {
-                path: "/course", //it should be course name
+                path: "/course/:id", //it should be course name
                 element: <CourseOverview />,
             },
             {

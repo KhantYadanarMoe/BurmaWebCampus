@@ -11,7 +11,7 @@ import { Card, CardContent } from "../ui/card";
 import CoursesImg from "../../../assets/Courses.jpg";
 import { Button } from "../ui/button";
 
-export default function Overview() {
+export default function Overview({ course }) {
     return (
         <div className="px-5 lg:px-8 py-3">
             <div className="md:flex gap-3">
@@ -20,88 +20,17 @@ export default function Overview() {
                         About this course
                     </h1>
                     <p className="text-gray-800 text-sm leading-6">
-                        The Full-Stack Web Development Pathway is a structured
-                        program that takes learners from the foundations of
-                        coding to building fully functional, production-ready
-                        web applications. It blends both front-end and back-end
-                        development, ensuring a complete understanding of how
-                        modern websites and apps are designed, developed, and
-                        deployed. <br />
-                        Through practical projects and hands-on learning,
-                        students will not only master the core technologies
-                        behind full-stack development but also gain the
-                        confidence to create scalable applications, manage
-                        databases, and work with cloud deployment tools—skills
-                        that are in high demand across the tech industry.
+                        {course.description}
                     </p>
                     <div className="mt-6">
                         <h1 className="text-xl font-medium my-3">
                             What you'll learn
                         </h1>
                         <div className="flex flex-wrap items-center mt-3">
-                            <span className="lg:w-1/2 flex gap-1 my-2 pr-2">
-                                <CircleCheck
-                                    size={22}
-                                    className="text-green-600"
-                                />{" "}
-                                <p className="text-gray-700 text-sm">
-                                    Build responsive and accessible web pages
-                                    using HTML, CSS, and JavaScript.
-                                </p>
-                            </span>
-                            <span className="lg:w-1/2 flex gap-1 my-2 pr-2">
-                                <CircleCheck
-                                    size={22}
-                                    className="text-green-600"
-                                />{" "}
-                                <p className="text-gray-700 text-sm">
-                                    Master popular front-end frameworks like
-                                    React for interactive user interfaces.
-                                </p>
-                            </span>
-                            <span className="lg:w-1/2 flex gap-1 my-2 pr-2">
-                                <CircleCheck
-                                    size={22}
-                                    className="text-green-600"
-                                />{" "}
-                                <p className="text-gray-700 text-sm">
-                                    Develop powerful back-end services using
-                                    Node.js and RESTful APIs.
-                                </p>
-                            </span>
-                            <span className="lg:w-1/2 flex gap-1 my-2 pr-2">
-                                <CircleCheck
-                                    size={22}
-                                    className="text-green-600"
-                                />{" "}
-                                <p className="text-gray-700 text-sm">
-                                    Work with databases (SQL and NoSQL) to
-                                    store, manage, and retrieve data.
-                                </p>
-                            </span>
-                            <span className="lg:w-1/2 flex gap-1 my-2 pr-2">
-                                <CircleCheck
-                                    size={22}
-                                    className="text-green-600"
-                                />{" "}
-                                <p className="text-gray-700 text-sm">
-                                    Deploy applications to the cloud with
-                                    platforms like AWS or Heroku.
-                                </p>
-                            </span>
-                            <span className="lg:w-1/2 flex gap-1 my-2 pr-2">
-                                <CircleCheck
-                                    size={22}
-                                    className="text-green-600"
-                                />{" "}
-                                <p className="text-gray-700 text-sm">
-                                    Create a professional portfolio of
-                                    full-stack projects to showcase your skills.
-                                </p>
-                            </span>
+                            {course.outcomes}
                         </div>
                     </div>
-                    <div className="mt-6">
+                    {/* <div className="mt-6">
                         <h1 className="text-xl font-medium my-3">
                             Requirements
                         </h1>
@@ -137,7 +66,7 @@ export default function Overview() {
                                 </p>
                             </span>
                         </div>
-                    </div>
+                    </div> */}
                     <hr className="border-t-gray-500 mt-6" />
                     <div className="my-5">
                         <div className="flex justify-between items-center mt-4">
@@ -150,153 +79,29 @@ export default function Overview() {
                                 collapsible
                                 className="mt-5"
                             >
-                                <AccordionItem
-                                    value="item-1"
-                                    className="border border-gray-500 px-2 rounded-lg my-2"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-1: Introduction to Web
-                                        Development
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-2"
-                                    className="border border-gray-500 px-2 rounded-lg my-2"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-2: Frontend Fundamentals (HTML &
-                                        CSS)
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                HTML basics: structure, tags,
-                                                and attributes
-                                            </p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                Creating forms and input fields
-                                            </p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                CSS basics: selectors,
-                                                properties, and values
-                                            </p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                The CSS box model and layout
-                                                techniques
-                                            </p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                Responsive design with media
-                                                queries
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-3"
-                                    className="border border-gray-500 px-2 rounded-lg my-2"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-3: JavaScript Essentials
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-4"
-                                    className="border border-gray-500 px-2 rounded-lg my-2"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-4: Introduction to Backend
-                                        Development
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem
-                                    value="item-5"
-                                    className="border border-gray-500 px-2 rounded-lg my-2"
-                                >
-                                    <AccordionTrigger>
-                                        Chapter-5: Advanced PHP Concepts
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>What is web development?</p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>The client-server model</p>
-                                        </Link>
-                                        <Link className="flex gap-1 items-center py-2">
-                                            <Play size={18} />{" "}
-                                            <p>
-                                                Introduction to HTML, CSS, and
-                                                JavaScript
-                                            </p>
-                                        </Link>
-                                    </AccordionContent>
-                                </AccordionItem>
+                                {course.outlines.map((outline, index) => (
+                                    <AccordionItem
+                                        key={outline.id}
+                                        value={`item-${index + 1}`}
+                                        className="border border-gray-500 px-2 rounded-lg my-2"
+                                    >
+                                        <AccordionTrigger>
+                                            Chapter-{index + 1}: {outline.title}
+                                        </AccordionTrigger>
+                                        <AccordionContent>
+                                            {outline.subtitles?.map((sub) => (
+                                                <Link
+                                                    key={sub.id}
+                                                    className="flex gap-1 items-center py-2"
+                                                    to={`/video/${sub.id}`}
+                                                >
+                                                    <Play size={18} />
+                                                    <p>{sub.subtitle}</p>
+                                                </Link>
+                                            ))}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
                             </Accordion>
                         </div>
                     </div>
@@ -307,16 +112,15 @@ export default function Overview() {
                         <CardContent className="p-4">
                             <div>
                                 <img
-                                    src={CoursesImg}
+                                    src={`/storage/${course.image}`}
                                     alt=""
                                     className="w-full h-40 md:h-32 lg:h-36 object-cover rounded-md mb-4"
                                 />
                                 <span className="px-2 py-1 text-xs lg:text-sm border border-gray-700 rounded-lg">
-                                    Frontend
+                                    {course.category.name}
                                 </span>
                                 <h1 className="my-2 lg:my-3 font-medium text-base lg:text-lg">
-                                    Fluent in Javascript and its framework,
-                                    ReactJS
+                                    {course.title}
                                 </h1>
                                 <div className="flex items-center gap-1 text-xs lg:text-sm py-2">
                                     <Users size={16} /> 27 students enrolled
@@ -328,7 +132,7 @@ export default function Overview() {
                                     <span className="text-gray-700 text-base">
                                         Price -
                                     </span>
-                                    <span>300,000 MMK</span>
+                                    <span>{course.price} MMK</span>
                                 </span>
                                 <Button className="w-full mt-3">
                                     Enroll Now

@@ -2,13 +2,13 @@ import { ChevronRight, ChevronsRight } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function Hero() {
+export default function Hero({ course }) {
     return (
         <div className="px-5 lg:px-8">
             <div className="pt-10 pb-16">
                 <ul className="flex text-gray-800">
                     <li>
-                        <Link className="flex items-center">
+                        <Link to="/" className="flex items-center">
                             <span className="mb-1">Home</span>{" "}
                             <ChevronsRight size={20} />
                         </Link>
@@ -20,7 +20,7 @@ export default function Hero() {
                     </li>
                 </ul>
                 <h1 className="text-xl md:text-2xl font-medium my-2">
-                    Full-Stack Web Development Pathway
+                    {course.title}
                 </h1>
             </div>
             <hr className="border-t-gray-500" />

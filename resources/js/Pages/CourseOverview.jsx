@@ -1,12 +1,35 @@
 import Hero from "@/Components/Overview/Hero";
 import Overview from "@/Components/Overview/Overview";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function CourseOverview() {
+    const { id } = useParams();
+    const [course, setCourse] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const getDetails = async () => {
+            try {
+                const res = await axios.get(`/api/course/${id}`);
+                setCourse(res.data.course);
+            } catch (err) {
+                console.error("Error fetching course:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getDetails();
+    }, [id]);
+
+    if (loading) return <p>Loading...</p>;
+    if (!course) return <p>Course not found.</p>;
     return (
         <div>
-            <Hero />
-            <Overview />
+            <Hero course={course} />
+            <Overview course={course} />
         </div>
     );
 }
