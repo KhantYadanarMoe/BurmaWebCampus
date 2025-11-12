@@ -79,7 +79,7 @@ const routes = createBrowserRouter([
                 element: <UserProfile />,
             },
             {
-                path: "/course/quiz", //it should be course name
+                path: "/course/:id/quiz", //it should be course name
                 element: <Quiz />,
             },
             {
