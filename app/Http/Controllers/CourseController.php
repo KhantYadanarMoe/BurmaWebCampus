@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 class CourseController extends Controller
 {
  public function store(Request $request){
-    // 1️⃣ Decode JSON arrays
     $details = json_decode($request->input('details', '[]'), true);
     $quiz = json_decode($request->input('quiz', '[]'), true);
 
@@ -31,14 +30,24 @@ class CourseController extends Controller
         'title' => $unit['title'] ?? '',
     ]);
 
-    // Now add each subtitle (sublecture/video) under this outline
     foreach ($unit['sublectures'] ?? [] as $sub) {
+    $videoPath = null;
+
+    // Check if frontend uploaded a file for this subtitle
+    if (!empty($sub['upload_key']) && $request->hasFile($sub['upload_key'])) {
+            $file = $request->file($sub['upload_key']);
+            if ($file->isValid()) {
+                $videoPath = $file->store('videos', 'public'); // stored in storage/app/public/videos
+            }
+        }
+
         $outline->subtitles()->create([
             'subtitle' => $sub['subtitle'] ?? '',
-            'video_path' => $sub['video_path'] ?? null, 
+            'video_path' => $videoPath,
         ]);
     }
-}
+
+    }
 
 
 

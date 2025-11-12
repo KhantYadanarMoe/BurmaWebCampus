@@ -13,11 +13,9 @@ import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
-import CourseImg from "../../../assets/Courses.jpg";
-import { Textarea } from "../ui/textarea";
 import { Card, CardContent } from "../ui/card";
 import { useState } from "react";
+import { setUploadedOutlines } from "@/utils/uploadStore";
 
 export default function CourseDetailsForm() {
     const percent = 66; // step 2 of 3
@@ -83,21 +81,30 @@ export default function CourseDetailsForm() {
     const handleNext = (e) => {
         e.preventDefault();
 
-        // simple validation
         const hasEmpty = outlines.some(
             (outline) =>
                 !outline.title.trim() ||
                 outline.sublectures.some((s) => !s.subtitle.trim())
         );
+
         if (hasEmpty) {
-            alert(
-                "Please fill all outline and subtitle fields before continuing."
-            );
+            alert("Please fill all outlines and subtitles before continuing.");
             return;
         }
 
-        // save everything in localStorage
-        localStorage.setItem("course_details", JSON.stringify(outlines));
+        // ✅ Store the real files temporarily (in memory)
+        setUploadedOutlines(outlines);
+
+        // ✅ Only store metadata in localStorage
+        const outlinesCopy = outlines.map((outline) => ({
+            title: outline.title,
+            sublectures: outline.sublectures.map((sub) => ({
+                subtitle: sub.subtitle,
+                fileName: sub.files[0]?.name || null,
+            })),
+        }));
+
+        localStorage.setItem("course_details", JSON.stringify(outlinesCopy));
 
         navigate("/admin/courses/create/quiz");
     };

@@ -13,8 +13,6 @@ import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
-import CourseImg from "../../../assets/Courses.jpg";
 import { Textarea } from "../ui/textarea";
 import { Card, CardContent } from "../ui/card";
 import { useState } from "react";
@@ -25,6 +23,7 @@ import {
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import axios from "axios";
+import { getUploadedOutlines } from "@/utils/uploadStore";
 
 export default function CreateQuiz() {
     const percent = 100; // final step
@@ -114,7 +113,9 @@ export default function CreateQuiz() {
         );
         const quiz = questions;
 
-        // Validation (optional)
+        // 🧠 Get the in-memory files from CourseDetailsForm
+        const uploadedOutlines = getUploadedOutlines();
+
         if (!basic.title || details.length === 0 || quiz.length === 0) {
             alert("Please complete all steps before submitting!");
             return;
@@ -123,34 +124,49 @@ export default function CreateQuiz() {
         try {
             const formData = new FormData();
 
-            // Basic course info
+            // 🪄 Append basic info
             formData.append("title", basic.title);
             formData.append("category", basic.category_id);
             formData.append("price", basic.price);
             formData.append("description", basic.description);
             formData.append("outcomes", basic.outcomes);
 
-            // Image file (if exists)
             if (basic.image) {
                 formData.append("image", basic.image);
             }
 
-            // Details (outlines & subtitles)
+            // 🪄 Append course details (JSON)
             formData.append("details", JSON.stringify(details));
 
-            // Quiz
+            // 🪄 Append quiz (JSON)
             formData.append("quiz", JSON.stringify(quiz));
+
+            // 🪄 Now attach each uploaded video file
+            uploadedOutlines.forEach((unit, uIndex) => {
+                unit.sublectures.forEach((sub, sIndex) => {
+                    if (sub.files && sub.files.length > 0) {
+                        const uploadKey = `video_${uIndex}_${sIndex}`;
+                        formData.append(uploadKey, sub.files[0]); // only first file
+                        // Also tell backend which key to look for
+                        if (details[uIndex]?.sublectures?.[sIndex]) {
+                            details[uIndex].sublectures[sIndex].upload_key =
+                                uploadKey;
+                        }
+                    }
+                });
+            });
+
+            // Important: re-append updated details with upload keys
+            formData.set("details", JSON.stringify(details));
 
             for (let pair of formData.entries()) {
                 console.log(pair[0], pair[1]);
             }
 
-            // CSRF token (if needed)
             const csrfToken = document
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content");
 
-            // Send to Laravel backend
             const res = await axios.post("/api/courses/create", formData, {
                 headers: {
                     "X-CSRF-TOKEN": csrfToken,
@@ -160,12 +176,9 @@ export default function CreateQuiz() {
 
             if (res.data.success) {
                 alert("Course created successfully!");
-                // Optionally, clear localStorage
                 localStorage.removeItem("course_basic");
                 localStorage.removeItem("course_details");
                 localStorage.removeItem("course_quiz");
-
-                // Navigate back to course list
                 navigate("/admin/courses");
             }
         } catch (error) {
