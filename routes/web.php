@@ -7,6 +7,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubscribeController;
 use App\Models\Contact;
@@ -52,6 +53,8 @@ Route::middleware('auth:sanctum')->put('/api/user/{user}', [AuthController::clas
 Route::middleware('auth:sanctum')->put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
 
 Route::post('/api/users/banned/{id}', [AuthController::class, 'ban']);
+
+Route::post('/api/course/purchase/create', [PurchaseController::class, 'store']);
 
 Route::get('/api/course/categories', [CourseCategoryController::class, 'index']);
 Route::post("/api/course/category/create", [CourseCategoryController::class, 'store']);

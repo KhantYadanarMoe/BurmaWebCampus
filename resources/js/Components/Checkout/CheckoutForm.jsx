@@ -16,22 +16,112 @@ import UAB from "../../../assets/UABPay.jpg";
 import CB from "../../../assets/CBPay.jpg";
 import Course from "../../../assets/Courses.jpg";
 import Logo from "../../../assets/Logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
+import axios from "axios";
 
 export default function CheckoutForm() {
     const [courses, setCourses] = useState([]);
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        phone: "",
+    });
+    const [invoiceNumber, setInvoiceNumber] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState("");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedCourses =
             JSON.parse(localStorage.getItem("enrolledCourses")) || [];
         setCourses(storedCourses);
+
+        const existingInvoice = localStorage.getItem("invoiceNumber");
+        if (existingInvoice) {
+            setInvoiceNumber(existingInvoice);
+        } else {
+            const newInvoice =
+                "INV-" + Math.floor(100000 + Math.random() * 900000).toString();
+            localStorage.setItem("invoiceNumber", newInvoice);
+            setInvoiceNumber(newInvoice);
+        }
     }, []);
 
     const totalPrice = courses.reduce(
         (sum, course) => sum + Number(course.price || 0),
         0
     );
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handlePaymentSelect = (method) => {
+        setPaymentMethod(method);
+    };
+
+    const submit = async (e) => {
+        e.preventDefault();
+
+        let url = "/api/course/purchase/create";
+        let method = "post";
+
+        if (!paymentMethod) {
+            alert("Please select a payment method.");
+            return;
+        }
+
+        let formData = new FormData();
+
+        console.log("Form Data before submitting:", form);
+
+        formData.append("invoice_no", invoiceNumber);
+        formData.append("name", form.name);
+        formData.append("email", form.email);
+        formData.append("phone", form.phone);
+        formData.append("payment_method", paymentMethod);
+        formData.append("total_price", totalPrice);
+
+        if (courses.length > 0) {
+            formData.append("course_id", courses[0].id);
+        }
+
+        console.log("Form data after appending:", formData);
+
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
+            const res = await axios[method](url, formData, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (res.data.message === "Course purchased successfully.") {
+                localStorage.removeItem("enrolledCourses");
+                localStorage.removeItem("invoiceNumber");
+                navigate("/");
+            }
+        } catch (error) {
+            console.error("Error while purchasing:", error);
+
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
+            }
+        }
+    };
 
     return (
         <div className="px-5 lg:px-8 pb-6">
@@ -47,7 +137,7 @@ export default function CheckoutForm() {
 
                             <div className="flex flex-col items-end justify-end py-4">
                                 <p className="text-sm text-gray-600">
-                                    Invoice No. 2354
+                                    Invoice No. {invoiceNumber}
                                 </p>
                                 <p className="text-sm text-gray-600">
                                     {new Date().toLocaleDateString("en-GB", {
@@ -142,16 +232,34 @@ export default function CheckoutForm() {
                             <form action="">
                                 <div className="my-2">
                                     <Label>Name</Label>
-                                    <Input className="mt-1 border-gray-400" />
+                                    <Input
+                                        id="name"
+                                        name="name"
+                                        value={form.name}
+                                        onChange={handleInputChange}
+                                        className="mt-1 border-gray-400"
+                                    />
                                 </div>
                                 <div className="lg:flex gap-2">
                                     <div className="my-2 lg:w-1/2">
                                         <Label>Email</Label>
-                                        <Input className="mt-1 border-gray-400" />
+                                        <Input
+                                            id="email"
+                                            name="email"
+                                            value={form.email}
+                                            onChange={handleInputChange}
+                                            className="mt-1 border-gray-400"
+                                        />
                                     </div>
                                     <div className="my-2 lg:w-1/2">
                                         <Label>Phone (Optional)</Label>
-                                        <Input className="mt-1 border-gray-400" />
+                                        <Input
+                                            id="phone"
+                                            name="phone"
+                                            value={form.phone}
+                                            onChange={handleInputChange}
+                                            className="mt-1 border-gray-400"
+                                        />
                                     </div>
                                 </div>
                                 <div className="my-5">
@@ -159,35 +267,60 @@ export default function CheckoutForm() {
                                         Payment Method
                                     </h1>
                                     <div className="flex flex-wrap gap-2">
-                                        <Link className="border hover:border-gray-700 p-1 rounded-md duration-300">
+                                        <Link
+                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
+                                            onClick={() =>
+                                                handlePaymentSelect("KBZ Pay")
+                                            }
+                                        >
                                             <img
                                                 src={KBZ}
                                                 alt="Kpay"
                                                 className="w-10 rounded-md"
                                             />
                                         </Link>
-                                        <Link className="border hover:border-gray-700 p-1 rounded-md duration-300">
+                                        <Link
+                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
+                                            onClick={() =>
+                                                handlePaymentSelect("Wave Pay")
+                                            }
+                                        >
                                             <img
                                                 src={Wave}
                                                 alt="Wave"
                                                 className="w-10 rounded-md"
                                             />
                                         </Link>
-                                        <Link className="border hover:border-gray-700 p-1 rounded-md duration-300">
+                                        <Link
+                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
+                                            onClick={() =>
+                                                handlePaymentSelect("AYA Pay")
+                                            }
+                                        >
                                             <img
                                                 src={AYA}
                                                 alt="AYA"
                                                 className="w-10 rounded-md"
                                             />
                                         </Link>
-                                        <Link className="border hover:border-gray-700 p-1 rounded-md duration-300">
+                                        <Link
+                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
+                                            onClick={() =>
+                                                handlePaymentSelect("UAB Pay")
+                                            }
+                                        >
                                             <img
                                                 src={UAB}
                                                 alt="UAB"
                                                 className="w-10 rounded-md"
                                             />
                                         </Link>
-                                        <Link className="border hover:border-gray-700 p-1 rounded-md duration-300">
+                                        <Link
+                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
+                                            onClick={() =>
+                                                handlePaymentSelect("CB Pay")
+                                            }
+                                        >
                                             <img
                                                 src={CB}
                                                 alt="CB"
@@ -196,7 +329,12 @@ export default function CheckoutForm() {
                                         </Link>
                                     </div>
                                 </div>
-                                <Button className="mt-2 w-full">Submit</Button>
+                                <Button
+                                    onClick={submit}
+                                    className="mt-2 w-full"
+                                >
+                                    Submit
+                                </Button>
                             </form>
                         </Card>
                     ))}
