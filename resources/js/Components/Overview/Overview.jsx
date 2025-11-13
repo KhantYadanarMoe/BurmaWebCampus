@@ -5,13 +5,50 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/Components/ui/accordion";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
 import CoursesImg from "../../../assets/Courses.jpg";
 import { Button } from "../ui/button";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function Overview({ course }) {
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState("");
+
+    const handleEnroll = (course) => {
+        try {
+            const existing =
+                JSON.parse(localStorage.getItem("enrolledCourses")) || [];
+            const alreadyAdded = existing.some((c) => c.id === course.id);
+
+            if (!alreadyAdded) {
+                existing.push(course);
+                localStorage.setItem(
+                    "enrolledCourses",
+                    JSON.stringify(existing)
+                );
+                setDialogMessage(
+                    `${course.title} has been added to your cart.`
+                );
+            } else {
+                setDialogMessage(`${course.title} is already in your cart.`);
+            }
+
+            setDialogOpen(true); // open dialog
+        } catch (error) {
+            console.error("Error storing course in localStorage:", error);
+        }
+    };
+
     return (
         <div className="px-5 lg:px-8 py-3">
             <div className="md:flex gap-3">
@@ -106,6 +143,23 @@ export default function Overview({ course }) {
                         </div>
                     </div>
                 </div>
+                <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Added to cart</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                {dialogMessage}
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogAction
+                                onClick={() => setDialogOpen(false)}
+                            >
+                                OK
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
                 <div className="md:w-2/5">
                     <hr className="block md:hidden border-t-gray-500 my-8" />
                     <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg w-full md:w-[98%] lg:w-[95%] mx-auto my-4">
@@ -134,7 +188,10 @@ export default function Overview({ course }) {
                                     </span>
                                     <span>{course.price} MMK</span>
                                 </span>
-                                <Button className="w-full mt-3">
+                                <Button
+                                    className="w-full mt-3"
+                                    onClick={() => handleEnroll(course)}
+                                >
                                     Enroll Now
                                 </Button>
                             </div>

@@ -78,45 +78,45 @@ export default function AllCourses() {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {currentCourses.map((course) => (
-                    <Link to={`/course/${course.id}`}>
-                        <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-4">
-                                <div>
-                                    <img
-                                        src={`/storage/${course.image}`}
-                                        alt=""
-                                        className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                                    />
-                                    <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                        {course.category.name}
-                                    </span>
-                                    <h1 className="my-3 font-medium text-lg">
-                                        {course.title}
-                                    </h1>
-                                    <div className="flex items-center gap-1 text-sm py-2">
-                                        <Users size={16} /> 27 students enrolled
+                    <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                        <CardContent className="p-4">
+                            <div>
+                                <img
+                                    src={`/storage/${course.image}`}
+                                    alt=""
+                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
+                                />
+                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                    {course.category.name}
+                                </span>
+                                <h1 className="my-3 font-medium text-lg">
+                                    {course.title}
+                                </h1>
+                                <div className="flex items-center gap-1 text-sm py-2">
+                                    <Users size={16} /> 27 students enrolled
+                                </div>
+                                <div className="flex items-center gap-1 text-sm py-2">
+                                    <Clock size={16} /> 18 hours long
+                                </div>
+                                <div className="py-3">
+                                    <div className="flex justify-between">
+                                        <h1 className="text-gray-700">
+                                            Progress
+                                        </h1>
+                                        <p className="text-black font-medium">
+                                            0%
+                                        </p>
                                     </div>
-                                    <div className="flex items-center gap-1 text-sm py-2">
-                                        <Clock size={16} /> 18 hours long
-                                    </div>
-                                    <div className="py-3">
-                                        <div className="flex justify-between">
-                                            <h1 className="text-gray-700">
-                                                Progress
-                                            </h1>
-                                            <p className="text-black font-medium">
-                                                0%
-                                            </p>
-                                        </div>
-                                        <Progress value={0} className="mt-2" />
-                                    </div>
+                                    <Progress value={0} className="mt-2" />
+                                </div>
+                                <Link to={`/course/${course.id}`}>
                                     <Button className="w-full mt-3">
                                         Enroll Now
                                     </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
+                                </Link>
+                            </div>
+                        </CardContent>
+                    </Card>
                 ))}
             </div>
             <div className="my-4">
