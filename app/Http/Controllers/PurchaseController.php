@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Validator;
 class PurchaseController extends Controller
 {
     public function store(){
-        // validate all the data from frontend
         $validator = Validator::make(request()->all(), [
             "invoice_no" => ["required"],
             "name" => ["required"],
@@ -21,7 +20,6 @@ class PurchaseController extends Controller
             "course_id" => ["required", "exists:courses,id"], 
         ]);
 
-        // condition for failed validation
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()->messages()
@@ -30,7 +28,6 @@ class PurchaseController extends Controller
 
         $course = Courses::find(request('course_id'));
 
-        // store the rest of the data
         $purchases = Purchase::create([
             'invoice_no' => request('invoice_no'),
             'name' => request('name'),
@@ -41,10 +38,17 @@ class PurchaseController extends Controller
             'course_id' => $course->id, 
         ]);
 
-        // return when the data is successfully created.
         return response()->json([
             'message' => 'Course purchased successfully.',
             'purchases' => $purchases,
+        ]);
+    }
+
+    public function index(){
+        $purchases = Purchase::with('course')->latest()->get();
+
+        return response()->json([
+            'purchases' => $purchases
         ]);
     }
 }

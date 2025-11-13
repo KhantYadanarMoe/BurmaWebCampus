@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Select,
     SelectContent,
@@ -23,11 +23,45 @@ import {
 import { Button } from "../ui/button";
 import CourseImg from "../../../assets/Courses.jpg";
 import { Ellipsis, GraduationCap, Plus, Users } from "lucide-react";
-import BlogImg from "../../../assets/Blogs.jpg";
 import { Link, useOutletContext } from "react-router-dom";
+import axios from "axios";
 
 export default function Purchase() {
     const { darkMode } = useOutletContext();
+    let [purchases, setPurchases] = useState([]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const rowsPerPage = 10;
+
+    let getPurchases = async () => {
+        try {
+            let res = await axios.get("/api/course/purchase");
+            let data = res.data;
+            setPurchases(data.purchases);
+        } catch (error) {
+            console.error("Failed to fetch purchases:", error);
+        }
+    };
+
+    useEffect(() => {
+        getPurchases();
+    }, []);
+
+    const indexOfLastPurchase = currentPage * rowsPerPage;
+    const indexOfFirstPurchase = indexOfLastPurchase - rowsPerPage;
+    const currentPurchases = purchases.slice(
+        indexOfFirstPurchase,
+        indexOfLastPurchase
+    );
+    const totalPages = Math.ceil(purchases.length / rowsPerPage);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
         <div>
             <h1 className="text-xl font-medium">Purchased Courses</h1>
@@ -69,336 +103,82 @@ export default function Purchase() {
                 <div className="min-w-[920px]">
                     <ul className="flex items-center px-3 py-4 border-b border-b-gray-700 my-3">
                         <li className="basis-[4%]">ID</li>
-                        <li className="basis-[8%]">Invoice</li>
-                        <li className="basis-[31%] pl-2">Course Name</li>
+                        <li className="basis-[10%]">Invoice</li>
+                        <li className="basis-[30%] pl-2">Course Name</li>
                         <li className="basis-[20%]">Student Name</li>
                         <li className="basis-[10%]">Payment</li>
-                        <li className="basis-[12%]">Date</li>
+                        <li className="basis-[11%]">Date</li>
                         <li className="basis-[10%]">Access</li>
                         <li className="basis-[5%]"></li>
                     </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[4%]">1</li>
-                        <li className="basis-[8%]">T3475</li>
-                        <li className="basis-[31%] flex items-center gap-2">
-                            <img
-                                src={CourseImg}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                            />
-                            <p className="text-sm font-medium">
-                                Full-Stack Web Development Pathway
-                            </p>
-                        </li>
-                        <li className="basis-[20%]">Khant Yadanar Moe</li>
-                        <li className="basis-[10%]">Kpay</li>
-                        <li className="basis-[12%]">
-                            <p className="text-sm">9.10.2025</p>
-                            <p className="text-sm">10:28 AM</p>
-                        </li>
-                        <li className="basis-[10%]">Life-time</li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button
-                                        className={`p-1 rounded-md ${
-                                            darkMode
-                                                ? "hover:bg-gray-800"
-                                                : "hover:bg-gray-100"
-                                        } outline-none`}
+                    {purchases.map((purchase) => (
+                        <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                            <li className="basis-[4%]">{purchase.id}</li>
+                            <li className="basis-[10%]">
+                                {purchase.invoice_no}
+                            </li>
+                            <li className="basis-[30%] flex items-center gap-2">
+                                <img
+                                    src={CourseImg}
+                                    alt=""
+                                    className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                                />
+                                <p className="text-sm font-medium">
+                                    {purchase.course.title}
+                                </p>
+                            </li>
+                            <li className="basis-[20%]">{purchase.name}</li>
+                            <li className="basis-[10%]">
+                                {purchase.payment_method}
+                            </li>
+                            <li className="basis-[11%]">
+                                <p className="text-sm">
+                                    {new Date(
+                                        purchase.created_at
+                                    ).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "numeric",
+                                        year: "numeric",
+                                    })}
+                                </p>
+                                <p className="text-sm">
+                                    {new Date(
+                                        purchase.created_at
+                                    ).toLocaleTimeString("en-US", {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                    })}
+                                </p>
+                            </li>
+                            <li className="basis-[10%]">Life-time</li>
+                            <li className="basis-[5%]">
+                                <DropdownMenu modal={false}>
+                                    <DropdownMenuTrigger asChild>
+                                        <button
+                                            className={`p-1 rounded-md ${
+                                                darkMode
+                                                    ? "hover:bg-gray-800"
+                                                    : "hover:bg-gray-100"
+                                            } outline-none`}
+                                        >
+                                            <Ellipsis size={20} />
+                                        </button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="end"
+                                        className="w-40"
                                     >
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Details
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[4%]">1</li>
-                        <li className="basis-[8%]">T3475</li>
-                        <li className="basis-[31%] flex items-center gap-2">
-                            <img
-                                src={CourseImg}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                            />
-                            <p className="text-sm font-medium">
-                                Full-Stack Web Development Pathway
-                            </p>
-                        </li>
-                        <li className="basis-[20%]">Khant Yadanar Moe</li>
-                        <li className="basis-[10%]">Kpay</li>
-                        <li className="basis-[12%]">
-                            <p className="text-sm">9.10.2025</p>
-                            <p className="text-sm">10:28 AM</p>
-                        </li>
-                        <li className="basis-[10%]">Life-time</li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button
-                                        className={`p-1 rounded-md ${
-                                            darkMode
-                                                ? "hover:bg-gray-800"
-                                                : "hover:bg-gray-100"
-                                        } outline-none`}
-                                    >
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Details
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[4%]">1</li>
-                        <li className="basis-[8%]">T3475</li>
-                        <li className="basis-[31%] flex items-center gap-2">
-                            <img
-                                src={CourseImg}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                            />
-                            <p className="text-sm font-medium">
-                                Full-Stack Web Development Pathway
-                            </p>
-                        </li>
-                        <li className="basis-[20%]">Khant Yadanar Moe</li>
-                        <li className="basis-[10%]">Kpay</li>
-                        <li className="basis-[12%]">
-                            <p className="text-sm">9.10.2025</p>
-                            <p className="text-sm">10:28 AM</p>
-                        </li>
-                        <li className="basis-[10%]">Life-time</li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button
-                                        className={`p-1 rounded-md ${
-                                            darkMode
-                                                ? "hover:bg-gray-800"
-                                                : "hover:bg-gray-100"
-                                        } outline-none`}
-                                    >
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Details
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[4%]">1</li>
-                        <li className="basis-[8%]">T3475</li>
-                        <li className="basis-[31%] flex items-center gap-2">
-                            <img
-                                src={CourseImg}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                            />
-                            <p className="text-sm font-medium">
-                                Full-Stack Web Development Pathway
-                            </p>
-                        </li>
-                        <li className="basis-[20%]">Khant Yadanar Moe</li>
-                        <li className="basis-[10%]">Kpay</li>
-                        <li className="basis-[12%]">
-                            <p className="text-sm">9.10.2025</p>
-                            <p className="text-sm">10:28 AM</p>
-                        </li>
-                        <li className="basis-[10%]">Life-time</li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button
-                                        className={`p-1 rounded-md ${
-                                            darkMode
-                                                ? "hover:bg-gray-800"
-                                                : "hover:bg-gray-100"
-                                        } outline-none`}
-                                    >
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Details
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[4%]">1</li>
-                        <li className="basis-[8%]">T3475</li>
-                        <li className="basis-[31%] flex items-center gap-2">
-                            <img
-                                src={CourseImg}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                            />
-                            <p className="text-sm font-medium">
-                                Full-Stack Web Development Pathway
-                            </p>
-                        </li>
-                        <li className="basis-[20%]">Khant Yadanar Moe</li>
-                        <li className="basis-[10%]">Kpay</li>
-                        <li className="basis-[12%]">
-                            <p className="text-sm">9.10.2025</p>
-                            <p className="text-sm">10:28 AM</p>
-                        </li>
-                        <li className="basis-[10%]">Life-time</li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button
-                                        className={`p-1 rounded-md ${
-                                            darkMode
-                                                ? "hover:bg-gray-800"
-                                                : "hover:bg-gray-100"
-                                        } outline-none`}
-                                    >
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Details
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[4%]">1</li>
-                        <li className="basis-[8%]">T3475</li>
-                        <li className="basis-[31%] flex items-center gap-2">
-                            <img
-                                src={CourseImg}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                            />
-                            <p className="text-sm font-medium">
-                                Full-Stack Web Development Pathway
-                            </p>
-                        </li>
-                        <li className="basis-[20%]">Khant Yadanar Moe</li>
-                        <li className="basis-[10%]">Kpay</li>
-                        <li className="basis-[12%]">
-                            <p className="text-sm">9.10.2025</p>
-                            <p className="text-sm">10:28 AM</p>
-                        </li>
-                        <li className="basis-[10%]">Life-time</li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button
-                                        className={`p-1 rounded-md ${
-                                            darkMode
-                                                ? "hover:bg-gray-800"
-                                                : "hover:bg-gray-100"
-                                        } outline-none`}
-                                    >
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Details
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
-                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                        <li className="basis-[4%]">1</li>
-                        <li className="basis-[8%]">T3475</li>
-                        <li className="basis-[31%] flex items-center gap-2">
-                            <img
-                                src={CourseImg}
-                                alt=""
-                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                            />
-                            <p className="text-sm font-medium">
-                                Full-Stack Web Development Pathway
-                            </p>
-                        </li>
-                        <li className="basis-[20%]">Khant Yadanar Moe</li>
-                        <li className="basis-[10%]">Kpay</li>
-                        <li className="basis-[12%]">
-                            <p className="text-sm">9.10.2025</p>
-                            <p className="text-sm">10:28 AM</p>
-                        </li>
-                        <li className="basis-[10%]">Life-time</li>
-                        <li className="basis-[5%]">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <button
-                                        className={`p-1 rounded-md ${
-                                            darkMode
-                                                ? "hover:bg-gray-800"
-                                                : "hover:bg-gray-100"
-                                        } outline-none`}
-                                    >
-                                        <Ellipsis size={20} />
-                                    </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-40"
-                                >
-                                    <Link to="">
-                                        <DropdownMenuItem className="text-accentGreen">
-                                            View Details
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </li>
-                    </ul>
+                                        <Link to="">
+                                            <DropdownMenuItem className="text-accentGreen">
+                                                View Details
+                                            </DropdownMenuItem>
+                                        </Link>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </li>
+                        </ul>
+                    ))}
                 </div>
             </div>
             <div className="mt-8 flex">
@@ -406,19 +186,55 @@ export default function Purchase() {
                     <Pagination className="text-accentRed">
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious />
+                                <PaginationPrevious
+                                    onClick={() =>
+                                        handlePageChange(currentPage - 1)
+                                    }
+                                    disabled={currentPage === 1}
+                                    className={`cursor-pointer ${
+                                        currentPage === 1
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                />
                             </PaginationItem>
+                            {Array.from(
+                                {
+                                    length: Math.ceil(
+                                        purchases.length / rowsPerPage
+                                    ),
+                                },
+                                (_, index) => (
+                                    <PaginationItem key={index}>
+                                        <PaginationLink
+                                            onClick={() =>
+                                                handlePageChange(index + 1)
+                                            }
+                                            isActive={currentPage === index + 1}
+                                            className="cursor-pointer"
+                                        >
+                                            {index + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                )
+                            )}
                             <PaginationItem>
-                                <PaginationLink>1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>2</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext />
+                                <PaginationNext
+                                    onClick={() =>
+                                        handlePageChange(currentPage + 1)
+                                    }
+                                    className={`cursor-pointer ${
+                                        currentPage === totalPages
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                    disabled={
+                                        currentPage ===
+                                        Math.ceil(
+                                            purchases.length / rowsPerPage
+                                        )
+                                    }
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
