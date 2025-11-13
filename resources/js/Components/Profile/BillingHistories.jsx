@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import KBZ from "../../../assets/KBZPay.jpg";
 import Wave from "../../../assets/WavePay.jpg";
 import AYA from "../../../assets/AYAPay.jpg";
@@ -6,8 +6,28 @@ import UAB from "../../../assets/UABPay.jpg";
 import CB from "../../../assets/CBPay.jpg";
 import { Card, CardContent } from "../ui/card";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function BillingHistories() {
+    const [purchases, setPurchases] = useState([]);
+
+    const fetchPurchases = async () => {
+        try {
+            const token = localStorage.getItem("auth_token"); // or from context
+            const res = await axios.get("/api/user/purchases", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setPurchases(res.data.purchases);
+        } catch (error) {
+            console.error("Failed to fetch purchase history:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPurchases();
+    }, []);
     return (
         <div className="px-5 md:px-6 lg:px-10 py-8 md:w-[97%] mx-auto ">
             <div>
@@ -100,56 +120,35 @@ export default function BillingHistories() {
                             <li className="basis-[15%]">Enrolled Date</li>
                             <li className="basis-[14%]">Access</li>
                         </ul>
-                        <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
-                            <li className="basis-[4%]">1</li>
-                            <li className="basis-[21%]">Khant Yadanar Moe</li>
-                            <li className="basis-[35%] font-medium">
-                                Full-stack Web Development Pathway
-                            </li>
-                            <li className="basis-[11%]">KBZ Pay</li>
-                            <li className="basis-[15%]">8 Aug 2025</li>
-                            <li className="basis-[14%]">Life-time access</li>
-                        </ul>
-                        <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
-                            <li className="basis-[4%]">1</li>
-                            <li className="basis-[21%]">Khant Yadanar Moe</li>
-                            <li className="basis-[35%] font-medium">
-                                Full-stack Web Development Pathway
-                            </li>
-                            <li className="basis-[11%]">KBZ Pay</li>
-                            <li className="basis-[15%]">8 Aug 2025</li>
-                            <li className="basis-[14%]">Life-time access</li>
-                        </ul>
-                        <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
-                            <li className="basis-[4%]">1</li>
-                            <li className="basis-[21%]">Khant Yadanar Moe</li>
-                            <li className="basis-[35%] font-medium">
-                                Full-stack Web Development Pathway
-                            </li>
-                            <li className="basis-[11%]">KBZ Pay</li>
-                            <li className="basis-[15%]">8 Aug 2025</li>
-                            <li className="basis-[14%]">Life-time access</li>
-                        </ul>
-                        <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
-                            <li className="basis-[4%]">1</li>
-                            <li className="basis-[21%]">Khant Yadanar Moe</li>
-                            <li className="basis-[35%] font-medium">
-                                Full-stack Web Development Pathway
-                            </li>
-                            <li className="basis-[11%]">KBZ Pay</li>
-                            <li className="basis-[15%]">8 Aug 2025</li>
-                            <li className="basis-[14%]">Life-time access</li>
-                        </ul>
-                        <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
-                            <li className="basis-[4%]">1</li>
-                            <li className="basis-[21%]">Khant Yadanar Moe</li>
-                            <li className="basis-[35%] font-medium">
-                                Full-stack Web Development Pathway
-                            </li>
-                            <li className="basis-[11%]">KBZ Pay</li>
-                            <li className="basis-[15%]">8 Aug 2025</li>
-                            <li className="basis-[14%]">Life-time access</li>
-                        </ul>
+                        {purchases.length === 0 && (
+                            <p className="text-center font-medium">
+                                No purchases yet.
+                            </p>
+                        )}
+                        {purchases.map((purchase) => (
+                            <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
+                                <li className="basis-[4%]">{purchase.id}</li>
+                                <li className="basis-[21%]">{purchase.name}</li>
+                                <li className="basis-[35%] font-medium">
+                                    {purchase.course.title}
+                                </li>
+                                <li className="basis-[11%]">
+                                    {purchase.payment_method}
+                                </li>
+                                <li className="basis-[15%]">
+                                    {new Date(
+                                        purchase.created_at
+                                    ).toLocaleDateString("en-GB", {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                    })}
+                                </li>
+                                <li className="basis-[14%]">
+                                    Life-time access
+                                </li>
+                            </ul>
+                        ))}
                     </div>
                 </div>
             </div>
