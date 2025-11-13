@@ -22,13 +22,20 @@ import {
 } from "../ui/pagination";
 import { Button } from "../ui/button";
 import CourseImg from "../../../assets/Courses.jpg";
-import { Ellipsis, GraduationCap, Plus, Users } from "lucide-react";
+import {
+    ChevronDown,
+    Ellipsis,
+    GraduationCap,
+    Plus,
+    Users,
+} from "lucide-react";
 import { Link, useOutletContext } from "react-router-dom";
 import axios from "axios";
 
 export default function Purchase() {
     const { darkMode } = useOutletContext();
     let [purchases, setPurchases] = useState([]);
+    const [selectedFilter, setSelectedFilter] = useState("newest");
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -46,6 +53,26 @@ export default function Purchase() {
 
     useEffect(() => {
         getPurchases();
+    }, []);
+
+    const handleFilterChange = (filterValue) => {
+        setSelectedFilter(filterValue);
+
+        axios
+            .get(`/api/course/purchase?sort=${filterValue}`)
+            .then((response) => {
+                const data = response.data;
+                if (data.purchases) {
+                    setPurchases(data.purchases);
+                }
+            })
+            .catch((error) => {
+                console.error("Axios request failed:", error);
+            });
+    };
+
+    useEffect(() => {
+        handleFilterChange("newest");
     }, []);
 
     const indexOfLastPurchase = currentPage * rowsPerPage;
@@ -84,19 +111,44 @@ export default function Purchase() {
                     </Link>
                 </div>
                 <div className="hidden md:block">
-                    <Select>
-                        <SelectTrigger className="w-[180px] border-gray-600">
-                            <SelectValue placeholder="Filter " />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="newest">
+                    <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger asChild>
+                            <button
+                                className={`flex gap-1 items-center px-2 py-1 border ${
+                                    darkMode
+                                        ? "border-gray-300"
+                                        : "border-gray-800"
+                                } rounded-md`}
+                            >
+                                {
+                                    {
+                                        newest: "Filter By Newest",
+                                        oldest: "Filter By Oldest",
+                                    }[selectedFilter]
+                                }
+                                <ChevronDown size={16} />
+                            </button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent
+                            align="end"
+                            className="w-40"
+                            avoidCollisions={false}
+                        >
+                            <DropdownMenuItem
+                                onSelect={() => handleFilterChange("newest")}
+                                className="cursor-pointer"
+                            >
                                 Filter By Newest
-                            </SelectItem>
-                            <SelectItem value="oldest">
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onSelect={() => handleFilterChange("oldest")}
+                                className="cursor-pointer"
+                            >
                                 Filter By Oldest
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
             <div className="overflow-x-auto w-full">
@@ -111,7 +163,7 @@ export default function Purchase() {
                         <li className="basis-[10%]">Access</li>
                         <li className="basis-[5%]"></li>
                     </ul>
-                    {purchases.map((purchase) => (
+                    {currentPurchases.map((purchase) => (
                         <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
                             <li className="basis-[4%]">{purchase.id}</li>
                             <li className="basis-[10%]">

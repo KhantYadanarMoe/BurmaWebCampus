@@ -44,11 +44,22 @@ class PurchaseController extends Controller
         ]);
     }
 
-    public function index(){
-        $purchases = Purchase::with('course')->latest()->get();
+    public function index(Request $request){
+    $sort = $request->query('sort', 'newest'); // Default to 'newest'
+    $query = Purchase::with('course'); // <- fixed
 
-        return response()->json([
-            'purchases' => $purchases
-        ]);
+    // Apply sorting
+    if ($sort === 'oldest') {
+        $query->orderBy('created_at', 'asc');
+    } else {
+        $query->orderBy('created_at', 'desc');
     }
+
+    $purchases = $query->get();
+
+    return response()->json([
+        'purchases' => $purchases
+    ]);
+}
+
 }
