@@ -68,7 +68,8 @@ export default function Courses() {
                                                         {course.title}
                                                     </h1>
                                                     <div className="flex items-center gap-1 text-sm py-2">
-                                                        <Users size={16} /> 27
+                                                        <Users size={16} />{" "}
+                                                        {course.purchases_count}{" "}
                                                         students enrolled
                                                     </div>
                                                     <div className="flex items-center gap-1 text-sm py-2">

@@ -234,7 +234,7 @@ export default function UsersList() {
                                 <p>9.10.2025</p>
                             </li>
                             <li className="basis-[10%]">
-                                <p>2</p>
+                                <p>{user.purchases_count}</p>
                             </li>
                             <li className="basis-[5%]">
                                 <DropdownMenu modal={false}>

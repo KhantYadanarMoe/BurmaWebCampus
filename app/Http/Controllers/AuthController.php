@@ -115,7 +115,7 @@ class AuthController extends Controller
 
     public function index(Request $request){
         $sort = $request->query('sort', 'newest'); // Default to 'newest' if no data is provided
-        $query = User::query();
+        $query = User::with(['purchases.course']);
 
         // Apply sorting based on the requested sort option
         switch ($sort) {
@@ -134,7 +134,9 @@ class AuthController extends Controller
                 break;
         }
 
-        $users = $query->get();
+        $query->withCount('purchases');
+
+    $users = $query->get();
 
         // Send data to frontend
         return response()->json([

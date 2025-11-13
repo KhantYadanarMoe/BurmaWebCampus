@@ -93,7 +93,8 @@ export default function AllCourses() {
                                     {course.title}
                                 </h1>
                                 <div className="flex items-center gap-1 text-sm py-2">
-                                    <Users size={16} /> 27 students enrolled
+                                    <Users size={16} /> {course.purchases_count}{" "}
+                                    students enrolled
                                 </div>
                                 <div className="flex items-center gap-1 text-sm py-2">
                                     <Clock size={16} /> 18 hours long

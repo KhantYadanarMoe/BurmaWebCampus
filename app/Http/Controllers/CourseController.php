@@ -84,7 +84,7 @@ class CourseController extends Controller
             'category',           // course category
             'outlines.subtitles', // outlines and their subtitles
             'quizzes.options'     // quizzes and their options
-        ])->latest()->get();
+        ])->withCount('purchases')->latest()->get();
 
         // Return as JSON directly
         return response()->json([
