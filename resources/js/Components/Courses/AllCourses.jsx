@@ -25,8 +25,9 @@ import { Link } from "react-router-dom";
 
 export default function AllCourses() {
     const [courses, setCourses] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-
     const rowsPerPage = 6;
 
     const getCourses = async () => {
@@ -42,17 +43,38 @@ export default function AllCourses() {
         getCourses();
     }, []);
 
+    const getCategories = async () => {
+        try {
+            const res = await axios.get("/api/course/categories");
+            setCategories(res.data.categories || []);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
+    const filteredCourses = selectedCategory
+        ? courses.filter((course) => course.category?.id === selectedCategory)
+        : courses;
+
     const indexOfLastCourse = currentPage * rowsPerPage;
     const indexOfFirstCourse = indexOfLastCourse - rowsPerPage;
-    const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
+    const currentCourses = filteredCourses.slice(
+        indexOfFirstCourse,
+        indexOfLastCourse
+    );
 
-    const totalPages = Math.ceil(courses.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredCourses.length / rowsPerPage);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
         }
     };
+
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-6">
@@ -70,9 +92,19 @@ export default function AllCourses() {
                         <SelectValue placeholder="Filter By Categories" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="frontend">Frontend</SelectItem>
-                        <SelectItem value="backend">Backend</SelectItem>
-                        <SelectItem value="fullstack">Fullstack</SelectItem>
+                        {categories.map((category) => (
+                            <SelectItem value={category.name}>
+                                <button
+                                    key={category.id}
+                                    onClick={() => {
+                                        setSelectedCategory(category.id);
+                                        setCurrentPage(1);
+                                    }}
+                                >
+                                    {category.name}
+                                </button>
+                            </SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
             </div>
@@ -136,24 +168,18 @@ export default function AllCourses() {
                                 }`}
                             />
                         </PaginationItem>
-                        {Array.from(
-                            {
-                                length: Math.ceil(courses.length / rowsPerPage),
-                            },
-                            (_, index) => (
-                                <PaginationItem key={index}>
-                                    <PaginationLink
-                                        onClick={() =>
-                                            handlePageChange(index + 1)
-                                        }
-                                        isActive={currentPage === index + 1}
-                                        className="cursor-pointer"
-                                    >
-                                        {index + 1}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            )
-                        )}
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <PaginationItem key={index}>
+                                <PaginationLink
+                                    onClick={() => handlePageChange(index + 1)}
+                                    isActive={currentPage === index + 1}
+                                    className="cursor-pointer"
+                                >
+                                    {index + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+
                         <PaginationItem>
                             <PaginationNext
                                 onClick={() =>
