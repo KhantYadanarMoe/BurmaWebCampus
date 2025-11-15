@@ -336,22 +336,17 @@ export default function BlogForm() {
                     </div>
 
                     <div className="hidden md:flex gap-2 my-4">
-                        <div className="relative w-2/4 h-40">
-                            {cover ? (
+                        {cover || coverUrl ? (
+                            <div className="relative w-2/4 h-40">
                                 <img
-                                    src={URL.createObjectURL(cover)}
-                                    alt="Live Cover Preview"
+                                    src={
+                                        cover
+                                            ? URL.createObjectURL(cover)
+                                            : `/storage/${coverUrl}`
+                                    }
+                                    alt="Cover Preview"
                                     className="w-full h-full object-cover rounded-md"
                                 />
-                            ) : coverUrl ? (
-                                <img
-                                    src={`/storage/${coverUrl}`}
-                                    alt="Existing Cover"
-                                    className="w-full h-full object-cover rounded-md"
-                                />
-                            ) : null}
-
-                            {(cover || coverUrl) && (
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -362,25 +357,20 @@ export default function BlogForm() {
                                 >
                                     ✕
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        ) : null}
 
-                        <div className="relative w-1/4 h-40">
-                            {detailImg1 ? (
+                        {detailImg1 || detailImg1Url ? (
+                            <div className="relative w-1/4 h-40">
                                 <img
-                                    src={URL.createObjectURL(detailImg1)}
-                                    alt="Live Detail 1 Preview"
+                                    src={
+                                        detailImg1
+                                            ? URL.createObjectURL(detailImg1)
+                                            : `/storage/${detailImg1Url}`
+                                    }
+                                    alt="Detail 1 Preview"
                                     className="w-full h-full object-cover rounded-md"
                                 />
-                            ) : detailImg1Url ? (
-                                <img
-                                    src={`/storage/${detailImg1Url}`}
-                                    alt="Existing Detail 1"
-                                    className="w-full h-full object-cover rounded-md"
-                                />
-                            ) : null}
-
-                            {(detailImg1 || detailImg1Url) && (
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -391,25 +381,20 @@ export default function BlogForm() {
                                 >
                                     ✕
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        ) : null}
 
-                        <div className="relative w-1/4 h-40">
-                            {detailImg2 ? (
+                        {detailImg2 || detailImg2Url ? (
+                            <div className="relative w-1/4 h-40">
                                 <img
-                                    src={URL.createObjectURL(detailImg2)}
-                                    alt="Live Detail 2 Preview"
+                                    src={
+                                        detailImg2
+                                            ? URL.createObjectURL(detailImg2)
+                                            : `/storage/${detailImg2Url}`
+                                    }
+                                    alt="Detail 2 Preview"
                                     className="w-full h-full object-cover rounded-md"
                                 />
-                            ) : detailImg2Url ? (
-                                <img
-                                    src={`/storage/${detailImg2Url}`}
-                                    alt="Existing Detail 2"
-                                    className="w-full h-full object-cover rounded-md"
-                                />
-                            ) : null}
-
-                            {(detailImg2 || detailImg2Url) && (
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -420,8 +405,8 @@ export default function BlogForm() {
                                 >
                                     ✕
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        ) : null}
                     </div>
 
                     <div className="my-3">
