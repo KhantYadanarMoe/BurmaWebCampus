@@ -36,6 +36,8 @@ import axios from "axios";
 export default function CoursesList() {
     const { darkMode } = useOutletContext();
     const [courses, setCourses] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
 
     const rowsPerPage = 10;
@@ -53,11 +55,31 @@ export default function CoursesList() {
         getCourses();
     }, []);
 
+    const getCategories = async () => {
+        try {
+            const res = await axios.get("/api/course/categories");
+            setCategories(res.data.categories || []);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
+    const filteredCourses = selectedCategory
+        ? courses.filter((course) => course.category?.id === selectedCategory)
+        : courses;
+
     const indexOfLastCourse = currentPage * rowsPerPage;
     const indexOfFirstCourse = indexOfLastCourse - rowsPerPage;
-    const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
+    const currentCourses = filteredCourses.slice(
+        indexOfFirstCourse,
+        indexOfLastCourse
+    );
 
-    const totalPages = Math.ceil(courses.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredCourses.length / rowsPerPage);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -87,38 +109,40 @@ export default function CoursesList() {
                 </div>
                 <div className="flex items-center justify-end md:justify-normal gap-2">
                     <div className="hidden md:block">
-                        <DropdownMenu modal={false}>
-                            <DropdownMenuTrigger asChild>
-                                <button
-                                    className={`flex gap-1 items-center px-2 py-1 border ${
-                                        darkMode
-                                            ? "border-gray-300"
-                                            : "border-gray-800"
-                                    } rounded-md`}
-                                >
-                                    <ChevronDown size={16} />
-                                </button>
-                            </DropdownMenuTrigger>
-
-                            <DropdownMenuContent
-                                align="end"
-                                className="w-40"
-                                avoidCollisions={false}
-                            >
-                                <DropdownMenuItem className="cursor-pointer">
-                                    Filter By Newest
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="cursor-pointer">
-                                    Filter By Oldest
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="cursor-pointer">
-                                    Filter By A-Z
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="cursor-pointer">
-                                    Filter By Z-A
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Select>
+                            <SelectTrigger className="w-[180px] border-gray-700">
+                                <SelectValue placeholder="Filter By Categories" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={null}>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedCategory(null);
+                                            setCurrentPage(1);
+                                        }}
+                                    >
+                                        All
+                                    </button>
+                                </SelectItem>
+                                {categories.map((category) => (
+                                    <SelectItem
+                                        value={category.name}
+                                        key={category.id}
+                                    >
+                                        <button
+                                            onClick={() => {
+                                                setSelectedCategory(
+                                                    category.id
+                                                );
+                                                setCurrentPage(1);
+                                            }}
+                                        >
+                                            {category.name}
+                                        </button>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                     <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
                         <Plus />
