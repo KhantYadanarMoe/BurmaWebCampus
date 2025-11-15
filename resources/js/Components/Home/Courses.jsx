@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Clock, Users } from "lucide-react";
 import CoursesImg from "../../../assets/Courses.jpg";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function Courses() {
     const [courses, setCourses] = useState([]);
@@ -90,9 +91,13 @@ export default function Courses() {
                                                             className="mt-2"
                                                         />
                                                     </div>
-                                                    <Button className="w-full mt-3">
-                                                        Enroll Now
-                                                    </Button>
+                                                    <Link
+                                                        to={`/course/${course.id}`}
+                                                    >
+                                                        <Button className="w-full mt-3">
+                                                            Enroll Now
+                                                        </Button>
+                                                    </Link>
                                                 </div>
                                             </CardContent>
                                         </Card>

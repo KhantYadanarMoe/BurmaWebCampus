@@ -92,16 +92,16 @@ export default function Footer() {
                 <div className="hidden md:block md:w-1/2 lg:w-1/3">
                     <ul className="flex space-x-5 items-center justify-end mr-4">
                         <li>
-                            <Link>Home</Link>
+                            <Link to="/">Home</Link>
                         </li>
                         <li>
-                            <Link>About</Link>
+                            <Link to="/about">About</Link>
                         </li>
                         <li>
-                            <Link>Courses</Link>
+                            <Link to="/courses">Courses</Link>
                         </li>
                         <li>
-                            <Link>Blogs</Link>
+                            <Link to="/blogs">Blogs</Link>
                         </li>
                     </ul>
                     {/* <div className="flex gap-3 justify-end text-2xl py-3">

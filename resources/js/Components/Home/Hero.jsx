@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import Frontend from "../../../assets/Frontend.jpg";
 import Backend from "../../../assets/Backend.jpg";
 import Blog from "../../../assets/Blog.jpg";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
     return (
@@ -22,15 +23,19 @@ export default function Hero() {
                         </p>
                     </div>
                     <div className="flex gap-2 mt-2">
-                        <Button className="rounded-xl flex gap-1 items-center">
-                            Start Learning <MoveUpRight />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="border-gray-800 rounded-xl flex gap-1 items-center"
-                        >
-                            Read Blogs
-                        </Button>
+                        <Link to="/courses">
+                            <Button className="rounded-xl flex gap-1 items-center">
+                                Start Learning <MoveUpRight />
+                            </Button>
+                        </Link>
+                        <Link to="/blogs">
+                            <Button
+                                variant="outline"
+                                className="border-gray-800 rounded-xl flex gap-1 items-center"
+                            >
+                                Read Blogs
+                            </Button>
+                        </Link>
                     </div>
                 </div>
                 <div className="hidden md:flex md:w-1/2">
