@@ -93,9 +93,9 @@ class CourseController extends Controller
     }
 
 
-public function show($id){
+    public function show($id){
         $course = Courses::with('category', 'outlines.subtitles', // outlines and their subtitles
-            'quizzes.options' )->findOrFail($id); 
+            'quizzes.options' )->withCount('purchases')->findOrFail($id); 
 
         if ($course) {
             return response()->json(['course' => $course]);

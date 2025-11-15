@@ -18,7 +18,7 @@ import { useState } from "react";
 import { setUploadedOutlines } from "@/utils/uploadStore";
 
 export default function CourseDetailsForm() {
-    const percent = 66; // step 2 of 3
+    const percent = 50; // step 2 of 3
     const navigate = useNavigate();
     const { darkMode } = useOutletContext();
 

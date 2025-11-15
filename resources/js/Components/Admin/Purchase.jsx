@@ -91,25 +91,8 @@ export default function Purchase() {
 
     return (
         <div>
-            <h1 className="text-xl font-medium">Purchased Courses</h1>
             <div className="flex flex-col md:flex-row justify-between my-4">
-                <div className="flex items-center gap-2">
-                    <Link to="">
-                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                            Frontend
-                        </span>
-                    </Link>
-                    <Link to="">
-                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                            Backend
-                        </span>
-                    </Link>
-                    <Link to="">
-                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                            Fullstack
-                        </span>
-                    </Link>
-                </div>
+                <h1 className="text-xl font-medium">Purchased Courses</h1>
                 <div className="hidden md:block">
                     <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>

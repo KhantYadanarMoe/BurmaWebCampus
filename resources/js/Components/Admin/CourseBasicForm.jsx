@@ -19,7 +19,7 @@ import axios from "axios";
 export default function CourseBasicForm() {
     const { darkMode } = useOutletContext();
     const navigate = useNavigate();
-    const percent = 33; // progress bar step 1
+    const percent = 18; // progress bar step 1
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState("");
 

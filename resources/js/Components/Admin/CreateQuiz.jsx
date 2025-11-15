@@ -26,7 +26,7 @@ import axios from "axios";
 import { getUploadedOutlines } from "@/utils/uploadStore";
 
 export default function CreateQuiz() {
-    const percent = 100; // final step
+    const percent = 83; // final step
     const { darkMode } = useOutletContext();
     const navigate = useNavigate();
 
@@ -230,27 +230,90 @@ export default function CreateQuiz() {
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full relative mb-8">
-                <div
-                    className={`w-full ${
-                        darkMode ? "bg-slate-700" : "bg-slate-200"
-                    } rounded-full h-1.5`}
-                />
-                <div
-                    className="absolute left-0 top-0 bottom-0 rounded-full overflow-hidden pointer-events-none h-1.5"
-                    style={{ width: `${percent}%` }}
-                >
+            <div className="w-full">
+                <div className="relative">
                     <div
-                        className={`h-full ${
-                            darkMode ? "bg-gray-200" : "bg-gray-800"
-                        }`}
+                        className={`w-full ${
+                            darkMode ? "bg-slate-700" : "bg-slate-200"
+                        } rounded-full h-1.5`}
                     />
+
+                    <div
+                        className="absolute left-0 top-0 bottom-0 rounded-full overflow-hidden pointer-events-none h-1.5"
+                        style={{ width: `${percent}%` }}
+                    >
+                        <div
+                            className={`h-full ${
+                                darkMode ? "bg-gray-200" : "bg-gray-800"
+                            }`}
+                        />
+                    </div>
+
+                    <div className="absolute inset-0 flex items-center px-0">
+                        <div className="flex-1 flex justify-center relative">
+                            <div
+                                className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                    darkMode ? "bg-gray-800" : "bg-white"
+                                }`}
+                            >
+                                <span className="block w-4 h-4 rounded-full transform" />
+                            </div>
+                            <div
+                                className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
+                                    darkMode ? "ring-white" : "ring-black"
+                                }`}
+                                style={{
+                                    transform: "translate(-50%, -50%)",
+                                }}
+                            />
+                        </div>
+
+                        <div className="flex-1 flex justify-center relative">
+                            <div
+                                className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                    darkMode ? "bg-gray-800" : "bg-white"
+                                }`}
+                            >
+                                <span className="block w-4 h-4 rounded-full transform" />
+                            </div>
+                            <div
+                                className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
+                                    darkMode ? "ring-white" : "ring-black"
+                                }`}
+                                style={{
+                                    transform: "translate(-50%, -50%)",
+                                }}
+                            />
+                        </div>
+
+                        <div className="flex-1 flex justify-center relative">
+                            <div
+                                className={`flex items-center justify-center w-4 h-4 rounded-full ${
+                                    darkMode ? "bg-gray-800" : "bg-white"
+                                }`}
+                            >
+                                <span className="block w-4 h-4 rounded-full transform" />
+                            </div>
+                            <div
+                                className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
+                                    darkMode ? "ring-white" : "ring-black"
+                                }`}
+                                style={{
+                                    transform: "translate(-50%, -50%)",
+                                }}
+                            />
+                        </div>
+                    </div>
                 </div>
                 <div className="flex justify-between text-sm mt-3 px-1">
-                    <div className="text-center flex-1">Basic Information</div>
-                    <div className="text-center flex-1">Course Details</div>
-                    <div className="text-center flex-1 font-semibold text-primary">
-                        Final Quiz
+                    <div className="text-center flex-1">
+                        <div className="truncate">Basic Information</div>
+                    </div>
+                    <div className="text-center flex-1">
+                        <div className="truncate">Course Details</div>
+                    </div>
+                    <div className="text-center flex-1">
+                        <div className="truncate">Final Quiz</div>
                     </div>
                 </div>
             </div>
