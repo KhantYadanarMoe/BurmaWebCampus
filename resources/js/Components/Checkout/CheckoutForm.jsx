@@ -19,6 +19,14 @@ import Logo from "../../../assets/Logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import axios from "axios";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function CheckoutForm() {
     const [courses, setCourses] = useState([]);
@@ -29,6 +37,7 @@ export default function CheckoutForm() {
     });
     const [invoiceNumber, setInvoiceNumber] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
+    const [showPaymentDialog, setShowPaymentDialog] = useState(false);
 
     const navigate = useNavigate();
 
@@ -72,7 +81,7 @@ export default function CheckoutForm() {
         let method = "post";
 
         if (!paymentMethod) {
-            alert("Please select a payment method.");
+            setShowPaymentDialog(true);
             return;
         }
 
@@ -190,7 +199,8 @@ export default function CheckoutForm() {
                                                     Pay with -
                                                 </h1>
                                                 <h1 className="text-gray-700">
-                                                    KBZ Pay
+                                                    {paymentMethod ||
+                                                        "Select a payment"}
                                                 </h1>
                                             </div>
                                         </div>
@@ -340,6 +350,27 @@ export default function CheckoutForm() {
                     ))}
                 </div>
             </div>
+            <AlertDialog
+                open={showPaymentDialog}
+                onOpenChange={setShowPaymentDialog}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Payment Method Required
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Please select a payment method to continue with your
+                            purchase.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <Button onClick={() => setShowPaymentDialog(false)}>
+                            OK
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

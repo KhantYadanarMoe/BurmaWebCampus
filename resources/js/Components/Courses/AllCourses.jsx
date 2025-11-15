@@ -92,10 +92,19 @@ export default function AllCourses() {
                         <SelectValue placeholder="Filter By Categories" />
                     </SelectTrigger>
                     <SelectContent>
+                        <SelectItem value={null}>
+                            <button
+                                onClick={() => {
+                                    setSelectedCategory(null);
+                                    setCurrentPage(1);
+                                }}
+                            >
+                                All
+                            </button>
+                        </SelectItem>
                         {categories.map((category) => (
-                            <SelectItem value={category.name}>
+                            <SelectItem value={category.name} key={category.id}>
                                 <button
-                                    key={category.id}
                                     onClick={() => {
                                         setSelectedCategory(category.id);
                                         setCurrentPage(1);
