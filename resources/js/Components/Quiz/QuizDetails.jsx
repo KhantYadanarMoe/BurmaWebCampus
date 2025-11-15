@@ -80,7 +80,7 @@ export default function QuizDetails() {
             <div className="hidden md:block md:w-1/3 md:sticky md:top-24 md:self-start">
                 <h1 className="text-lg font-medium my-3 pl-3">Navigation</h1>
                 <div className="overflow-y-auto custom-scrollbar max-h-[80vh] px-3">
-                    {course.quizzes.map((quiz, index) => (
+                    {course?.quizzes.map((quiz, index) => (
                         <Link key={quiz.id} to={`/quiz/${quiz.id}`}>
                             <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg my-3 hover:shadow-xl transition">
                                 <CardContent className="p-3">

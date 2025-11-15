@@ -8,7 +8,7 @@ import {
     X,
 } from "lucide-react";
 import React, { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "../ui/button";
 import Course from "../../../assets/Courses.jpg";
 import { Progress } from "@/components/ui/progress";
@@ -33,6 +33,12 @@ export default function Details() {
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [form, setForm] = useState({
+        content: "",
+        subtitle_id: null,
+    });
+    const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getDetails = async () => {
@@ -55,6 +61,54 @@ export default function Details() {
 
     if (loading) return <p>Loading...</p>;
     if (!course) return <p>Course not found.</p>;
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const submit = async (e) => {
+        e.preventDefault();
+
+        let url = "/api/comment/create";
+        let method = "post";
+
+        let formData = new FormData();
+
+        console.log("Form Data before submitting:", form);
+
+        formData.append("content", form.content);
+        formData.append("subtitle_id", form.subtitle_id);
+
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            const res = await axios[method](url, formData, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (res.data.message === "Comment posted successfully.") {
+                setForm({
+                    content: "",
+                    subtitle_id: form.subtitle_id,
+                });
+            }
+        } catch (error) {
+            console.error("Error sending comment:", error);
+
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
+            }
+        }
+    };
 
     return (
         <div className="px-5 lg:px-8">
@@ -180,13 +234,24 @@ export default function Details() {
                     <hr className="mt-7 border-t-gray-500" />
                     <div className="my-3">
                         <h1 className="text-lg font-medium mb-3">Comments</h1>
+                        <p className="text-sm text-gray-500">
+                            Commenting on subtitle:{" "}
+                            {form.subtitle_id
+                                ? `#${form.subtitle_id}`
+                                : "(not selected)"}
+                        </p>
+
                         <div className="my-3 px-3 md:px-4 py-3 md:py-4 border border-gray-300 rounded-md shadow-lg">
                             <Textarea
+                                id="content"
+                                name="content"
+                                value={form.content}
+                                onChange={handleInputChange}
                                 className="border-gray-500 h-32"
                                 placeholder="Write Here..."
                             />
                             <div className="flex justify-end items-end mt-3">
-                                <Button>Submit</Button>
+                                <Button onClick={submit}>Submit</Button>
                             </div>
                         </div>
                         <div className="my-5">
@@ -397,12 +462,22 @@ export default function Details() {
                                         <AccordionContent>
                                             {outline.subtitles?.map(
                                                 (sub, index) => (
-                                                    <Link className="flex gap-2 items-center py-2">
+                                                    <button
+                                                        key={sub.id}
+                                                        className="flex gap-2 items-center py-2"
+                                                        onClick={() =>
+                                                            setForm((prev) => ({
+                                                                ...prev,
+                                                                subtitle_id:
+                                                                    sub.id,
+                                                            }))
+                                                        }
+                                                    >
                                                         <p className="px-4 py-2 rounded-full border-2 border-gray-800">
                                                             {index + 1}
                                                         </p>
                                                         <p>{sub.subtitle}</p>
-                                                    </Link>
+                                                    </button>
                                                 )
                                             )}
                                         </AccordionContent>

@@ -100,7 +100,7 @@ export default function AdminSidebar({
                         >
                             Courses
                         </h2>
-                        <Link to="/admin/courses/add">
+                        <Link to="/admin/courses/create">
                             <div
                                 className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode

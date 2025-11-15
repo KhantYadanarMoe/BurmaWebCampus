@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
@@ -68,6 +69,8 @@ Route::delete('/api/course/category/{category}', [CourseCategoryController::clas
 Route::get('/api/courses', [CourseController::class, 'index']);
 Route::post('/api/courses/create', [CourseController::class, 'store']);
 Route::get('/api/course/{id}', [CourseController::class, 'show']);
+
+Route::post("/api/comment/create", [CommentController::class, 'store']);
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);

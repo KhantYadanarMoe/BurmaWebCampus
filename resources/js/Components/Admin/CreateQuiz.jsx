@@ -199,359 +199,212 @@ export default function CreateQuiz() {
 
     return (
         <div>
-            <div>
-                <div
-                    className={`flex gap-1 items-end ${
-                        darkMode ? "text-gray-300" : "text-gray-800"
-                    } text-sm`}
-                >
-                    <Link>Courses</Link>
-                    <ChevronsRight size={18} />
-                    <Link
-                        className={`${darkMode ? "text-white" : "text-black"}`}
+            {/* Breadcrumb */}
+            <div
+                className={`flex gap-1 items-end ${
+                    darkMode ? "text-gray-300" : "text-gray-800"
+                } text-sm`}
+            >
+                <Link>Courses</Link>
+                <ChevronsRight size={18} />
+                <Link className={`${darkMode ? "text-white" : "text-black"}`}>
+                    Final Quiz
+                </Link>
+            </div>
+
+            {/* Header */}
+            <div className="flex justify-between mt-6 mb-8">
+                <div>
+                    <h1 className="text-lg md:text-2xl font-medium">
+                        Create Final Quiz
+                    </h1>
+                    <p
+                        className={`text-xs md:text-base ${
+                            darkMode ? "text-gray-300" : "text-gray-800"
+                        }`}
                     >
-                        Add new course
-                    </Link>
+                        Add your course quiz questions and correct answers.
+                    </p>
                 </div>
+                <Button onClick={handleSubmit}>Submit</Button>
+            </div>
 
-                <div className="flex justify-between mt-6 mb-8">
-                    <div>
-                        <h1 className="text-lg md:text-2xl font-medium">
-                            Add a New Course
-                        </h1>
-                        <p
-                            className={`text-xs md:text-base ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Please fill in all the details of your course.
-                        </p>
-                    </div>
-                    <Button>Submit</Button>
+            {/* Progress Bar */}
+            <div className="w-full relative mb-8">
+                <div
+                    className={`w-full ${
+                        darkMode ? "bg-slate-700" : "bg-slate-200"
+                    } rounded-full h-1.5`}
+                />
+                <div
+                    className="absolute left-0 top-0 bottom-0 rounded-full overflow-hidden pointer-events-none h-1.5"
+                    style={{ width: `${percent}%` }}
+                >
+                    <div
+                        className={`h-full ${
+                            darkMode ? "bg-gray-200" : "bg-gray-800"
+                        }`}
+                    />
                 </div>
-
-                <div className="w-full">
-                    <div className="relative">
-                        <div
-                            className={`w-full ${
-                                darkMode ? "bg-slate-700" : "bg-slate-200"
-                            } rounded-full h-1.5`}
-                        />
-
-                        <div
-                            className="absolute left-0 top-0 bottom-0 rounded-full overflow-hidden pointer-events-none h-1.5"
-                            style={{ width: `${percent}%` }}
-                        >
-                            <div
-                                className={`h-full ${
-                                    darkMode ? "bg-gray-200" : "bg-gray-800"
-                                }`}
-                            />
-                        </div>
-
-                        <div className="absolute inset-0 flex items-center px-0">
-                            <div className="flex-1 flex justify-center relative">
-                                <div
-                                    className={`flex items-center justify-center w-4 h-4 rounded-full ${
-                                        darkMode ? "bg-gray-800" : "bg-white"
-                                    }`}
-                                >
-                                    <span className="block w-4 h-4 rounded-full transform" />
-                                </div>
-                                <div
-                                    className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
-                                        darkMode ? "ring-white" : "ring-black"
-                                    }`}
-                                    style={{
-                                        transform: "translate(-50%, -50%)",
-                                    }}
-                                />
-                            </div>
-
-                            <div className="flex-1 flex justify-center relative">
-                                <div
-                                    className={`flex items-center justify-center w-4 h-4 rounded-full ${
-                                        darkMode ? "bg-gray-800" : "bg-white"
-                                    }`}
-                                >
-                                    <span className="block w-4 h-4 rounded-full transform" />
-                                </div>
-                                <div
-                                    className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
-                                        darkMode ? "ring-white" : "ring-black"
-                                    }`}
-                                    style={{
-                                        transform: "translate(-50%, -50%)",
-                                    }}
-                                />
-                            </div>
-
-                            <div className="flex-1 flex justify-center relative">
-                                <div
-                                    className={`flex items-center justify-center w-4 h-4 rounded-full ${
-                                        darkMode ? "bg-gray-800" : "bg-white"
-                                    }`}
-                                >
-                                    <span className="block w-4 h-4 rounded-full transform" />
-                                </div>
-                                <div
-                                    className={`absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 pointer-events-none rounded-full w-4 h-4 ring-2 ${
-                                        darkMode ? "ring-white" : "ring-black"
-                                    }`}
-                                    style={{
-                                        transform: "translate(-50%, -50%)",
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex justify-between text-sm mt-3 px-1">
-                        <div className="text-center flex-1">
-                            <div className="truncate">Basic Information</div>
-                        </div>
-                        <div className="text-center flex-1">
-                            <div className="truncate">Course Details</div>
-                        </div>
-                        <div className="text-center flex-1">
-                            <div className="truncate">Final Quiz</div>
-                        </div>
+                <div className="flex justify-between text-sm mt-3 px-1">
+                    <div className="text-center flex-1">Basic Information</div>
+                    <div className="text-center flex-1">Course Details</div>
+                    <div className="text-center flex-1 font-semibold text-primary">
+                        Final Quiz
                     </div>
                 </div>
             </div>
-            <div className="mt-8">
-                <h1 className="text-lg font-medium">Create Final Quiz</h1>(
-                <div>
-                    {/* Breadcrumb */}
-                    <div
-                        className={`flex gap-1 items-end ${
-                            darkMode ? "text-gray-300" : "text-gray-800"
-                        } text-sm`}
+
+            {/* Quiz Form */}
+            <form onSubmit={handleSubmit}>
+                {questions.map((q, qIndex) => (
+                    <Card
+                        key={qIndex}
+                        className="px-4 py-3 mt-3 border border-gray-400"
                     >
-                        <Link>Courses</Link>
-                        <ChevronsRight size={18} />
-                        <Link
-                            className={`${
-                                darkMode ? "text-white" : "text-black"
-                            }`}
-                        >
-                            Final Quiz
-                        </Link>
-                    </div>
-
-                    {/* Header */}
-                    <div className="flex justify-between mt-6 mb-8">
-                        <div>
-                            <h1 className="text-lg md:text-2xl font-medium">
-                                Create Final Quiz
+                        <div className="flex justify-between my-2">
+                            <h1 className="text-lg font-medium">
+                                Question {qIndex + 1}
                             </h1>
-                            <p
-                                className={`text-xs md:text-base ${
-                                    darkMode ? "text-gray-300" : "text-gray-800"
-                                }`}
-                            >
-                                Add your course quiz questions and correct
-                                answers.
-                            </p>
-                        </div>
-                        <Button onClick={handleSubmit}>Submit</Button>
-                    </div>
 
-                    {/* Progress Bar */}
-                    <div className="w-full relative mb-8">
-                        <div
-                            className={`w-full ${
-                                darkMode ? "bg-slate-700" : "bg-slate-200"
-                            } rounded-full h-1.5`}
-                        />
-                        <div
-                            className="absolute left-0 top-0 bottom-0 rounded-full overflow-hidden pointer-events-none h-1.5"
-                            style={{ width: `${percent}%` }}
-                        >
-                            <div
-                                className={`h-full ${
-                                    darkMode ? "bg-gray-200" : "bg-gray-800"
-                                }`}
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button
+                                        className={`p-1 rounded-md ${
+                                            darkMode
+                                                ? "hover:bg-gray-600"
+                                                : "hover:bg-gray-100"
+                                        } outline-none`}
+                                    >
+                                        <EllipsisVertical size={20} />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                >
+                                    <DropdownMenuItem
+                                        className="text-red-600"
+                                        onClick={() => deleteQuestion(qIndex)}
+                                    >
+                                        Delete Question
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+
+                        <hr className="my-4 border-t-gray-400" />
+
+                        <div className="mb-3">
+                            <Label>Question</Label>
+                            <Textarea
+                                value={q.question}
+                                onChange={(e) =>
+                                    handleQuestionChange(qIndex, e.target.value)
+                                }
+                                className="border-gray-400 mt-1"
+                                placeholder="Enter the question"
                             />
                         </div>
-                        <div className="flex justify-between text-sm mt-3 px-1">
-                            <div className="text-center flex-1">
-                                Basic Information
-                            </div>
-                            <div className="text-center flex-1">
-                                Course Details
-                            </div>
-                            <div className="text-center flex-1 font-semibold text-primary">
-                                Final Quiz
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Quiz Form */}
-                    <form onSubmit={handleSubmit}>
-                        {questions.map((q, qIndex) => (
-                            <Card
-                                key={qIndex}
-                                className="px-4 py-3 mt-3 border border-gray-400"
-                            >
-                                <div className="flex justify-between my-2">
-                                    <h1 className="text-lg font-medium">
-                                        Question {qIndex + 1}
-                                    </h1>
-
-                                    <DropdownMenu modal={false}>
-                                        <DropdownMenuTrigger asChild>
-                                            <button
-                                                className={`p-1 rounded-md ${
-                                                    darkMode
-                                                        ? "hover:bg-gray-600"
-                                                        : "hover:bg-gray-100"
-                                                } outline-none`}
-                                            >
-                                                <EllipsisVertical size={20} />
-                                            </button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent
-                                            align="end"
-                                            className="w-40"
-                                        >
-                                            <DropdownMenuItem
-                                                className="text-red-600"
-                                                onClick={() =>
-                                                    deleteQuestion(qIndex)
-                                                }
-                                            >
-                                                Delete Question
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-
-                                <hr className="my-4 border-t-gray-400" />
-
-                                <div className="mb-3">
-                                    <Label>Question</Label>
-                                    <Textarea
-                                        value={q.question}
+                        <div>
+                            <h1 className="text-sm font-medium my-2">
+                                Choices
+                            </h1>
+                            {q.options.map((opt, oIndex) => (
+                                <div
+                                    key={oIndex}
+                                    className="flex items-center gap-2 mt-2"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={opt.correct}
+                                        onChange={() =>
+                                            toggleCorrect(qIndex, oIndex)
+                                        }
+                                        className="w-5 h-5 accent-black"
+                                    />
+                                    <Input
+                                        value={opt.text}
                                         onChange={(e) =>
-                                            handleQuestionChange(
+                                            handleOptionChange(
                                                 qIndex,
+                                                oIndex,
                                                 e.target.value
                                             )
                                         }
+                                        placeholder={`Option ${oIndex + 1}`}
                                         className="border-gray-400 mt-1"
-                                        placeholder="Enter the question"
+                                    />
+                                    <Trash2
+                                        size={20}
+                                        className="text-red-500 cursor-pointer"
+                                        onClick={() =>
+                                            removeOption(qIndex, oIndex)
+                                        }
                                     />
                                 </div>
+                            ))}
 
-                                <div>
-                                    <h1 className="text-sm font-medium my-2">
-                                        Choices
-                                    </h1>
-                                    {q.options.map((opt, oIndex) => (
-                                        <div
-                                            key={oIndex}
-                                            className="flex items-center gap-2 mt-2"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={opt.correct}
-                                                onChange={() =>
-                                                    toggleCorrect(
-                                                        qIndex,
-                                                        oIndex
-                                                    )
-                                                }
-                                                className="w-5 h-5 accent-black"
-                                            />
-                                            <Input
-                                                value={opt.text}
-                                                onChange={(e) =>
-                                                    handleOptionChange(
-                                                        qIndex,
-                                                        oIndex,
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder={`Option ${
-                                                    oIndex + 1
-                                                }`}
-                                                className="border-gray-400 mt-1"
-                                            />
-                                            <Trash2
-                                                size={20}
-                                                className="text-red-500 cursor-pointer"
-                                                onClick={() =>
-                                                    removeOption(qIndex, oIndex)
-                                                }
-                                            />
-                                        </div>
-                                    ))}
-
-                                    <div className="flex justify-end mt-5">
-                                        <button
-                                            type="button"
-                                            onClick={() => addOption(qIndex)}
-                                            className="flex gap-1 items-center px-3 py-2 border border-dashed border-gray-600 rounded-md"
-                                        >
-                                            <CopyPlus
-                                                size={18}
-                                                className={`${
-                                                    darkMode
-                                                        ? "text-gray-400"
-                                                        : "text-gray-800"
-                                                }`}
-                                            />
-                                            <p
-                                                className={`text-sm ${
-                                                    darkMode
-                                                        ? "text-gray-400"
-                                                        : "text-gray-800"
-                                                }`}
-                                            >
-                                                Add More Option
-                                            </p>
-                                        </button>
-                                    </div>
-                                </div>
-                            </Card>
-                        ))}
-
-                        {/* Add More Question */}
-                        <div className="flex justify-end mt-4">
-                            <button
-                                type="button"
-                                onClick={addQuestion}
-                                className="flex gap-1 items-center px-3 py-2 border border-dashed border-gray-600 rounded-md"
-                            >
-                                <CopyPlus
-                                    size={18}
-                                    className={`${
-                                        darkMode
-                                            ? "text-gray-400"
-                                            : "text-gray-800"
-                                    }`}
-                                />
-                                <p
-                                    className={`text-sm ${
-                                        darkMode
-                                            ? "text-gray-400"
-                                            : "text-gray-800"
-                                    }`}
+                            <div className="flex justify-end mt-5">
+                                <button
+                                    type="button"
+                                    onClick={() => addOption(qIndex)}
+                                    className="flex gap-1 items-center px-3 py-2 border border-dashed border-gray-600 rounded-md"
                                 >
-                                    Add More Question
-                                </p>
-                            </button>
+                                    <CopyPlus
+                                        size={18}
+                                        className={`${
+                                            darkMode
+                                                ? "text-gray-400"
+                                                : "text-gray-800"
+                                        }`}
+                                    />
+                                    <p
+                                        className={`text-sm ${
+                                            darkMode
+                                                ? "text-gray-400"
+                                                : "text-gray-800"
+                                        }`}
+                                    >
+                                        Add More Option
+                                    </p>
+                                </button>
+                            </div>
                         </div>
+                    </Card>
+                ))}
 
-                        {/* Submit */}
-                        <div className="flex justify-end">
-                            <Button type="submit" className="mt-5">
-                                Submit
-                            </Button>
-                        </div>
-                    </form>
+                {/* Add More Question */}
+                <div className="flex justify-end mt-4">
+                    <button
+                        type="button"
+                        onClick={addQuestion}
+                        className="flex gap-1 items-center px-3 py-2 border border-dashed border-gray-600 rounded-md"
+                    >
+                        <CopyPlus
+                            size={18}
+                            className={`${
+                                darkMode ? "text-gray-400" : "text-gray-800"
+                            }`}
+                        />
+                        <p
+                            className={`text-sm ${
+                                darkMode ? "text-gray-400" : "text-gray-800"
+                            }`}
+                        >
+                            Add More Question
+                        </p>
+                    </button>
                 </div>
-            </div>
+
+                {/* Submit */}
+                <div className="flex justify-end">
+                    <Button type="submit" className="mt-5">
+                        Submit
+                    </Button>
+                </div>
+            </form>
         </div>
     );
 }
