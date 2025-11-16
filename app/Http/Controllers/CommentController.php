@@ -41,4 +41,16 @@ class CommentController extends Controller
             'comments' => $comments
         ]);
     }
+
+    public function getBySubtitle($subtitleId){
+        $comments = Comments::with(['user:id,name,image', 'subtitle:id,subtitle'])
+            ->where('subtitle_id', $subtitleId)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'comments' => $comments
+        ]);
+    }
+
 }

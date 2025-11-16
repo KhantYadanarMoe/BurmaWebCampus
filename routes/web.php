@@ -72,6 +72,7 @@ Route::get('/api/course/{id}', [CourseController::class, 'show']);
 
 Route::get('/api/comments', [CommentController::class, 'index']);
 Route::post("/api/comment/create", [CommentController::class, 'store']);
+Route::get('api/subtitle/{subtitle}/comments', [CommentController::class, 'getBySubtitle']);
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
 Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);

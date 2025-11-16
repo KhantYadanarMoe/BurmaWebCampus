@@ -26,6 +26,10 @@ import { Textarea } from "../ui/textarea";
 import Pf from "../../../assets/Profile.jpg";
 import ReviewModal from "../ReviewModal";
 import axios from "axios";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(localizedFormat);
+dayjs.extend(relativeTime);
 
 export default function Details() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -38,8 +42,10 @@ export default function Details() {
         subtitle_id: null,
     });
     const [errors, setErrors] = useState({});
+    const [comments, setComments] = useState([]);
     const navigate = useNavigate();
 
+    // Fetch course details
     useEffect(() => {
         const getDetails = async () => {
             try {
@@ -51,11 +57,25 @@ export default function Details() {
                 setLoading(false);
             }
         };
-
         getDetails();
     }, [id]);
 
-    dayjs.extend(localizedFormat);
+    // Fetch comments whenever selected subtitle changes
+    useEffect(() => {
+        if (!form.subtitle_id) return;
+
+        const fetchComments = async () => {
+            try {
+                const res = await axios.get(
+                    `/api/subtitle/${form.subtitle_id}/comments`
+                );
+                setComments(res.data.comments);
+            } catch (err) {
+                console.error("Error fetching comments:", err);
+            }
+        };
+        fetchComments();
+    }, [form.subtitle_id]);
 
     const formatDate = (date) => dayjs(date).format("D MMM YYYY, h:mm A");
 
@@ -72,14 +92,10 @@ export default function Details() {
 
     const submit = async (e) => {
         e.preventDefault();
+        if (!form.subtitle_id) return alert("Select a subtitle first!");
 
-        let url = "/api/comment/create";
-        let method = "post";
-
-        let formData = new FormData();
-
-        console.log("Form Data before submitting:", form);
-
+        const url = "/api/comment/create";
+        const formData = new FormData();
         formData.append("content", form.content);
         formData.append("subtitle_id", form.subtitle_id);
 
@@ -88,7 +104,7 @@ export default function Details() {
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content");
 
-            const res = await axios[method](url, formData, {
+            const res = await axios.post(url, formData, {
                 headers: {
                     "X-CSRF-TOKEN": csrfToken,
                     "Content-Type": "multipart/form-data",
@@ -96,14 +112,15 @@ export default function Details() {
             });
 
             if (res.data.message === "Comment posted successfully.") {
-                setForm({
-                    content: "",
-                    subtitle_id: form.subtitle_id,
-                });
+                setForm({ ...form, content: "" });
+                // Refresh comments
+                const updated = await axios.get(
+                    `/api/subtitle/${form.subtitle_id}/comments`
+                );
+                setComments(updated.data.comments);
             }
         } catch (error) {
             console.error("Error sending comment:", error);
-
             if (error.response && error.response.status === 422) {
                 setErrors(error.response.data.errors);
             }
@@ -255,147 +272,42 @@ export default function Details() {
                             </div>
                         </div>
                         <div className="my-5">
-                            <hr className="mt-5 mb-2 border-t-gray-500" />
-                            <div className="px-3 py-3">
-                                <div className="flex gap-2 items-center">
-                                    <img
-                                        src={Pf}
-                                        alt="profile picture"
-                                        className="rounded-full w-10 h-10 object-cover"
-                                    />
-                                    <div>
-                                        <h1 className="text-base font-medium">
-                                            Khant Yadanar Moe
-                                        </h1>
-                                        <p className="text-sm text-gray-700">
-                                            6 hours ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <p className="text-sm text-gray-800 mt-3">
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Ad ipsa numquam ex
-                                    voluptate, fugit nostrum mollitia ullam
-                                    culpa a ab earum laborum quos aperiam aut ut
-                                    dolore vero optio perferendis vitae. Quidem.
+                            {comments.length === 0 && (
+                                <p className="text-gray-500 text-sm">
+                                    No comments for this lecture yet.
                                 </p>
-                                <div className="flex gap-1 items-center justify-end mt-6">
-                                    <Button
-                                        className="text-white"
-                                        onClick={() => setShowReply(!showReply)}
-                                    >
-                                        Reply
-                                    </Button>
-                                </div>
-                                {showReply && (
-                                    <div className="pl-3 md:pl-4 py-4 md:py-8">
-                                        <Textarea
-                                            placeholder="Type your reply here..."
-                                            className="w-full border-gray-500 h-32"
-                                            name="message"
+                            )}
+                            {comments.map((comment) => (
+                                <div
+                                    key={comment.id}
+                                    className="px-3 py-3 border-b border-gray-200"
+                                >
+                                    <div className="flex gap-2 items-center">
+                                        <img
+                                            src={
+                                                comment.user?.image
+                                                    ? `/storage/${comment.user.image}`
+                                                    : Pf
+                                            }
+                                            alt="profile"
+                                            className="rounded-full w-10 h-10 object-cover"
                                         />
-                                        <div className="flex justify-end mt-3">
-                                            <Button className="mt-2 text-white">
-                                                Send
-                                            </Button>
+                                        <div>
+                                            <h1 className="text-base font-medium">
+                                                {comment.user?.name}
+                                            </h1>
+                                            <p className="text-sm text-gray-700">
+                                                {dayjs(
+                                                    comment.created_at
+                                                ).fromNow()}
+                                            </p>
                                         </div>
                                     </div>
-                                )}
-                            </div>
-                            <hr className="my-2 border-t-gray-500" />
-                            <div className="px-3 py-3">
-                                <div className="flex gap-2 items-center">
-                                    <img
-                                        src={Pf}
-                                        alt="profile picture"
-                                        className="rounded-full w-10 h-10 object-cover"
-                                    />
-                                    <div>
-                                        <h1 className="text-base font-medium">
-                                            Khant Yadanar Moe
-                                        </h1>
-                                        <p className="text-sm text-gray-700">
-                                            6 hours ago
-                                        </p>
-                                    </div>
+                                    <p className="text-sm text-gray-800 mt-3">
+                                        {comment.content}
+                                    </p>
                                 </div>
-                                <p className="text-sm text-gray-800 mt-3">
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Ad ipsa numquam ex
-                                    voluptate, fugit nostrum mollitia ullam
-                                    culpa a ab earum laborum quos aperiam aut ut
-                                    dolore vero optio perferendis vitae. Quidem.
-                                </p>
-                                <div className="flex gap-1 items-center justify-end mt-6">
-                                    <Button
-                                        className="text-white"
-                                        onClick={() => setShowReply(!showReply)}
-                                    >
-                                        Reply
-                                    </Button>
-                                </div>
-                                {showReply && (
-                                    <div className="pl-3 md:pl-4 py-4 md:py-8">
-                                        <Textarea
-                                            placeholder="Type your reply here..."
-                                            className="w-full border-gray-500 h-32"
-                                            name="message"
-                                        />
-                                        <div className="flex justify-end mt-3">
-                                            <Button className="mt-2 text-white">
-                                                Send
-                                            </Button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                            <hr className="my-2 border-t-gray-500" />
-                            <div className="px-3 py-3">
-                                <div className="flex gap-2 items-center">
-                                    <img
-                                        src={Pf}
-                                        alt="profile picture"
-                                        className="rounded-full w-10 h-10 object-cover"
-                                    />
-                                    <div>
-                                        <h1 className="text-base font-medium">
-                                            Khant Yadanar Moe
-                                        </h1>
-                                        <p className="text-sm text-gray-700">
-                                            6 hours ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <p className="text-sm text-gray-800 mt-3">
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Ad ipsa numquam ex
-                                    voluptate, fugit nostrum mollitia ullam
-                                    culpa a ab earum laborum quos aperiam aut ut
-                                    dolore vero optio perferendis vitae. Quidem.
-                                </p>
-                                <div className="flex gap-1 items-center justify-end mt-6">
-                                    <Button
-                                        className="text-white"
-                                        onClick={() => setShowReply(!showReply)}
-                                    >
-                                        Reply
-                                    </Button>
-                                </div>
-                                {showReply && (
-                                    <div className="pl-3 md:pl-4 py-4 md:py-8">
-                                        <Textarea
-                                            placeholder="Type your reply here..."
-                                            className="w-full border-gray-500 h-32"
-                                            name="message"
-                                        />
-                                        <div className="flex justify-end mt-3">
-                                            <Button className="mt-2 text-white">
-                                                Send
-                                            </Button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
