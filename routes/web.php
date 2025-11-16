@@ -70,6 +70,7 @@ Route::get('/api/courses', [CourseController::class, 'index']);
 Route::post('/api/courses/create', [CourseController::class, 'store']);
 Route::get('/api/course/{id}', [CourseController::class, 'show']);
 
+Route::get('/api/comments', [CommentController::class, 'index']);
 Route::post("/api/comment/create", [CommentController::class, 'store']);
 
 Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);

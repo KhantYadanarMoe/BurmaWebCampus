@@ -24,23 +24,18 @@ export default function AdminProfile() {
     const { user, setUser } = useAuth();
     const [image, setImage] = useState(null);
     const { darkMode } = useOutletContext();
-    // prepare state to store form data
     const [form, setForm] = useState({
         firstName: "",
         lastName: "",
         email: "",
         phone: "",
     });
-    // store errors state
     const [errors, setErrors] = useState({});
-
+    let [comments, setComments] = useState([]);
     const [isPasswordSuccessDialogOpen, setIsPasswordSuccessDialogOpen] =
         useState(false);
-
-    // prepare to move another route/page after sending data
     const navigate = useNavigate();
 
-    // Handle HTML inputs
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setForm((prevState) => ({
@@ -49,7 +44,6 @@ export default function AdminProfile() {
         }));
     };
 
-    // Handle image input
     const uploadImg = (e) => {
         const file = e.target.files?.[0];
         console.log("e.target.files:", e.target.files);
@@ -73,7 +67,41 @@ export default function AdminProfile() {
         }
     }, [user]);
 
-    // form submit function
+    let getComments = async () => {
+        try {
+            let res = await axios.get("/api/comments");
+            let data = res.data;
+            setComments(data.comments);
+        } catch (error) {
+            console.error("Failed to fetch comments:", error);
+        }
+    };
+
+    useEffect(() => {
+        getComments();
+    }, []);
+
+    const groupCommentsByDate = (comments) => {
+        const today = [];
+        const thisWeek = [];
+        const now = new Date();
+
+        comments.forEach((comment) => {
+            const createdDate = new Date(comment.created_at);
+            const diffDays = (now - createdDate) / (1000 * 60 * 60 * 24);
+
+            if (diffDays < 1) {
+                today.push(comment);
+            } else if (diffDays < 7) {
+                thisWeek.push(comment);
+            }
+        });
+
+        return { today, thisWeek };
+    };
+
+    const groupedComments = groupCommentsByDate(comments);
+
     const submit = async (e) => {
         e.preventDefault();
 
@@ -437,54 +465,108 @@ export default function AdminProfile() {
                         {/* Today Section */}
                         <div className="px-2">
                             <h2 className="text-base font-medium">Today</h2>
-                            {[1, 2, 3].map((i) => (
-                                <div
-                                    key={i}
-                                    className="py-3 px-2 my-1  hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
-                                >
-                                    <div className="flex gap-2">
-                                        <img
-                                            src={Pf}
-                                            alt="profile"
-                                            className={`w-12 h-12 object-cover rounded-full p-0.5 border ${
-                                                darkMode
-                                                    ? "border-gray-100"
-                                                    : "border-gray-500"
-                                            }`}
-                                        />
-                                        <p className="text-sm">
-                                            <strong>Khant Yadanar Moe</strong>{" "}
-                                            commented on Full-stack Web
-                                            Development Pathway's unit-7.
-                                        </p>
+                            {groupedComments.today.length > 0 ? (
+                                groupedComments.today.map((comment) => (
+                                    <div
+                                        key={comment.id}
+                                        className="py-3 px-2 my-1 hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
+                                    >
+                                        <div className="flex gap-2">
+                                            <img
+                                                src={Pf} // You can use comment.user.image if available
+                                                alt="profile"
+                                                className={`w-12 h-12 object-cover rounded-full p-0.5 border ${
+                                                    darkMode
+                                                        ? "border-gray-100"
+                                                        : "border-gray-500"
+                                                }`}
+                                            />
+                                            <div className="text-sm">
+                                                <p>
+                                                    <strong>
+                                                        {comment.user?.name ||
+                                                            "User"}
+                                                    </strong>{" "}
+                                                    commented on{" "}
+                                                    <strong>
+                                                        {comment.subtitle
+                                                            ?.subtitle ||
+                                                            "a course"}
+                                                    </strong>
+                                                    .
+                                                </p>
+                                                <p className="text-gray-600 italic">
+                                                    "
+                                                    {comment.content.slice(
+                                                        0,
+                                                        50
+                                                    )}
+                                                    ..."
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p className="text-gray-500 text-sm my-2">
+                                    No comments today
+                                </p>
+                            )}
                         </div>
 
                         <hr className="border-t-gray-300 my-3 mx-2" />
 
                         {/* This Week Section */}
                         <div className="px-2">
-                            <h2 className="text-base font-medium">This week</h2>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-                                <div
-                                    key={i}
-                                    className="py-3 px-2 my-1  hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
-                                >
-                                    <div className="flex gap-2">
-                                        <img
-                                            src={Pf}
-                                            alt="profile"
-                                            className="w-12 h-12 object-cover rounded-full p-0.5 border border-gray-500"
-                                        />
-                                        <p className="text-sm">
-                                            <strong>Khant Yadanar Moe</strong>{" "}
-                                            liked your post on unit-5.
-                                        </p>
+                            <h2 className="text-base font-medium">This Week</h2>
+
+                            {groupedComments.thisWeek.length > 0 ? (
+                                groupedComments.thisWeek.map((comment) => (
+                                    <div
+                                        key={comment.id}
+                                        className="py-3 px-2 my-1 hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
+                                    >
+                                        <div className="flex gap-2">
+                                            <img
+                                                src={
+                                                    comment.user?.image
+                                                        ? `/storage/${comment.user.image}`
+                                                        : Pf
+                                                }
+                                                alt="profile"
+                                                className="w-12 h-12 object-cover rounded-full p-0.5 border border-gray-500"
+                                            />
+                                            <div className="text-sm">
+                                                <p>
+                                                    <strong>
+                                                        {comment.user?.name ||
+                                                            "User"}
+                                                    </strong>{" "}
+                                                    commented on{" "}
+                                                    <strong>
+                                                        {comment.subtitle
+                                                            ?.subtitle ||
+                                                            "a course"}
+                                                    </strong>
+                                                    .
+                                                </p>
+                                                <p className="text-gray-600 italic">
+                                                    "
+                                                    {comment.content.slice(
+                                                        0,
+                                                        50
+                                                    )}
+                                                    ..."
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p className="text-gray-500 text-sm my-2">
+                                    No comments this week
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>

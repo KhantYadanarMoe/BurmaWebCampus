@@ -11,4 +11,12 @@ class Comments extends Model
         'subtitle_id',
         'content',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function subtitle(){
+        return $this->belongsTo(Subtitles::class, 'subtitle_id');
+    }
 }
