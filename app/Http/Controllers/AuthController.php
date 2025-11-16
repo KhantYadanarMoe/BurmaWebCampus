@@ -236,4 +236,20 @@ class AuthController extends Controller
 
        return response()->json(['message' => $user->banned ? 'User banned successfully' : 'User re-activated successfully', 'user' => $user]);
     }
+
+    public function setDefaultPayment(Request $request){
+        $request->validate([
+            'payment' => 'required|string|in:kbz,wave,aya,uab,cb', // list of allowed payments
+        ]);
+
+        $user = User::find(Auth::id());
+        $user->default_payment = $request->payment;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Default payment updated successfully.',
+            'default_payment' => $user->default_payment,
+        ]);
+    }
+
 }

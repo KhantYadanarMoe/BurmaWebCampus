@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->put('/api/user/{user}', [AuthController::clas
 Route::middleware('auth:sanctum')->put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
 
 Route::post('/api/users/banned/{id}', [AuthController::class, 'ban']);
+Route::post('/api/user/default-payment', [AuthController::class, 'setDefaultPayment']);
 
 Route::get('/api/course/purchase', [PurchaseController::class, 'index']);
 Route::post('/api/course/purchase/create', [PurchaseController::class, 'store']);

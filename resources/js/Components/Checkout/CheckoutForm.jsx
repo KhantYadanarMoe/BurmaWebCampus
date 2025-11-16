@@ -27,6 +27,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CheckoutForm() {
     const [courses, setCourses] = useState([]);
@@ -36,8 +38,26 @@ export default function CheckoutForm() {
         phone: "",
     });
     const [invoiceNumber, setInvoiceNumber] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("");
     const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+    const { user, setUser } = useAuth();
+    const [selectedPayment, setSelectedPayment] = useState(
+        user?.default_payment || ""
+    );
+    const [paymentMethod, setPaymentMethod] = useState(
+        user?.default_payment || ""
+    );
+
+    useEffect(() => {
+        if (user?.default_payment) {
+            setSelectedPayment(user.default_payment);
+            setPaymentMethod(user.default_payment); // ← important!
+        }
+    }, [user]);
+
+    const handlePaymentSelect = (method) => {
+        setSelectedPayment(method);
+        setPaymentMethod(method); // important!
+    };
 
     const navigate = useNavigate();
 
@@ -68,10 +88,6 @@ export default function CheckoutForm() {
             ...prevState,
             [name]: value,
         }));
-    };
-
-    const handlePaymentSelect = (method) => {
-        setPaymentMethod(method);
     };
 
     const submit = async (e) => {
@@ -198,9 +214,11 @@ export default function CheckoutForm() {
                                                 <h1 className="font-medium">
                                                     Pay with -
                                                 </h1>
-                                                <h1 className="text-gray-700">
+                                                <h1 className="text-gray-700 uppercase">
                                                     {paymentMethod ||
-                                                        "Select a payment"}
+                                                        (user?.default_payment
+                                                            ? `${user.default_payment} Pay`
+                                                            : "Select a payment")}
                                                 </h1>
                                             </div>
                                         </div>
@@ -277,66 +295,39 @@ export default function CheckoutForm() {
                                         Payment Method
                                     </h1>
                                     <div className="flex flex-wrap gap-2">
-                                        <Link
-                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
-                                            onClick={() =>
-                                                handlePaymentSelect("KBZ Pay")
-                                            }
-                                        >
-                                            <img
-                                                src={KBZ}
-                                                alt="Kpay"
-                                                className="w-10 rounded-md"
-                                            />
-                                        </Link>
-                                        <Link
-                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
-                                            onClick={() =>
-                                                handlePaymentSelect("Wave Pay")
-                                            }
-                                        >
-                                            <img
-                                                src={Wave}
-                                                alt="Wave"
-                                                className="w-10 rounded-md"
-                                            />
-                                        </Link>
-                                        <Link
-                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
-                                            onClick={() =>
-                                                handlePaymentSelect("AYA Pay")
-                                            }
-                                        >
-                                            <img
-                                                src={AYA}
-                                                alt="AYA"
-                                                className="w-10 rounded-md"
-                                            />
-                                        </Link>
-                                        <Link
-                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
-                                            onClick={() =>
-                                                handlePaymentSelect("UAB Pay")
-                                            }
-                                        >
-                                            <img
-                                                src={UAB}
-                                                alt="UAB"
-                                                className="w-10 rounded-md"
-                                            />
-                                        </Link>
-                                        <Link
-                                            className="border hover:border-gray-700 p-1 rounded-md duration-300"
-                                            onClick={() =>
-                                                handlePaymentSelect("CB Pay")
-                                            }
-                                        >
-                                            <img
-                                                src={CB}
-                                                alt="CB"
-                                                className="w-10 rounded-md"
-                                            />
-                                        </Link>
+                                        <div className="flex flex-wrap gap-2">
+                                            {[
+                                                { name: "KBZ Pay", icon: KBZ },
+                                                {
+                                                    name: "Wave Pay",
+                                                    icon: Wave,
+                                                },
+                                                { name: "AYA Pay", icon: AYA },
+                                                { name: "UAB Pay", icon: UAB },
+                                                { name: "CB Pay", icon: CB },
+                                            ].map((payment) => (
+                                                <div
+                                                    key={payment.name}
+                                                    className={`border p-1 rounded-md duration-300 cursor-pointer ${
+                                                        selectedPayment ===
+                                                        payment.name
+                                                            ? "border-blue-500 ring-2 ring-blue-300"
+                                                            : "hover:border-gray-700"
+                                                    }`}
+                                                    onClick={() =>
+                                                        handlePaymentSelect(
+                                                            payment.name
+                                                        )
+                                                    }
+                                                >
+                                                    <img
+                                                        src={payment.icon}
+                                                        alt={payment.name}
+                                                        className="w-10 rounded-md"
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                                 <Button

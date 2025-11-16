@@ -10,6 +10,15 @@ import axios from "axios";
 
 export default function BillingHistories() {
     const [purchases, setPurchases] = useState([]);
+    const [defaultPayment, setDefaultPayment] = useState(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const res = await axios.get("/api/user"); // returns user info
+            setDefaultPayment(res.data.default_payment);
+        };
+        fetchUser();
+    }, []);
 
     const fetchPurchases = async () => {
         try {
@@ -36,76 +45,49 @@ export default function BillingHistories() {
                     Set default billing method for better experiences.
                 </p>
                 <div className="mt-5 grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
-                    <Link>
-                        <Card className="relative bg-white hover:bg-gray-50 duration-300 border border-gray-600 shadow-lg rounded-lg">
+                    {[
+                        { name: "KBZ Pay", key: "kbz", icon: KBZ },
+                        { name: "Wave Pay", key: "wave", icon: Wave },
+                        { name: "AYA Pay", key: "aya", icon: AYA },
+                        { name: "UAB Pay", key: "uab", icon: UAB },
+                        { name: "CB Pay", key: "cb", icon: CB },
+                    ].map((payment) => (
+                        <Card
+                            key={payment.key}
+                            className={`relative bg-white hover:bg-gray-50 duration-300 border border-gray-600 shadow-lg rounded-lg cursor-pointer ${
+                                defaultPayment === payment.key
+                                    ? "border-blue-500"
+                                    : ""
+                            }`}
+                            onClick={async () => {
+                                try {
+                                    await axios.post(
+                                        "/api/user/default-payment",
+                                        { payment: payment.key }
+                                    );
+                                    setDefaultPayment(payment.key);
+                                } catch (err) {
+                                    console.error(err);
+                                }
+                            }}
+                        >
                             <CardContent className="p-2 flex items-center gap-2">
                                 <img
-                                    src={KBZ}
-                                    alt="KBZ"
+                                    src={payment.icon}
+                                    alt={payment.name}
                                     className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-md"
                                 />
                                 <span className="md:text-lg font-medium">
-                                    KBZ Pay
+                                    {payment.name}
                                 </span>
+                                {defaultPayment === payment.key && (
+                                    <span className="ml-auto text-blue-500 font-bold">
+                                        ✔
+                                    </span>
+                                )}
                             </CardContent>
                         </Card>
-                    </Link>
-                    <Link>
-                        <Card className="relative bg-white hover:bg-gray-50 duration-300 border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-2 flex items-center gap-2">
-                                <img
-                                    src={Wave}
-                                    alt="Wave"
-                                    className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-md"
-                                />
-                                <span className="md:text-lg font-medium">
-                                    Wave Pay
-                                </span>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                    <Link>
-                        <Card className="relative bg-white hover:bg-gray-50 duration-300 border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-2 flex items-center gap-2">
-                                <img
-                                    src={AYA}
-                                    alt="AYA"
-                                    className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-md"
-                                />
-                                <span className="md:text-lg font-medium">
-                                    AYA Pay
-                                </span>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                    <Link>
-                        <Card className="relative bg-white hover:bg-gray-50 duration-300 border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-2 flex items-center gap-2">
-                                <img
-                                    src={UAB}
-                                    alt="UAB"
-                                    className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-md"
-                                />
-                                <span className="md:text-lg font-medium">
-                                    UAB Pay
-                                </span>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                    <Link>
-                        <Card className="relative bg-white hover:bg-gray-50 duration-300 border border-gray-600 shadow-lg rounded-lg">
-                            <CardContent className="p-2 flex items-center gap-2">
-                                <img
-                                    src={CB}
-                                    alt="CB"
-                                    className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-md"
-                                />
-                                <span className="md:text-lg font-medium">
-                                    CB Pay
-                                </span>
-                            </CardContent>
-                        </Card>
-                    </Link>
+                    ))}
                 </div>
             </div>
             <div className="mt-10">
