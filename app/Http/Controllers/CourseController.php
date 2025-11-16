@@ -91,8 +91,7 @@ class CourseController extends Controller
             'courses' => $courses
         ]);
     }
-
-
+    
     public function show($id){
         $course = Courses::with('category', 'outlines.subtitles', // outlines and their subtitles
             'quizzes.options' )->withCount('purchases')->findOrFail($id); 
