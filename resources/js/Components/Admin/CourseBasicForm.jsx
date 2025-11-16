@@ -73,11 +73,28 @@ export default function CourseBasicForm() {
     };
 
     // --- handle image upload ---
+    // const handleImage = (e) => {
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         const previewUrl = URL.createObjectURL(file);
+    //         setImageFile(file);
+    //         setImagePreview(previewUrl);
+    //         setForm((prev) => ({ ...prev, imagePreview: previewUrl }));
+    //     }
+    // };
+
     const handleImage = (e) => {
         const file = e.target.files[0];
         if (file) {
             setImageFile(file);
-            setImagePreview(URL.createObjectURL(file));
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                setImagePreview(base64String);
+                setForm((prev) => ({ ...prev, imagePreview: base64String }));
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -117,7 +134,7 @@ export default function CourseBasicForm() {
                             darkMode ? "text-gray-300" : "text-gray-800"
                         } text-sm`}
                     >
-                        <Link>Courses</Link>
+                        <Link to="/admin/courses">Courses</Link>
                         <ChevronsRight size={18} />
                         <Link
                             className={`${
@@ -269,6 +286,10 @@ export default function CourseBasicForm() {
                                         onClick={() => {
                                             setImageFile(null);
                                             setImagePreview("");
+                                            setForm((prev) => ({
+                                                ...prev,
+                                                imagePreview: "",
+                                            }));
                                         }}
                                     >
                                         Remove
@@ -387,26 +408,44 @@ export default function CourseBasicForm() {
                 </div>
             </div>
             <div className="hidden lg:block lg:w-1/3">
-                <Card className="relative  border border-gray-600 shadow-lg rounded-lg">
+                <Card className="relative border border-gray-600 shadow-lg rounded-lg">
                     <CardContent className="p-4">
                         <div>
+                            {/* Image preview */}
                             <img
-                                src={CourseImg}
-                                alt=""
+                                src={
+                                    form.imagePreview
+                                        ? form.imagePreview
+                                        : CourseImg // fallback image
+                                }
+                                alt={form.title || "Course Preview"}
                                 className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
                             />
+
+                            {/* Category */}
                             <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                Frontend
+                                {categories.find(
+                                    (cat) =>
+                                        cat.id.toString() === form.category_id
+                                )?.name || "Category"}
                             </span>
+
+                            {/* Title */}
                             <h1 className="my-3 font-medium text-lg">
-                                Fluent in Javascript and its framework, ReactJS
+                                {form.title || "Fluent in Javascript and React"}
                             </h1>
+
+                            {/* Students enrolled - static for preview */}
                             <div className="flex items-center gap-1 text-sm py-2">
-                                <Users size={16} /> 27 students enrolled
+                                <Users size={16} /> 28 students enrolled
                             </div>
+
+                            {/* Duration - static for preview */}
                             <div className="flex items-center gap-1 text-sm py-2">
-                                <Clock size={16} /> 18 hours long
+                                <Clock size={16} /> 12 hours long
                             </div>
+
+                            {/* Price */}
                             <span className="text-xl font-medium my-2 flex justify-between">
                                 <span
                                     className={`${
@@ -417,8 +456,14 @@ export default function CourseBasicForm() {
                                 >
                                     Price -
                                 </span>
-                                <span>300,000 MMK</span>
+                                <span>
+                                    {form.price
+                                        ? `${form.price} MMK`
+                                        : "125000 MMK"}
+                                </span>
                             </span>
+
+                            {/* Enroll button (optional preview) */}
                             <Button className="w-full mt-3">Enroll Now</Button>
                         </div>
                     </CardContent>
