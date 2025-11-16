@@ -22,14 +22,18 @@ export default function YourCourses() {
     if (!user || !user.courses || user.courses.length === 0)
         return <div>You have no enrolled courses.</div>;
 
+    const uniqueCourses = Array.from(
+        new Map(user.courses.map((c) => [c.id, c])).values()
+    );
+
     const indexOfLastCourse = currentPage * rowsPerPage;
     const indexOfFirstCourse = indexOfLastCourse - rowsPerPage;
-    const currentCourses = user.courses.slice(
+    const currentCourses = uniqueCourses.slice(
         indexOfFirstCourse,
         indexOfLastCourse
     );
 
-    const totalPages = Math.ceil(user.courses.length / rowsPerPage);
+    const totalPages = Math.ceil(uniqueCourses.length / rowsPerPage);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -121,7 +125,7 @@ export default function YourCourses() {
                         {Array.from(
                             {
                                 length: Math.ceil(
-                                    user.courses.length / rowsPerPage
+                                    uniqueCourses.length / rowsPerPage
                                 ),
                             },
                             (_, index) => (
@@ -150,7 +154,9 @@ export default function YourCourses() {
                                 }`}
                                 disabled={
                                     currentPage ===
-                                    Math.ceil(user.courses.length / rowsPerPage)
+                                    Math.ceil(
+                                        uniqueCourses.length / rowsPerPage
+                                    )
                                 }
                             />
                         </PaginationItem>
