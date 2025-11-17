@@ -136,7 +136,7 @@ class AuthController extends Controller
 
         $query->withCount('purchases');
 
-    $users = $query->get();
+        $users = $query->get();
 
         // Send data to frontend
         return response()->json([
@@ -144,6 +144,16 @@ class AuthController extends Controller
             'users' => $users
         ]);
     }
+
+    public function show($id){
+    $user = User::with(['purchases.course'])->withCount('purchases')->findOrFail($id);
+
+    return response()->json([
+        'message' => 'User retrieved successfully.',
+        'user' => $user
+    ]);
+}
+
 
     public function updateUser(User $user){
         $validator = Validator::make(request()->all(), [

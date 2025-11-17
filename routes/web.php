@@ -52,7 +52,6 @@ Route::middleware('auth:sanctum')->get('/api/user', function (Request $request) 
     return $user;
 });
 
-
 Route::post('/api/login', [AuthController::class, 'login']);
 Route::post('/api/logout', [AuthController::class, 'logout']);
 
@@ -60,6 +59,7 @@ Route::get('/api/users', [AuthController::class, 'index']);
 Route::middleware('auth:sanctum')->put('/api/user/{user}', [AuthController::class, 'updateUser']);
 Route::middleware('auth:sanctum')->put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
 
+Route::get('/api/user/{id}/details', [AuthController::class, 'show']);
 Route::post('/api/users/banned/{id}', [AuthController::class, 'ban']);
 Route::post('/api/user/default-payment', [AuthController::class, 'setDefaultPayment']);
 

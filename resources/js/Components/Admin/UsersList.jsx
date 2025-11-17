@@ -228,10 +228,22 @@ export default function UsersList() {
                                 <p>{user.email}</p>
                             </li>
                             <li className="basis-[19%]">
-                                <p>+959 258 383 766</p>
+                                <p>{user.phone}</p>
                             </li>
                             <li className="basis-[12%]">
-                                <p>9.10.2025</p>
+                                <p>
+                                    <p>
+                                        {user?.DoB
+                                            ? new Date(user.DoB)
+                                                  .toLocaleDateString("en-GB", {
+                                                      day: "2-digit",
+                                                      month: "numeric",
+                                                      year: "numeric",
+                                                  })
+                                                  .replace(/\//g, ".")
+                                            : ""}
+                                    </p>
+                                </p>
                             </li>
                             <li className="basis-[10%]">
                                 <p>{user.purchases_count}</p>
@@ -253,11 +265,11 @@ export default function UsersList() {
                                         align="end"
                                         className="w-40"
                                     >
-                                        {/* <Link to="">
+                                        <Link to={`/admin/${user.id}/details`}>
                                             <DropdownMenuItem>
-                                                View Profile
+                                                View Details
                                             </DropdownMenuItem>
-                                        </Link> */}
+                                        </Link>
                                         <DropdownMenuItem
                                             onClick={() =>
                                                 banUser(

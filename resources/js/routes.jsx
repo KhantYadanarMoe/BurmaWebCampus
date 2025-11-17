@@ -179,7 +179,7 @@ const routes = createBrowserRouter([
                 element: <Subscribers />,
             },
             {
-                path: "/admin/user/details",
+                path: "/admin/:id/details",
                 element: <UserDetails />,
             },
             {

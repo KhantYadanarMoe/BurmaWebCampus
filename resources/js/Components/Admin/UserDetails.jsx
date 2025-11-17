@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
     ChevronsRight,
@@ -8,13 +8,30 @@ import {
     Users,
 } from "lucide-react";
 import Pf from "../../../assets/Profile.jpg";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link, useOutletContext, useParams } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
 import CourseImg from "../../../assets/Courses.jpg";
 import { Progress } from "../ui/progress";
+import axios from "axios";
 
 export default function UsersList() {
+    const { id } = useParams();
+    let [user, setUser] = useState([]);
     const { darkMode } = useOutletContext();
+
+    const getDetails = async () => {
+        try {
+            const res = await axios.get(`/api/user/${id}/details`);
+            setUser(res.data.user);
+        } catch (err) {
+            console.error("Error fetching user:", err);
+        }
+    };
+
+    useEffect(() => {
+        getDetails();
+    }, [id]);
+
     return (
         <div>
             <div
@@ -22,12 +39,12 @@ export default function UsersList() {
                     darkMode ? "text-gray-300" : "text-gray-800"
                 } text-sm`}
             >
-                <Link>Dashboard</Link>
+                <Link to="/admin">Dashboard</Link>
                 <ChevronsRight size={18} />
-                <Link>user</Link>
+                <Link to="/admin/users">Users</Link>
                 <ChevronsRight size={18} />
                 <Link className={`${darkMode ? "text-white" : "text-black"}`}>
-                    Khant Yadanar Moe
+                    {user.name}
                 </Link>
             </div>
             <h1 className="text-xl font-medium my-5">Profile Details</h1>
@@ -36,13 +53,13 @@ export default function UsersList() {
                     <div className="flex items-start justify-between">
                         <div className="flex gap-2 items-center">
                             <img
-                                src={Pf}
+                                src={`/storage/${user.image}`}
                                 alt=""
                                 className="w-16 h-16 object-cover p-0.5 border border-gray-400 rounded-full"
                             />
                             <div>
                                 <h1 className="text-lg font-medium">
-                                    Khant Yadanar Moe
+                                    {user.name}
                                 </h1>
                                 <p
                                     className={`text-sm ${
@@ -51,12 +68,18 @@ export default function UsersList() {
                                             : "text-gray-700"
                                     }`}
                                 >
-                                    khantyadanarmoe@gmail.com
+                                    {user.email}
                                 </p>
                             </div>
                         </div>
-                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded-xl">
-                            Active
+                        <span
+                            className={`px-2 py-1 rounded-xl ${
+                                user?.banned === 1
+                                    ? "bg-red-100 text-red-700"
+                                    : "bg-green-100 text-green-700"
+                            }`}
+                        >
+                            {user?.banned === 1 ? "Banned" : "Active"}
                         </span>
                     </div>
                 </CardContent>
@@ -77,7 +100,11 @@ export default function UsersList() {
                                             : "text-gray-700"
                                     } text-sm`}
                                 >
-                                    Khant Yadanar
+                                    {user?.name
+                                        ?.trim()
+                                        .split(" ")
+                                        .slice(0, -1)
+                                        .join(" ") || ""}
                                 </p>
                             </div>
                             <div className="w-1/2">
@@ -89,7 +116,10 @@ export default function UsersList() {
                                             : "text-gray-700"
                                     } text-sm`}
                                 >
-                                    Moe
+                                    {user?.name
+                                        ?.trim()
+                                        .split(" ")
+                                        .slice(-1)[0] || ""}
                                 </p>
                             </div>
                         </div>
@@ -103,7 +133,7 @@ export default function UsersList() {
                                             : "text-gray-700"
                                     } text-sm`}
                                 >
-                                    khantyadanarmoe@gmail.com
+                                    {user?.email}
                                 </p>
                             </div>
                             <div className="md:w-1/2 my-7 md:my-0">
@@ -115,7 +145,7 @@ export default function UsersList() {
                                             : "text-gray-700"
                                     } text-sm`}
                                 >
-                                    +959 123 456 789
+                                    {user?.phone}
                                 </p>
                             </div>
                         </div>
@@ -129,7 +159,16 @@ export default function UsersList() {
                                             : "text-gray-700"
                                     } text-sm`}
                                 >
-                                    18 Jun 2004
+                                    {user?.DoB
+                                        ? new Date(user.DoB).toLocaleDateString(
+                                              "en-GB",
+                                              {
+                                                  day: "2-digit",
+                                                  month: "short",
+                                                  year: "numeric",
+                                              }
+                                          )
+                                        : ""}
                                 </p>
                             </div>
                             <div className="w-1/2">
@@ -141,7 +180,13 @@ export default function UsersList() {
                                             : "text-gray-700"
                                     } text-sm`}
                                 >
-                                    9 Sep 2024
+                                    {new Date(
+                                        user.created_at
+                                    ).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                    })}
                                 </p>
                             </div>
                         </div>
@@ -152,12 +197,7 @@ export default function UsersList() {
                                     darkMode ? "text-gray-300" : "text-gray-700"
                                 } text-sm`}
                             >
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Minus voluptatem ut voluptates
-                                omnis atque nostrum. Accusantium velit pariatur
-                                reiciendis, blanditiis libero eos, dolorum
-                                aspernatur vero reprehenderit sapiente nostrum
-                                inventore veniam quia dolores.
+                                {user?.bio}
                             </p>
                         </div>
                     </div>
@@ -168,129 +208,68 @@ export default function UsersList() {
                     <h1 className="text-lg font-medium mb-8">
                         Enrolled Courses
                     </h1>
-                    <div className="flex gap-3 my-8">
-                        <img
-                            src={CourseImg}
-                            alt="course image"
-                            className="hidden md:block w-24 h-24 object-cover rounded-lg"
-                        />
-                        <div className="flex-1">
-                            <div>
-                                <h1 className="text-lg font-medium">
-                                    Full-Stack Web Development Pathway
-                                </h1>
-                                <p
-                                    className={`${
-                                        darkMode
-                                            ? "text-gray-300"
-                                            : "text-gray-700"
-                                    } text-sm`}
-                                >
-                                    Enrolled at 14 Nov 2024
-                                </p>
-                            </div>
-                            <div className="py-1">
-                                <div className="flex justify-between">
-                                    <h1
-                                        className={`${
-                                            darkMode
-                                                ? "text-gray-300"
-                                                : "text-gray-700"
-                                        }`}
-                                    >
-                                        Progress
-                                    </h1>
-                                    <p className="text-black font-medium">
-                                        54%
-                                    </p>
+                    {user.purchases && user.purchases.length > 0 ? (
+                        user.purchases.map((purchase) => (
+                            <div key={purchase.id} className="flex gap-3 my-8">
+                                <img
+                                    src={`/storage/${purchase.course.image}`}
+                                    alt="course image"
+                                    className="hidden md:block w-24 h-24 object-cover rounded-lg"
+                                />
+                                <div className="flex-1">
+                                    <div>
+                                        <h1 className="text-lg font-medium">
+                                            {purchase.course.title}
+                                        </h1>
+                                        <p
+                                            className={`${
+                                                darkMode
+                                                    ? "text-gray-300"
+                                                    : "text-gray-700"
+                                            } text-sm`}
+                                        >
+                                            Enrolled at{" "}
+                                            {new Date(
+                                                purchase.created_at
+                                            ).toLocaleDateString("en-GB", {
+                                                day: "2-digit",
+                                                month: "2-digit",
+                                                year: "numeric",
+                                            })}
+                                        </p>
+                                    </div>
+                                    <div className="py-1">
+                                        <div className="flex justify-between">
+                                            <h1
+                                                className={`${
+                                                    darkMode
+                                                        ? "text-gray-300"
+                                                        : "text-gray-700"
+                                                }`}
+                                            >
+                                                Progress
+                                            </h1>
+                                            <p className="text-black font-medium">
+                                                {purchase.progress ?? 0}%
+                                            </p>
+                                        </div>
+                                        <Progress
+                                            value={purchase.progress ?? 0}
+                                            className="mt-2 w-full"
+                                        />
+                                    </div>
                                 </div>
-                                {/* 👇 force progress bar to take full width */}
-                                <Progress value={54} className="mt-2 w-full" />
                             </div>
-                        </div>
-                    </div>
-                    <div className="flex gap-3 my-8">
-                        <img
-                            src={CourseImg}
-                            alt="course image"
-                            className="hidden md:block w-24 h-24 object-cover rounded-lg"
-                        />
-                        <div className="flex-1">
-                            <div>
-                                <h1 className="text-lg font-medium">
-                                    Full-Stack Web Development Pathway
-                                </h1>
-                                <p
-                                    className={`${
-                                        darkMode
-                                            ? "text-gray-300"
-                                            : "text-gray-700"
-                                    } text-sm`}
-                                >
-                                    Enrolled at 14 Nov 2024
-                                </p>
-                            </div>
-                            <div className="py-1">
-                                <div className="flex justify-between">
-                                    <h1
-                                        className={`${
-                                            darkMode
-                                                ? "text-gray-300"
-                                                : "text-gray-700"
-                                        }`}
-                                    >
-                                        Progress
-                                    </h1>
-                                    <p className="text-black font-medium">
-                                        54%
-                                    </p>
-                                </div>
-                                {/* 👇 force progress bar to take full width */}
-                                <Progress value={54} className="mt-2 w-full" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex gap-3 my-8">
-                        <img
-                            src={CourseImg}
-                            alt="course image"
-                            className="hidden md:block w-24 h-24 object-cover rounded-lg"
-                        />
-                        <div className="flex-1">
-                            <div>
-                                <h1 className="text-lg font-medium">
-                                    Full-Stack Web Development Pathway
-                                </h1>
-                                <p
-                                    className={`${
-                                        darkMode
-                                            ? "text-gray-300"
-                                            : "text-gray-700"
-                                    } text-sm`}
-                                >
-                                    Enrolled at 14 Nov 2024
-                                </p>
-                            </div>
-                            <div className="py-1">
-                                <div className="flex justify-between">
-                                    <h1
-                                        className={`${
-                                            darkMode
-                                                ? "text-gray-300"
-                                                : "text-gray-700"
-                                        }`}
-                                    >
-                                        Progress
-                                    </h1>
-                                    <p className="text-black font-medium">
-                                        54%
-                                    </p>
-                                </div>
-                                {/* 👇 force progress bar to take full width */}
-                                <Progress value={54} className="mt-2 w-full" />
-                            </div>
-                        </div>
-                    </div>
+                        ))
+                    ) : (
+                        <p
+                            className={`${
+                                darkMode ? "text-gray-300" : "text-gray-700"
+                            } my-4`}
+                        >
+                            This user is not enrolled in any courses.
+                        </p>
+                    )}
                 </CardContent>
             </Card>
         </div>
