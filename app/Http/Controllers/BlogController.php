@@ -70,38 +70,37 @@ class BlogController extends Controller
         ]);
     }
 
-    public function index(Request $request)
-{
-    $sort = $request->query('sort', 'newest'); // Default to 'newest' if not provided
+    public function index(Request $request){
+        $sort = $request->query('sort', 'newest'); // Default to 'newest' if not provided
 
-    // Start the query with the relationship eager-loaded
-    $query = Blog::with('category');
+        // Start the query with the relationship eager-loaded
+        $query = Blog::with('category');
 
-    // Apply sorting based on the requested sort option
-    switch ($sort) {
-        case 'oldest':
-            $query->orderBy('created_at', 'asc');
-            break;
-        case 'a-z':
-            $query->orderBy('title', 'asc');
-            break;
-        case 'z-a':
-            $query->orderBy('title', 'desc');
-            break;
-        case 'newest':
-        default:
-            $query->orderBy('created_at', 'desc');
-            break;
+        // Apply sorting based on the requested sort option
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('title', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // Execute query
+        $blogs = $query->get();
+
+        // Send data to frontend
+        return response()->json([
+            'blogs' => $blogs
+        ]);
     }
-
-    // Execute query
-    $blogs = $query->get();
-
-    // Send data to frontend
-    return response()->json([
-        'blogs' => $blogs
-    ]);
-}
 
     public function show($id){
         $blog = Blog::with('category')->findOrFail($id); // Find blog by ID

@@ -77,21 +77,44 @@ class CourseController extends Controller
     return response()->json(['success' => true]);
  }
 
-    public function index(Request $request)
-    {
-        // Fetch all courses with related models
-        $courses = Courses::with([
+    
+    public function index(Request $request){
+        // Get the sort option from query params, default to 'newest'
+        $sort = $request->query('sort', 'newest');
+
+        // Start the query with relationships eager-loaded
+        $query = Courses::with([
             'category',           // course category
             'outlines.subtitles', // outlines and their subtitles
             'quizzes.options'     // quizzes and their options
-        ])->withCount('purchases')->latest()->get();
+        ])->withCount('purchases');
 
-        // Return as JSON directly
+        // Apply sorting
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('title', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // Execute query
+        $courses = $query->get();
+
+        // Return as JSON
         return response()->json([
             'courses' => $courses
         ]);
     }
-    
+
     public function show($id){
         $course = Courses::with('category', 'outlines.subtitles', // outlines and their subtitles
             'quizzes.options' )->withCount('purchases')->findOrFail($id); 

@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select";
-import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -29,7 +22,6 @@ import {
     Plus,
     Users,
 } from "lucide-react";
-import BlogImg from "../../../assets/Blogs.jpg";
 import { Link, useOutletContext } from "react-router-dom";
 import axios from "axios";
 
@@ -39,6 +31,7 @@ export default function CoursesList() {
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedFilter, setSelectedFilter] = useState("newest");
 
     const rowsPerPage = 10;
 
@@ -86,63 +79,119 @@ export default function CoursesList() {
             setCurrentPage(page);
         }
     };
+
+    const handleFilterChange = (filterValue) => {
+        setSelectedFilter(filterValue);
+
+        axios
+            .get(`/api/courses?sort=${filterValue}`)
+            .then((response) => {
+                const data = response.data;
+                if (data.courses) {
+                    setCourses(data.courses);
+                }
+            })
+            .catch((error) => {
+                console.error("Axios request failed:", error);
+            });
+    };
+
+    useEffect(() => {
+        handleFilterChange("newest"); // initial load
+    }, []);
     return (
         <div>
             <h1 className="text-xl font-medium">Courses</h1>
             <div className="flex flex-col md:flex-row justify-between my-4">
                 <div className="flex items-center gap-2">
-                    <Link to="">
-                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                            Frontend
-                        </span>
-                    </Link>
-                    <Link to="">
-                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                            Backend
-                        </span>
-                    </Link>
-                    <Link to="">
-                        <span className="px-2 py-1 text-xs md:text-sm border border-gray-500 rounded-lg">
-                            Fullstack
-                        </span>
-                    </Link>
+                    <button
+                        onClick={() => {
+                            setSelectedCategory(null);
+                            setCurrentPage(1);
+                        }}
+                        className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
+                            !selectedCategory
+                                ? "bg-gray-800 text-white border-gray-800"
+                                : "border-gray-500"
+                        }`}
+                    >
+                        All
+                    </button>
+                    {categories.map((category) => (
+                        <button
+                            key={category.id}
+                            onClick={() => {
+                                setSelectedCategory(category.id);
+                                setCurrentPage(1);
+                            }}
+                            className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
+                                selectedCategory === category.id
+                                    ? "bg-gray-800 text-white border-gray-800"
+                                    : "border-gray-500"
+                            }`}
+                        >
+                            {category.name}
+                        </button>
+                    ))}
                 </div>
                 <div className="flex items-center justify-end md:justify-normal gap-2">
                     <div className="hidden md:block">
-                        <Select>
-                            <SelectTrigger className="w-[180px] border-gray-700">
-                                <SelectValue placeholder="Filter By Categories" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value={null}>
-                                    <button
-                                        onClick={() => {
-                                            setSelectedCategory(null);
-                                            setCurrentPage(1);
-                                        }}
-                                    >
-                                        All
-                                    </button>
-                                </SelectItem>
-                                {categories.map((category) => (
-                                    <SelectItem
-                                        value={category.name}
-                                        key={category.id}
-                                    >
-                                        <button
-                                            onClick={() => {
-                                                setSelectedCategory(
-                                                    category.id
-                                                );
-                                                setCurrentPage(1);
-                                            }}
-                                        >
-                                            {category.name}
-                                        </button>
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <DropdownMenu modal={false}>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    className={`flex gap-1 items-center px-2 py-1 border ${
+                                        darkMode
+                                            ? "border-gray-300"
+                                            : "border-gray-800"
+                                    } rounded-md`}
+                                >
+                                    {
+                                        {
+                                            newest: "Filter By Newest",
+                                            oldest: "Filter By Oldest",
+                                            "a-z": "Filter By A-Z",
+                                            "z-a": "Filter By Z-A",
+                                        }[selectedFilter]
+                                    }
+                                    <ChevronDown size={16} />
+                                </button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent
+                                align="end"
+                                className="w-40"
+                                avoidCollisions={false}
+                            >
+                                <DropdownMenuItem
+                                    onSelect={() =>
+                                        handleFilterChange("newest")
+                                    }
+                                    className="cursor-pointer"
+                                >
+                                    Filter By Newest
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={() =>
+                                        handleFilterChange("oldest")
+                                    }
+                                    className="cursor-pointer"
+                                >
+                                    Filter By Oldest
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={() => handleFilterChange("a-z")}
+                                    className="cursor-pointer"
+                                >
+                                    Filter By A-Z
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={() => handleFilterChange("z-a")}
+                                    className="cursor-pointer"
+                                >
+                                    Filter By Z-A
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                     <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
                         <Plus />
