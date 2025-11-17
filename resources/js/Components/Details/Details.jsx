@@ -40,6 +40,7 @@ export default function Details() {
     const [form, setForm] = useState({
         content: "",
         subtitle_id: null,
+        parent_id: null,
     });
     const [errors, setErrors] = useState({});
     const [comments, setComments] = useState([]);
@@ -98,6 +99,9 @@ export default function Details() {
         const formData = new FormData();
         formData.append("content", form.content);
         formData.append("subtitle_id", form.subtitle_id);
+        if (form.parent_id) {
+            formData.append("parent_id", form.parent_id);
+        }
 
         try {
             const csrfToken = document
@@ -111,8 +115,12 @@ export default function Details() {
                 },
             });
 
-            if (res.data.message === "Comment posted successfully.") {
+            if (
+                res.data.message === "Comment posted successfully." ||
+                res.data.message === "Reply posted successfully."
+            ) {
                 setForm({ ...form, content: "" });
+                setShowReply(null);
                 // Refresh comments
                 const updated = await axios.get(
                     `/api/subtitle/${form.subtitle_id}/comments`
@@ -282,6 +290,7 @@ export default function Details() {
                                     key={comment.id}
                                     className="px-3 py-3 border-b border-gray-200"
                                 >
+                                    {/* Parent comment */}
                                     <div className="flex gap-2 items-center">
                                         <img
                                             src={
@@ -303,9 +312,101 @@ export default function Details() {
                                             </p>
                                         </div>
                                     </div>
+
                                     <p className="text-sm text-gray-800 mt-3">
                                         {comment.content}
                                     </p>
+
+                                    {/* Reply button for parent only */}
+                                    <div className="flex justify-end">
+                                        <Button
+                                            className="mt-3"
+                                            onClick={() =>
+                                                setShowReply(
+                                                    showReply === comment.id
+                                                        ? null
+                                                        : comment.id
+                                                )
+                                            }
+                                        >
+                                            Reply
+                                        </Button>
+                                    </div>
+
+                                    {/* Reply input */}
+                                    {showReply === comment.id && (
+                                        <div className="mt-3 ml-10">
+                                            <Textarea
+                                                name="content"
+                                                value={
+                                                    form.parent_id ===
+                                                    comment.id
+                                                        ? form.content
+                                                        : ""
+                                                }
+                                                onChange={(e) =>
+                                                    setForm({
+                                                        ...form,
+                                                        content: e.target.value,
+                                                        parent_id: comment.id,
+                                                    })
+                                                }
+                                                className="border-gray-400 h-24"
+                                                placeholder="Write your reply..."
+                                            />
+                                            <div className="flex justify-end mt-2">
+                                                <Button onClick={submit}>
+                                                    Submit Reply
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Nested replies */}
+                                    {comment.replies &&
+                                        comment.replies.length > 0 && (
+                                            <div className="mt-4">
+                                                {comment.replies.map(
+                                                    (reply) => (
+                                                        <div
+                                                            key={reply.id}
+                                                            className="ml-10 mt-3 border-l border-gray-300 pl-4"
+                                                        >
+                                                            <div className="flex gap-2 items-center">
+                                                                <img
+                                                                    src={
+                                                                        reply
+                                                                            .user
+                                                                            ?.image
+                                                                            ? `/storage/${reply.user.image}`
+                                                                            : Pf
+                                                                    }
+                                                                    alt="profile"
+                                                                    className="rounded-full w-8 h-8 object-cover"
+                                                                />
+                                                                <div>
+                                                                    <h2 className="text-sm font-medium">
+                                                                        {
+                                                                            reply
+                                                                                .user
+                                                                                ?.name
+                                                                        }
+                                                                    </h2>
+                                                                    <p className="text-xs text-gray-600">
+                                                                        {dayjs(
+                                                                            reply.created_at
+                                                                        ).fromNow()}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <p className="text-sm text-gray-700 mt-1 ml-10">
+                                                                {reply.content}
+                                                            </p>
+                                                        </div>
+                                                    )
+                                                )}
+                                            </div>
+                                        )}
                                 </div>
                             ))}
                         </div>

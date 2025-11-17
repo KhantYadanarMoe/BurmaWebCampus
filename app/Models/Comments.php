@@ -10,6 +10,7 @@ class Comments extends Model
         'user_id',
         'subtitle_id',
         'content',
+        'parent_id'
     ];
 
     public function user(){
@@ -19,4 +20,17 @@ class Comments extends Model
     public function subtitle(){
         return $this->belongsTo(Subtitles::class, 'subtitle_id');
     }
+
+    public function replies()
+{
+    return $this->hasMany(Comments::class, 'parent_id')
+                ->with('user')
+                ->orderBy('created_at', 'asc');
+}
+
+
+    public function parent(){
+        return $this->belongsTo(Comments::class, 'parent_id');
+    }
+
 }

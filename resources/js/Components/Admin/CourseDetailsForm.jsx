@@ -16,11 +16,20 @@ import { Input } from "../ui/input";
 import { Card, CardContent } from "../ui/card";
 import { useState } from "react";
 import { setUploadedOutlines } from "@/utils/uploadStore";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function CourseDetailsForm() {
     const percent = 50; // step 2 of 3
     const navigate = useNavigate();
     const { darkMode } = useOutletContext();
+    const [showAlert, setShowAlert] = useState(false);
 
     // --- outline structure ---
     const [outlines, setOutlines] = useState([
@@ -88,7 +97,7 @@ export default function CourseDetailsForm() {
         );
 
         if (hasEmpty) {
-            alert("Please fill all outlines and subtitles before continuing.");
+            setShowAlert(true);
             return;
         }
 
@@ -118,9 +127,7 @@ export default function CourseDetailsForm() {
                             darkMode ? "text-gray-300" : "text-gray-800"
                         } text-sm`}
                     >
-                        <Link>Courses</Link>
-                        <ChevronsRight size={18} />
-                        <Link>Create</Link>
+                        <Link to="/admin/courses">Courses</Link>
                         <ChevronsRight size={18} />
                         <Link
                             className={`${
@@ -144,7 +151,10 @@ export default function CourseDetailsForm() {
                                 Please fill, and add lecture for your course.
                             </p>
                         </div>
-                        <Button className="flex gap-1 items-center">
+                        <Button
+                            onClick={handleNext}
+                            className="flex gap-1 items-center"
+                        >
                             Next <ChevronsRight size={18} className="mt-0.5" />
                         </Button>
                     </div>
@@ -328,8 +338,24 @@ export default function CourseDetailsForm() {
                                                             }`}
                                                         >
                                                             <p className="hidden md:block">
-                                                                Add Files /
-                                                                Media
+                                                                {outline
+                                                                    .sublectures[
+                                                                    subIndex
+                                                                ].files.length >
+                                                                0
+                                                                    ? outline.sublectures[
+                                                                          subIndex
+                                                                      ].files
+                                                                          .map(
+                                                                              (
+                                                                                  f
+                                                                              ) =>
+                                                                                  f.name
+                                                                          )
+                                                                          .join(
+                                                                              ", "
+                                                                          )
+                                                                    : "Add Files / Media"}
                                                             </p>
                                                         </Label>
                                                         <Input
@@ -423,6 +449,24 @@ export default function CourseDetailsForm() {
                             <Button type="submit">Next</Button>
                         </div>
                     </form>
+                    <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Units and Lectures Required
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Please fill all outlines and subtitles
+                                    before continuing.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <Button onClick={() => setShowAlert(false)}>
+                                    OK
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             </div>
         </div>

@@ -205,7 +205,7 @@ export default function CreateQuiz() {
                     darkMode ? "text-gray-300" : "text-gray-800"
                 } text-sm`}
             >
-                <Link>Courses</Link>
+                <Link to="/admin/courses">Courses</Link>
                 <ChevronsRight size={18} />
                 <Link className={`${darkMode ? "text-white" : "text-black"}`}>
                     Final Quiz

@@ -13,6 +13,7 @@ class CommentController extends Controller
         $validator = Validator::make($request->all(), [
             'subtitle_id' => ['required', 'exists:subtitles,id'],
             'content' => ['required', 'string', 'max:1000'],
+            'parent_id' => ['nullable', 'exists:comments,id'],
         ]);
 
         if ($validator->fails()) {
@@ -25,10 +26,11 @@ class CommentController extends Controller
             'user_id' => Auth::id(), // assuming the user is authenticated
             'subtitle_id' => $request->subtitle_id,
             'content' => $request->input('content'),
+            'parent_id' => $request->input('parent_id'),
         ]);
 
         return response()->json([
-            'message' => 'Comment posted successfully.',
+            'message' => $request->parent_id ? 'Reply posted successfully.' : 'Comment posted successfully.',
             'comment' => $comment,
         ]);
     }
@@ -42,15 +44,22 @@ class CommentController extends Controller
         ]);
     }
 
-    public function getBySubtitle($subtitleId){
-        $comments = Comments::with(['user:id,name,image', 'subtitle:id,subtitle'])
-            ->where('subtitle_id', $subtitleId)
-            ->latest()
-            ->get();
+   public function getBySubtitle($subtitleId){
+    $comments = Comments::with([
+        'user:id,name,image', 
+        'replies.user:id,name,image', 
+        'replies.replies.user:id,name,image', 
+        'subtitle:id,subtitle'
+    ])
+    ->where('subtitle_id', $subtitleId)
+    ->whereNull('parent_id') 
+    ->orderBy('created_at', 'asc')
+    ->get();
 
-        return response()->json([
-            'comments' => $comments
-        ]);
-    }
+    return response()->json([
+        'comments' => $comments
+    ]);
+}
+
 
 }
