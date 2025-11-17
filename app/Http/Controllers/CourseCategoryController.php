@@ -104,7 +104,7 @@ class CourseCategoryController extends Controller
         if (request()->hasFile('icon')) {
             $icon = request()->file('icon');
             $iconName = time() . '_' . $icon->getClientOriginalName();
-            $iconPath = $icon->storeAs('blog_categories', $iconName, 'public'); 
+            $iconPath = $icon->storeAs('course_categories', $iconName, 'public'); 
         }else {
             // Retain the old icon if no new icon is provided
             $iconPath = $category->icon;
@@ -117,7 +117,7 @@ class CourseCategoryController extends Controller
             'name' => request('name'),
         ]);
         return response()->json([
-            'message' => 'Blog Category updated successfully.',
+            'message' => 'Course Category updated successfully.',
             'category' => $category
         ]);
     }

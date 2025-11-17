@@ -46,11 +46,12 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/api/register', [AuthController::class, 'register']);
 
-
 Route::middleware('auth:sanctum')->get('/api/user', function (Request $request) {
-    $user = $request->user()->load('courses'); // eager load courses
+    $user = $request->user()->load('courses');   
+    $user->loadCount('purchases');           
     return $user;
 });
+
 
 Route::post('/api/login', [AuthController::class, 'login']);
 Route::post('/api/logout', [AuthController::class, 'logout']);

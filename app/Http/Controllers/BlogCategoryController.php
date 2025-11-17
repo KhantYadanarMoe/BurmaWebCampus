@@ -47,36 +47,35 @@ class BlogCategoryController extends Controller
         ]);
     }
     
-    public function index(Request $request)
-{
-    $sort = $request->query('sort', 'newest'); // default sorting
+    public function index(Request $request){
+        $sort = $request->query('sort', 'newest'); // default sorting
 
-    // Start query with blog count
-    $query = BlogCategory::withCount('blogs');
+        // Start query with blog count
+        $query = BlogCategory::withCount('blogs');
 
-    // Apply sorting based on category fields
-    switch ($sort) {
-        case 'oldest':
-            $query->orderBy('created_at', 'asc');
-            break;
-        case 'a-z':
-            $query->orderBy('name', 'asc');
-            break;
-        case 'z-a':
-            $query->orderBy('name', 'desc');
-            break;
-        case 'newest':
-        default:
-            $query->orderBy('created_at', 'desc');
-            break;
+        // Apply sorting based on category fields
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $categories = $query->get();
+
+        return response()->json([
+            'categories' => $categories
+        ]);
     }
-
-    $categories = $query->get();
-
-    return response()->json([
-        'categories' => $categories
-    ]);
-}
 
 
     public function show($id){

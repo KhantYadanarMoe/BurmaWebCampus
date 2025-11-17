@@ -137,8 +137,17 @@ export default function CoursesCategory() {
                 setRefreshFlag((prev) => !prev);
 
                 if (isEditing) {
+                    setCategories((prevCategories) =>
+                        prevCategories.map((cat) =>
+                            cat.id === editId
+                                ? { ...cat, ...res.data.category }
+                                : cat
+                        )
+                    );
+
                     setEditDialogOpen(false);
                     setEditId(null);
+                    return;
                 }
             }
         } catch (error) {
