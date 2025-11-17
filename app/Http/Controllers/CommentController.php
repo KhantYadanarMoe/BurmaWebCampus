@@ -36,8 +36,12 @@ class CommentController extends Controller
     }
 
     public function index(){
-        $comments = Comments::with(['user:id,name,image', 'subtitle:id,subtitle'])
-                        ->latest()->get();
+        $comments = Comments::with([
+    'user:id,name,image',
+    'subtitle:id,subtitle,course_outline_id',
+    'subtitle.outline.course'
+])->latest()->get();
+                        
 
         return response()->json([
             'comments' => $comments

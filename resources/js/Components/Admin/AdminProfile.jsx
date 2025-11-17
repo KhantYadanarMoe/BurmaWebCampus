@@ -467,7 +467,8 @@ export default function AdminProfile() {
                             <h2 className="text-base font-medium">Today</h2>
                             {groupedComments.today.length > 0 ? (
                                 groupedComments.today.map((comment) => (
-                                    <div
+                                    <Link
+                                        to={`/course/${comment.subtitle.outline.course.id}/details`}
                                         key={comment.id}
                                         className="py-3 px-2 my-1 hover:bg-gray-100 duration-300 cursor-pointer rounded-lg"
                                     >
@@ -505,7 +506,7 @@ export default function AdminProfile() {
                                                 </p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))
                             ) : (
                                 <p className="text-gray-500 text-sm my-2">

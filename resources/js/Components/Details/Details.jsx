@@ -365,12 +365,12 @@ export default function Details() {
                                     {/* Nested replies */}
                                     {comment.replies &&
                                         comment.replies.length > 0 && (
-                                            <div className="mt-4">
+                                            <div className="mt-2">
                                                 {comment.replies.map(
                                                     (reply) => (
                                                         <div
                                                             key={reply.id}
-                                                            className="ml-10 mt-3 border-l border-gray-300 pl-4"
+                                                            className="ml-6 my-4 border-l border-gray-300 pl-4"
                                                         >
                                                             <div className="flex gap-2 items-center">
                                                                 <img
