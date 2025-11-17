@@ -1,11 +1,28 @@
 import { Card, CardContent } from "@/Components/ui/card";
 import Pf from "../../assets/Profile.jpg";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BookCheck, BookOpen, ScrollText } from "lucide-react";
 import CourseImg from "../../assets/Courses.jpg";
 import { Progress } from "@/Components/ui/progress";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export default function UserProfile() {
+    const { id } = useParams();
+    let [user, setUser] = useState([]);
+
+    const getDetails = async () => {
+        try {
+            const res = await axios.get(`/api/user/${id}/details`);
+            setUser(res.data.user);
+        } catch (err) {
+            console.error("Error fetching user:", err);
+        }
+    };
+
+    useEffect(() => {
+        getDetails();
+    }, [id]);
     return (
         <div className="px-5 lg:px-8 pb-3 md:flex gap-3 items-start">
             <div className="w-full md:w-1/3 lg:w-2/5 md:sticky md:top-24 md:self-start">
@@ -13,15 +30,15 @@ export default function UserProfile() {
                     <CardContent className="p-4">
                         <div className="flex flex-col items-center justify-center text-center">
                             <img
-                                src={Pf}
+                                src={`/storage/${user.image}`}
                                 alt="User Profile"
                                 className="w-20 h-20 object-cover rounded-full p-1 border border-gray-800"
                             />
                             <h1 className="text-lg font-medium my-2">
-                                Khant Yadanar Moe
+                                {user?.name}
                             </h1>
                             <p className="text-sm text-gray-800">
-                                khantyadanarmoe@gmail.com
+                                {user?.email}
                             </p>
                         </div>
                     </CardContent>
@@ -36,28 +53,47 @@ export default function UserProfile() {
                                 <p className="w-1/2 font-medium">
                                     First Name -
                                 </p>
-                                <p className="w-1/2">Khant Yadanar</p>
+                                <p className="w-1/2">
+                                    {user?.name
+                                        ?.trim()
+                                        .split(" ")
+                                        .slice(0, -1)
+                                        .join(" ") || ""}
+                                </p>
                             </div>
                             <div className="flex items-center my-4 text-sm md:text-xs lg:text-sm">
                                 <p className="w-1/2 font-medium">Last Name -</p>
-                                <p className="w-1/2">Moe</p>
+                                <p className="w-1/2">
+                                    {user?.name
+                                        ?.trim()
+                                        .split(" ")
+                                        .slice(-1)[0] || ""}
+                                </p>
                             </div>
                             <div className="flex items-center my-4 text-sm md:text-xs lg:text-sm">
                                 <p className="w-1/2 font-medium">Phone -</p>
-                                <p className="w-1/2">+959 253 123 456</p>
+                                <p className="w-1/2">{user?.phone}</p>
                             </div>
                             <div className="flex items-center my-4 text-sm md:text-xs lg:text-sm">
                                 <p className="w-1/2 font-medium">
                                     Date of Birth -
                                 </p>
-                                <p className="w-1/2">18th June 2004</p>
+                                <p className="w-1/2">
+                                    {user?.DoB
+                                        ? new Date(user.DoB).toLocaleDateString(
+                                              "en-GB",
+                                              {
+                                                  day: "2-digit",
+                                                  month: "short",
+                                                  year: "numeric",
+                                              }
+                                          )
+                                        : ""}
+                                </p>
                             </div>
                             <div className="mt-4 text-sm md:text-xs lg:text-sm">
                                 <p className="font-medium">Bio -</p>
-                                <p>
-                                    Lorem ipsum, dolor sit amet consectetur
-                                    adipisicing elit. Corrupti, non nostrum.
-                                </p>
+                                <p>{user?.bio}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -73,7 +109,9 @@ export default function UserProfile() {
                                     Enrolled Courses
                                 </h1>
                                 <span className="flex gap-1 items-center mt-2">
-                                    <p className="text-xl font-medium">8</p>
+                                    <p className="text-xl font-medium">
+                                        {user?.purchases_count}
+                                    </p>
                                     <p>courses</p>
                                 </span>
                             </div>
@@ -113,102 +151,55 @@ export default function UserProfile() {
                         <h1 className="text-lg font-medium mb-8">
                             Enrolled Courses
                         </h1>
-                        <div className="flex gap-3 my-8">
-                            <img
-                                src={CourseImg}
-                                alt="course image"
-                                className="hidden md:block w-24 h-24 object-cover rounded-lg"
-                            />
-                            <div className="flex-1">
-                                <div>
-                                    <h1 className="text-lg font-medium">
-                                        Full-Stack Web Development Pathway
-                                    </h1>
-                                    <p className="text-sm text-gray-700">
-                                        Enrolled at 14 Nov 2024
-                                    </p>
-                                </div>
-                                <div className="py-1">
-                                    <div className="flex justify-between">
-                                        <h1 className="text-gray-700">
-                                            Progress
-                                        </h1>
-                                        <p className="text-black font-medium">
-                                            54%
-                                        </p>
-                                    </div>
-                                    {/* 👇 force progress bar to take full width */}
-                                    <Progress
-                                        value={54}
-                                        className="mt-2 w-full"
+                        {user.purchases && user.purchases.length > 0 ? (
+                            user.purchases.map((purchase) => (
+                                <div
+                                    key={purchase.id}
+                                    className="flex gap-3 my-8"
+                                >
+                                    <img
+                                        src={`/storage/${purchase.course.image}`}
+                                        alt="course image"
+                                        className="hidden md:block w-24 h-24 object-cover rounded-lg"
                                     />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex gap-3 my-8">
-                            <img
-                                src={CourseImg}
-                                alt="course image"
-                                className="hidden md:block w-24 h-24 object-cover rounded-lg"
-                            />
-                            <div className="flex-1">
-                                <div>
-                                    <h1 className="text-lg font-medium">
-                                        Full-Stack Web Development Pathway
-                                    </h1>
-                                    <p className="text-sm text-gray-700">
-                                        Enrolled at 14 Nov 2024
-                                    </p>
-                                </div>
-                                <div className="py-1">
-                                    <div className="flex justify-between">
-                                        <h1 className="text-gray-700">
-                                            Progress
-                                        </h1>
-                                        <p className="text-black font-medium">
-                                            54%
-                                        </p>
+                                    <div className="flex-1">
+                                        <div>
+                                            <h1 className="text-lg font-medium">
+                                                {purchase.course.title}
+                                            </h1>
+                                            <p className="text-gray-700 text-sm">
+                                                Enrolled at{" "}
+                                                {new Date(
+                                                    purchase.created_at
+                                                ).toLocaleDateString("en-GB", {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                })}
+                                            </p>
+                                        </div>
+                                        <div className="py-1">
+                                            <div className="flex justify-between">
+                                                <h1 className="text-gray-700">
+                                                    Progress
+                                                </h1>
+                                                <p className="text-black font-medium">
+                                                    {purchase.progress ?? 0}%
+                                                </p>
+                                            </div>
+                                            <Progress
+                                                value={purchase.progress ?? 0}
+                                                className="mt-2 w-full"
+                                            />
+                                        </div>
                                     </div>
-                                    {/* 👇 force progress bar to take full width */}
-                                    <Progress
-                                        value={54}
-                                        className="mt-2 w-full"
-                                    />
                                 </div>
-                            </div>
-                        </div>
-                        <div className="flex gap-3 my-8">
-                            <img
-                                src={CourseImg}
-                                alt="course image"
-                                className="hidden md:block w-24 h-24 object-cover rounded-lg"
-                            />
-                            <div className="flex-1">
-                                <div>
-                                    <h1 className="text-lg font-medium">
-                                        Full-Stack Web Development Pathway
-                                    </h1>
-                                    <p className="text-sm text-gray-700">
-                                        Enrolled at 14 Nov 2024
-                                    </p>
-                                </div>
-                                <div className="py-1">
-                                    <div className="flex justify-between">
-                                        <h1 className="text-gray-700">
-                                            Progress
-                                        </h1>
-                                        <p className="text-black font-medium">
-                                            54%
-                                        </p>
-                                    </div>
-                                    {/* 👇 force progress bar to take full width */}
-                                    <Progress
-                                        value={54}
-                                        className="mt-2 w-full"
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-700 my-4">
+                                This user is not enrolled in any courses.
+                            </p>
+                        )}
                     </CardContent>
                 </Card>
             </div>

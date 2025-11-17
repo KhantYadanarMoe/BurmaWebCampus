@@ -75,7 +75,7 @@ const routes = createBrowserRouter([
                 element: <CourseDetails />,
             },
             {
-                path: "/user/profile", //user must be the name and it is user's pf from other's pov
+                path: "/user/:id/profile", //user must be the name and it is user's pf from other's pov
                 element: <UserProfile />,
             },
             {

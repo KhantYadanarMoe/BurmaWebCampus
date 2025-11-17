@@ -292,19 +292,28 @@ export default function Details() {
                                 >
                                     {/* Parent comment */}
                                     <div className="flex gap-2 items-center">
-                                        <img
-                                            src={
-                                                comment.user?.image
-                                                    ? `/storage/${comment.user.image}`
-                                                    : Pf
-                                            }
-                                            alt="profile"
-                                            className="rounded-full w-10 h-10 object-cover"
-                                        />
+                                        <Link
+                                            to={`/user/${comment.user?.id}/profile`}
+                                        >
+                                            <img
+                                                src={
+                                                    comment.user?.image
+                                                        ? `/storage/${comment.user.image}`
+                                                        : Pf
+                                                }
+                                                alt="profile"
+                                                className="rounded-full w-10 h-10 object-cover"
+                                            />
+                                        </Link>
+
                                         <div>
-                                            <h1 className="text-base font-medium">
-                                                {comment.user?.name}
-                                            </h1>
+                                            <Link
+                                                to={`/user/${comment.user?.id}/profile`}
+                                            >
+                                                <h1 className="text-base font-medium">
+                                                    {comment.user?.name}
+                                                </h1>
+                                            </Link>
                                             <p className="text-sm text-gray-700">
                                                 {dayjs(
                                                     comment.created_at
@@ -373,25 +382,33 @@ export default function Details() {
                                                             className="ml-6 my-4 border-l border-gray-300 pl-4"
                                                         >
                                                             <div className="flex gap-2 items-center">
-                                                                <img
-                                                                    src={
-                                                                        reply
-                                                                            .user
-                                                                            ?.image
-                                                                            ? `/storage/${reply.user.image}`
-                                                                            : Pf
-                                                                    }
-                                                                    alt="profile"
-                                                                    className="rounded-full w-8 h-8 object-cover"
-                                                                />
-                                                                <div>
-                                                                    <h2 className="text-sm font-medium">
-                                                                        {
+                                                                <Link
+                                                                    to={`/user/${reply.user?.id}/profile`}
+                                                                >
+                                                                    <img
+                                                                        src={
                                                                             reply
                                                                                 .user
-                                                                                ?.name
+                                                                                ?.image
+                                                                                ? `/storage/${reply.user.image}`
+                                                                                : Pf
                                                                         }
-                                                                    </h2>
+                                                                        alt="profile"
+                                                                        className="rounded-full w-8 h-8 object-cover"
+                                                                    />
+                                                                </Link>
+                                                                <div>
+                                                                    <Link
+                                                                        to={`/user/${reply.user?.id}/profile`}
+                                                                    >
+                                                                        <h2 className="text-sm font-medium">
+                                                                            {
+                                                                                reply
+                                                                                    .user
+                                                                                    ?.name
+                                                                            }
+                                                                        </h2>
+                                                                    </Link>
                                                                     <p className="text-xs text-gray-600">
                                                                         {dayjs(
                                                                             reply.created_at
