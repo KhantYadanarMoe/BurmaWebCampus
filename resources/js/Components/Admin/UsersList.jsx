@@ -38,6 +38,8 @@ import { useEffect } from "react";
 export default function UsersList() {
     // state to store users
     let [users, setUsers] = useState([]);
+    //state for users/students filter
+    const [selectedTypeFilter, setSelectedTypeFilter] = useState("all");
     // state for pagination
     const [currentPage, setCurrentPage] = useState(1);
     // rows to show in a page
@@ -63,16 +65,30 @@ export default function UsersList() {
         getUsers();
     }, []);
 
-    const handleFilterChange = (filterValue) => {
-        setSelectedFilter(filterValue);
+    const handleFilterChange = (
+        sortValue = selectedFilter,
+        typeValue = selectedTypeFilter
+    ) => {
+        setSelectedFilter(sortValue);
+        setSelectedTypeFilter(typeValue);
 
         axios
-            .get(`/api/users?sort=${filterValue}`)
+            .get(`/api/users?sort=${sortValue}`)
             .then((response) => {
-                const data = response.data;
-                if (data.users) {
-                    setUsers(data.users);
+                let data = response.data.users;
+
+                // Apply type filter client-side
+                if (typeValue === "students") {
+                    data = data.filter(
+                        (user) => user.purchases && user.purchases.length > 0
+                    );
+                } else if (typeValue === "users") {
+                    data = data.filter(
+                        (user) => !user.purchases || user.purchases.length === 0
+                    );
                 }
+
+                setUsers(data);
             })
             .catch((error) => {
                 console.error("Axios request failed:", error);
@@ -117,18 +133,25 @@ export default function UsersList() {
             <h1 className="text-xl font-medium">Users</h1>
             <div className="flex flex-col md:flex-row justify-between my-4">
                 <div className="flex items-center gap-2">
-                    <Link to="">
-                        <span className="px-2 py-1 text-xs flex gap-1 items-center md:text-sm border border-gray-500 rounded-lg">
-                            <Users size={16} />
-                            Users
-                        </span>
-                    </Link>
-                    <Link to="">
-                        <span className="px-2 py-1 text-xs flex gap-1 items-center md:text-sm border border-gray-500 rounded-lg">
-                            <GraduationCap size={16} />
-                            Students
-                        </span>
-                    </Link>
+                    {["all", "users", "students"].map((type) => (
+                        <button
+                            key={type}
+                            onClick={() =>
+                                handleFilterChange(selectedFilter, type)
+                            }
+                            className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
+                                selectedTypeFilter === type
+                                    ? "bg-gray-900 text-white"
+                                    : "border-gray-200 text-gray-300"
+                            }`}
+                        >
+                            {type === "all"
+                                ? "All"
+                                : type === "users"
+                                ? "Users"
+                                : "Students"}
+                        </button>
+                    ))}
                 </div>
                 <div className="hidden md:block">
                     <DropdownMenu modal={false}>
@@ -232,17 +255,15 @@ export default function UsersList() {
                             </li>
                             <li className="basis-[12%]">
                                 <p>
-                                    <p>
-                                        {user?.DoB
-                                            ? new Date(user.DoB)
-                                                  .toLocaleDateString("en-GB", {
-                                                      day: "2-digit",
-                                                      month: "numeric",
-                                                      year: "numeric",
-                                                  })
-                                                  .replace(/\//g, ".")
-                                            : ""}
-                                    </p>
+                                    {user?.DoB
+                                        ? new Date(
+                                              user?.DoB
+                                          ).toLocaleDateString("en-GB", {
+                                              day: "numeric",
+                                              month: "short",
+                                              year: "numeric",
+                                          })
+                                        : ""}
                                 </p>
                             </li>
                             <li className="basis-[10%]">

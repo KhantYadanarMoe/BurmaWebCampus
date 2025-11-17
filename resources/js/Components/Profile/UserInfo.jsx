@@ -14,7 +14,7 @@ export default function UserInfo() {
                 />
                 <div>
                     <h1 className="text-xl md:text-2xl font-medium">
-                        Khant Yadanar Moe
+                        {user?.name}
                     </h1>
                     <p className="text-gray-500 text-sm md:text-base">
                         ID: {user?.student_id}
