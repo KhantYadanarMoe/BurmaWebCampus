@@ -415,7 +415,9 @@ export default function CoursesCategory() {
                                     </span>
                                 </div>
                             </li>
-                            <li className="basis-[30%]">27</li>
+                            <li className="basis-[30%]">
+                                {category.courses_count}
+                            </li>
                             <li className="basis-[20%]">
                                 <Switch
                                     checked={

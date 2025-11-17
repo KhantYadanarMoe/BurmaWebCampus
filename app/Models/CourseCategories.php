@@ -16,4 +16,5 @@ class CourseCategories extends Model
     {
         return $this->hasMany(Courses::class, 'category_id');
     }
+    
 }

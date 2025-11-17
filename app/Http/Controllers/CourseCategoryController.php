@@ -49,7 +49,7 @@ class CourseCategoryController extends Controller
 
     public function index(Request $request){
         $sort = $request->query('sort', 'newest'); 
-        $query = CourseCategories::query();
+        $query = CourseCategories::withCount('courses');
 
         switch ($sort) {
             case 'oldest':
