@@ -1,8 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AboutImg from "../../../assets/About3.jpg";
 import { Card, CardContent } from "../ui/card";
+import axios from "axios";
 
 export default function Hero() {
+    const [courses, setCourses] = useState([]);
+    let [users, setUsers] = useState([]);
+    const [studentCount, setStudentCount] = useState(0);
+
+    const getCourses = async () => {
+        try {
+            const res = await axios.get("/api/courses");
+            setCourses(res.data.courses);
+        } catch (error) {
+            console.error("Failed to fetch courses:", error);
+        }
+    };
+
+    let getUsers = async () => {
+        try {
+            let res = await axios.get("/api/users");
+            let usersData = res.data.users;
+
+            // Filter students
+            const students = usersData.filter(
+                (user) => user.purchases && user.purchases.length > 0
+            );
+
+            // Set user list and student count
+            setUsers(usersData);
+            setStudentCount(students.length);
+        } catch (error) {
+            console.error("Failed to fetch users:", error);
+        }
+    };
+
+    useEffect(() => {
+        getUsers();
+        getCourses();
+    }, []);
+
     return (
         <div className="px-5 lg:px-8">
             <div className="pb-10">
@@ -27,7 +64,7 @@ export default function Hero() {
                         <div className="md:w-1/3">
                             <div className="px-3 py-3 border border-gray-500 rounded-lg bg-gray-50">
                                 <h1 className="text-xl font-medium">
-                                    245 Students
+                                    {studentCount} Students
                                 </h1>
                                 <p className="text-gray-700">already joined</p>
                             </div>
@@ -35,7 +72,7 @@ export default function Hero() {
                         <div className="md:w-1/3">
                             <div className="px-3 py-3 border border-gray-500 rounded-lg bg-gray-50">
                                 <h1 className="text-xl font-medium">
-                                    18 Courses
+                                    {courses.length} Courses
                                 </h1>
                                 <p className="text-gray-700">in total</p>
                             </div>
