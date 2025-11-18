@@ -86,7 +86,8 @@ class CourseController extends Controller
         $query = Courses::with([
             'category',           
             'outlines.subtitles',
-            'quizzes.options'     
+            'quizzes.options'  ,
+            'purchases'   
         ])->withCount([
     'purchases', 
     'purchases as certified_count' => function ($query) {

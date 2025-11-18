@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
     ResponsiveContainer,
     AreaChart,
@@ -22,6 +22,15 @@ import {
 } from "../ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "../ui/dialog";
 
 export default function UserGrowthChart({
     data,
@@ -40,7 +49,77 @@ export default function UserGrowthChart({
         { date: "2025-09-01", users: 470 },
     ];
 
+    const [open, setOpen] = useState(false);
+    const [courses, setCourses] = useState([]);
+    let [users, setUsers] = useState([]);
+    let [purchases, setPurchases] = useState([]);
+    let [subscribers, setSubscribers] = useState([]);
     const { darkMode } = useOutletContext();
+
+    const getCourses = async () => {
+        try {
+            const res = await axios.get("/api/courses");
+            setCourses(res.data.courses);
+        } catch (error) {
+            console.error("Failed to fetch courses:", error);
+        }
+    };
+
+    const topCourses = courses
+        .slice()
+        .sort((a, b) => (b.purchases_count || 0) - (a.purchases_count || 0))
+        .slice(0, 5);
+
+    let getUsers = async () => {
+        try {
+            let res = await axios.get("/api/users");
+            let data = res.data;
+            setUsers(data.users);
+        } catch (error) {
+            console.error("Failed to fetch users:", error);
+        }
+    };
+
+    let getPurchases = async () => {
+        try {
+            let res = await axios.get("/api/course/purchase");
+            let data = res.data;
+            setPurchases(data.purchases);
+        } catch (error) {
+            console.error("Failed to fetch purchases:", error);
+        }
+    };
+
+    const latestPurchases = purchases
+        .slice()
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 5);
+
+    const totalRevenue = courses.reduce((acc, course) => {
+        const courseRevenue =
+            course.purchases?.reduce((sum, purchase) => {
+                return sum + parseFloat(purchase.total_price || 0);
+            }, 0) || 0;
+
+        return acc + courseRevenue;
+    }, 0);
+
+    let getSubscribers = async () => {
+        try {
+            let res = await axios.get("/api/subscribers");
+            let data = res.data;
+            setSubscribers(data.subscribes);
+        } catch (error) {
+            console.error("Failed to fetch subscribers:", error);
+        }
+    };
+
+    useEffect(() => {
+        getUsers();
+        getCourses();
+        getPurchases();
+        getSubscribers();
+    }, []);
 
     const chartData = data || sampleData;
 
@@ -101,7 +180,7 @@ export default function UserGrowthChart({
                                         darkMode ? "text-white" : "text-black"
                                     } text-lg font-medium mt-1`}
                                 >
-                                    6
+                                    {courses.length}
                                 </p>
                                 <p
                                     className={`${
@@ -139,7 +218,7 @@ export default function UserGrowthChart({
                                         darkMode ? "text-white" : "text-black"
                                     } text-lg font-medium mt-1`}
                                 >
-                                    376
+                                    {users?.length}
                                 </p>
                                 <p
                                     className={`${
@@ -177,7 +256,7 @@ export default function UserGrowthChart({
                                         darkMode ? "text-white" : "text-black"
                                     } text-lg font-medium mt-1`}
                                 >
-                                    3,600,000
+                                    {totalRevenue.toLocaleString()} MMK
                                 </p>
                                 <p
                                     className={`${
@@ -215,7 +294,7 @@ export default function UserGrowthChart({
                                         darkMode ? "text-white" : "text-black"
                                     } text-lg font-medium mt-1`}
                                 >
-                                    583
+                                    {subscribers?.length}
                                 </p>
                                 <p
                                     className={`${
@@ -400,81 +479,30 @@ export default function UserGrowthChart({
                             <h1 className="text-lg font-medium">
                                 Top 5 Courses
                             </h1>
-                            <div className="my-3 flex gap-2">
-                                <img
-                                    src={CourseImg}
-                                    alt="course image"
-                                    className="w-16 h-16 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h1 className="text-sm font-medium mb-1">
-                                        Full-Stack Web Development Pathway
-                                    </h1>
-                                    <span className="px-1 py-0.5 text-xs border border-gray-700 rounded-md">
-                                        Frontend
-                                    </span>
+                            {topCourses.map((course) => (
+                                <div
+                                    key={course.id}
+                                    className="my-3 flex gap-2"
+                                >
+                                    <img
+                                        src={
+                                            course.image
+                                                ? `/storage/${course.image}`
+                                                : CourseImg
+                                        }
+                                        alt={course.title}
+                                        className="w-16 h-16 object-cover rounded-md"
+                                    />
+                                    <div>
+                                        <h1 className="text-sm font-medium mb-1">
+                                            {course.title}
+                                        </h1>
+                                        <span className="px-1 py-0.5 text-xs border border-gray-700 rounded-md">
+                                            {course.category?.name || "Unknown"}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="my-3 flex gap-2">
-                                <img
-                                    src={CourseImg}
-                                    alt="course image"
-                                    className="w-16 h-16 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h1 className="text-sm font-medium mb-1">
-                                        Full-Stack Web Development Pathway
-                                    </h1>
-                                    <span className="px-1 py-0.5 text-xs border border-gray-700 rounded-md">
-                                        Frontend
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="my-3 flex gap-2">
-                                <img
-                                    src={CourseImg}
-                                    alt="course image"
-                                    className="w-16 h-16 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h1 className="text-sm font-medium mb-1">
-                                        Full-Stack Web Development Pathway
-                                    </h1>
-                                    <span className="px-1 py-0.5 text-xs border border-gray-700 rounded-md">
-                                        Frontend
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="my-3 flex gap-2">
-                                <img
-                                    src={CourseImg}
-                                    alt="course image"
-                                    className="w-16 h-16 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h1 className="text-sm font-medium mb-1">
-                                        Full-Stack Web Development Pathway
-                                    </h1>
-                                    <span className="px-1 py-0.5 text-xs border border-gray-700 rounded-md">
-                                        Frontend
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="my-3 flex gap-2">
-                                <img
-                                    src={CourseImg}
-                                    alt="course image"
-                                    className="w-16 h-16 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h1 className="text-sm font-medium mb-1">
-                                        Full-Stack Web Development Pathway
-                                    </h1>
-                                    <span className="px-1 py-0.5 text-xs border border-gray-700 rounded-md">
-                                        Frontend
-                                    </span>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </CardContent>
                 </Card>
@@ -490,229 +518,222 @@ export default function UserGrowthChart({
                             <div className="min-w-[920px]">
                                 <ul className="flex items-center px-3 py-4 border-b border-b-gray-700 my-3">
                                     <li className="basis-[4%]">ID</li>
-                                    <li className="basis-[8%]">Invoice</li>
-                                    <li className="basis-[31%] pl-2">
+                                    <li className="basis-[10%]">Invoice</li>
+                                    <li className="basis-[30%] pl-2">
                                         Course Name
                                     </li>
                                     <li className="basis-[20%]">
                                         Student Name
                                     </li>
                                     <li className="basis-[10%]">Payment</li>
-                                    <li className="basis-[12%]">Date</li>
+                                    <li className="basis-[11%]">Date</li>
                                     <li className="basis-[10%]">Access</li>
                                     <li className="basis-[5%]"></li>
                                 </ul>
+                                {latestPurchases.map((purchase, index) => (
+                                    <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
+                                        <li className="basis-[4%]">
+                                            {purchase.id}
+                                        </li>
+                                        <li className="basis-[10%]">
+                                            {purchase.invoice_no}
+                                        </li>
+                                        <li className="basis-[30%] flex items-center gap-2">
+                                            <img
+                                                src={`/storage/${purchase.course.image}`}
+                                                alt=""
+                                                className="w-10 h-10 object-cover rounded-md flex-shrink-0"
+                                            />
+                                            <p className="text-sm font-medium">
+                                                {purchase.course.title}
+                                            </p>
+                                        </li>
+                                        <li className="basis-[20%]">
+                                            {purchase.name}
+                                        </li>
+                                        <li className="basis-[10%]">
+                                            {purchase.payment_method}
+                                        </li>
+                                        <li className="basis-[11%]">
+                                            <p className="text-sm">
+                                                {new Date(
+                                                    purchase.created_at
+                                                ).toLocaleDateString("en-GB", {
+                                                    day: "2-digit",
+                                                    month: "numeric",
+                                                    year: "numeric",
+                                                })}
+                                            </p>
+                                            <p className="text-sm">
+                                                {new Date(
+                                                    purchase.created_at
+                                                ).toLocaleTimeString("en-US", {
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                    hour12: true,
+                                                })}
+                                            </p>
+                                        </li>
+                                        <li className="basis-[10%]">
+                                            Life-time
+                                        </li>
+                                        <li className="basis-[5%]">
+                                            <DropdownMenu modal={false}>
+                                                <DropdownMenuTrigger asChild>
+                                                    <button
+                                                        className={`p-1 rounded-md ${
+                                                            darkMode
+                                                                ? "hover:bg-gray-800"
+                                                                : "hover:bg-gray-100"
+                                                        } outline-none`}
+                                                    >
+                                                        <Ellipsis size={20} />
+                                                    </button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent
+                                                    align="end"
+                                                    className="w-40"
+                                                >
+                                                    <DropdownMenuItem
+                                                        className="text-accentGreen"
+                                                        onSelect={(e) => {
+                                                            e.preventDefault();
+                                                            setOpen(true);
+                                                        }}
+                                                    >
+                                                        View Details
+                                                    </DropdownMenuItem>
 
-                                <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                                    <li className="basis-[4%]">1</li>
-                                    <li className="basis-[8%]">T3475</li>
-                                    <li className="basis-[31%] flex items-center gap-2">
-                                        <img
-                                            src={CourseImg}
-                                            alt=""
-                                            className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                                        />
-                                        <p className="text-sm font-medium">
-                                            Full-Stack Web Development Pathway
-                                        </p>
-                                    </li>
-                                    <li className="basis-[20%]">
-                                        Khant Yadanar Moe
-                                    </li>
-                                    <li className="basis-[10%]">Kpay</li>
-                                    <li className="basis-[12%]">
-                                        <p className="text-sm">9.10.2025</p>
-                                        <p className="text-sm">10:28 AM</p>
-                                    </li>
-                                    <li className="basis-[10%]">Life-time</li>
-                                    <li className="basis-[5%]">
-                                        <DropdownMenu modal={false}>
-                                            <DropdownMenuTrigger asChild>
-                                                <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                                    <Ellipsis size={20} />
-                                                </button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent
-                                                align="end"
-                                                className="w-40"
-                                            >
-                                                <Link to="">
-                                                    <DropdownMenuItem className="text-accentGreen">
-                                                        View Details
-                                                    </DropdownMenuItem>
-                                                </Link>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </li>
-                                </ul>
-                                <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                                    <li className="basis-[4%]">1</li>
-                                    <li className="basis-[8%]">T3475</li>
-                                    <li className="basis-[31%] flex items-center gap-2">
-                                        <img
-                                            src={CourseImg}
-                                            alt=""
-                                            className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                                        />
-                                        <p className="text-sm font-medium">
-                                            Full-Stack Web Development Pathway
-                                        </p>
-                                    </li>
-                                    <li className="basis-[20%]">
-                                        Khant Yadanar Moe
-                                    </li>
-                                    <li className="basis-[10%]">Kpay</li>
-                                    <li className="basis-[12%]">
-                                        <p className="text-sm">9.10.2025</p>
-                                        <p className="text-sm">10:28 AM</p>
-                                    </li>
-                                    <li className="basis-[10%]">Life-time</li>
-                                    <li className="basis-[5%]">
-                                        <DropdownMenu modal={false}>
-                                            <DropdownMenuTrigger asChild>
-                                                <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                                    <Ellipsis size={20} />
-                                                </button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent
-                                                align="end"
-                                                className="w-40"
-                                            >
-                                                <Link to="">
-                                                    <DropdownMenuItem className="text-accentGreen">
-                                                        View Details
-                                                    </DropdownMenuItem>
-                                                </Link>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </li>
-                                </ul>
-                                <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                                    <li className="basis-[4%]">1</li>
-                                    <li className="basis-[8%]">T3475</li>
-                                    <li className="basis-[31%] flex items-center gap-2">
-                                        <img
-                                            src={CourseImg}
-                                            alt=""
-                                            className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                                        />
-                                        <p className="text-sm font-medium">
-                                            Full-Stack Web Development Pathway
-                                        </p>
-                                    </li>
-                                    <li className="basis-[20%]">
-                                        Khant Yadanar Moe
-                                    </li>
-                                    <li className="basis-[10%]">Kpay</li>
-                                    <li className="basis-[12%]">
-                                        <p className="text-sm">9.10.2025</p>
-                                        <p className="text-sm">10:28 AM</p>
-                                    </li>
-                                    <li className="basis-[10%]">Life-time</li>
-                                    <li className="basis-[5%]">
-                                        <DropdownMenu modal={false}>
-                                            <DropdownMenuTrigger asChild>
-                                                <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                                    <Ellipsis size={20} />
-                                                </button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent
-                                                align="end"
-                                                className="w-40"
-                                            >
-                                                <Link to="">
-                                                    <DropdownMenuItem className="text-accentGreen">
-                                                        View Details
-                                                    </DropdownMenuItem>
-                                                </Link>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </li>
-                                </ul>
-                                <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                                    <li className="basis-[4%]">1</li>
-                                    <li className="basis-[8%]">T3475</li>
-                                    <li className="basis-[31%] flex items-center gap-2">
-                                        <img
-                                            src={CourseImg}
-                                            alt=""
-                                            className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                                        />
-                                        <p className="text-sm font-medium">
-                                            Full-Stack Web Development Pathway
-                                        </p>
-                                    </li>
-                                    <li className="basis-[20%]">
-                                        Khant Yadanar Moe
-                                    </li>
-                                    <li className="basis-[10%]">Kpay</li>
-                                    <li className="basis-[12%]">
-                                        <p className="text-sm">9.10.2025</p>
-                                        <p className="text-sm">10:28 AM</p>
-                                    </li>
-                                    <li className="basis-[10%]">Life-time</li>
-                                    <li className="basis-[5%]">
-                                        <DropdownMenu modal={false}>
-                                            <DropdownMenuTrigger asChild>
-                                                <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                                    <Ellipsis size={20} />
-                                                </button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent
-                                                align="end"
-                                                className="w-40"
-                                            >
-                                                <Link to="">
-                                                    <DropdownMenuItem className="text-accentGreen">
-                                                        View Details
-                                                    </DropdownMenuItem>
-                                                </Link>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </li>
-                                </ul>
-                                <ul className="flex items-center px-3 py-3 border-b border-b-gray-300 my-2">
-                                    <li className="basis-[4%]">1</li>
-                                    <li className="basis-[8%]">T3475</li>
-                                    <li className="basis-[31%] flex items-center gap-2">
-                                        <img
-                                            src={CourseImg}
-                                            alt=""
-                                            className="w-10 h-10 object-cover rounded-md flex-shrink-0"
-                                        />
-                                        <p className="text-sm font-medium">
-                                            Full-Stack Web Development Pathway
-                                        </p>
-                                    </li>
-                                    <li className="basis-[20%]">
-                                        Khant Yadanar Moe
-                                    </li>
-                                    <li className="basis-[10%]">Kpay</li>
-                                    <li className="basis-[12%]">
-                                        <p className="text-sm">9.10.2025</p>
-                                        <p className="text-sm">10:28 AM</p>
-                                    </li>
-                                    <li className="basis-[10%]">Life-time</li>
-                                    <li className="basis-[5%]">
-                                        <DropdownMenu modal={false}>
-                                            <DropdownMenuTrigger asChild>
-                                                <button className="p-1 rounded-md hover:bg-gray-100 outline-none">
-                                                    <Ellipsis size={20} />
-                                                </button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent
-                                                align="end"
-                                                className="w-40"
-                                            >
-                                                <Link to="">
-                                                    <DropdownMenuItem className="text-accentGreen">
-                                                        View Details
-                                                    </DropdownMenuItem>
-                                                </Link>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </li>
-                                </ul>
+                                                    <Dialog
+                                                        open={open}
+                                                        onOpenChange={setOpen}
+                                                    >
+                                                        <DialogContent>
+                                                            <DialogHeader>
+                                                                <DialogTitle>
+                                                                    Invoice{" "}
+                                                                    {
+                                                                        purchase.invoice_no
+                                                                    }
+                                                                </DialogTitle>
+                                                                <DialogDescription>
+                                                                    Enrolled at{" "}
+                                                                    {new Date(
+                                                                        purchase.created_at
+                                                                    ).toLocaleDateString(
+                                                                        "en-GB",
+                                                                        {
+                                                                            day: "2-digit",
+                                                                            month: "short",
+                                                                            year: "numeric",
+                                                                        }
+                                                                    )}
+                                                                </DialogDescription>
+                                                            </DialogHeader>
+
+                                                            <div className="flex gap-2 items-center mt-4 mb-2">
+                                                                <img
+                                                                    src={`/storage/${purchase.course.image}`}
+                                                                    alt={
+                                                                        purchase
+                                                                            .course
+                                                                            .title
+                                                                    }
+                                                                    className="w-12 h-12 object-cover rounded-md"
+                                                                />
+                                                                <h1 className="font-medium">
+                                                                    {
+                                                                        purchase
+                                                                            .course
+                                                                            .title
+                                                                    }
+                                                                </h1>
+                                                            </div>
+                                                            <hr className="border-t-gray-500 border-dashed" />
+                                                            <div className="flex items-center justify-between">
+                                                                <p className="font-medium">
+                                                                    Name -
+                                                                </p>
+                                                                <p className="text-gray-700">
+                                                                    {
+                                                                        purchase.name
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex items-center justify-between">
+                                                                <p className="font-medium">
+                                                                    Email -
+                                                                </p>
+                                                                <p className="text-gray-700">
+                                                                    {
+                                                                        purchase.email
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex items-center justify-between">
+                                                                <p className="font-medium">
+                                                                    Phone -
+                                                                </p>
+                                                                <p className="text-gray-700">
+                                                                    {
+                                                                        purchase.phone
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex items-center justify-between">
+                                                                <p className="font-medium">
+                                                                    Price -
+                                                                </p>
+                                                                <p className="text-gray-700">
+                                                                    {
+                                                                        purchase
+                                                                            .course
+                                                                            .price
+                                                                    }{" "}
+                                                                    MMK
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex items-center justify-between">
+                                                                <p className="font-medium">
+                                                                    Discount -
+                                                                </p>
+                                                                <p className="text-gray-700">
+                                                                    0 MMK
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex items-center justify-between">
+                                                                <p className="font-medium">
+                                                                    Pay with -
+                                                                </p>
+                                                                <p className="text-gray-700 uppercase">
+                                                                    {
+                                                                        purchase.payment_method
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="mt-20 md:mt-40 lg:mt-16">
+                                                                <hr className="border-t border-dashed border-gray-500" />
+                                                                <div className="flex items-center justify-between my-3">
+                                                                    <p className="font-medium">
+                                                                        Total -
+                                                                    </p>
+                                                                    <p className="text-gray-700">
+                                                                        {
+                                                                            purchase
+                                                                                .course
+                                                                                .price
+                                                                        }{" "}
+                                                                        MMK
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </DialogContent>
+                                                    </Dialog>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </li>
+                                    </ul>
+                                ))}
                             </div>
                         </div>
                     </CardContent>
