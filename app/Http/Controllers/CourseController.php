@@ -84,10 +84,16 @@ class CourseController extends Controller
 
         // Start the query with relationships eager-loaded
         $query = Courses::with([
-            'category',           // course category
-            'outlines.subtitles', // outlines and their subtitles
-            'quizzes.options'     // quizzes and their options
-        ])->withCount('purchases');
+            'category',           
+            'outlines.subtitles',
+            'quizzes.options'     
+        ])->withCount([
+    'purchases', 
+    'purchases as certified_count' => function ($query) {
+        $query->where('completed', true); 
+    }
+]);
+
 
         // Apply sorting
         switch ($sort) {

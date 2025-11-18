@@ -243,7 +243,9 @@ export default function CoursesList() {
                             <li className="basis-[10%]">
                                 {course.purchases_count}
                             </li>
-                            <li className="basis-[10%]">42</li>
+                            <li className="basis-[10%]">
+                                {course.certified_count ?? "--"}
+                            </li>
                             <li className="basis-[10%]">18 hours</li>
                             <li className="basis-[5%]">
                                 <DropdownMenu modal={false}>

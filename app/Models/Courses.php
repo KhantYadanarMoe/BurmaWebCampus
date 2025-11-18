@@ -24,6 +24,10 @@ class Courses extends Model
     public function purchases(){
         return $this->hasMany(Purchase::class, 'course_id');
     }
+
+    public function users(){
+        return $this->belongsToMany(User::class)->withPivot('completed')->withTimestamps();
+    }
 }
 
 
