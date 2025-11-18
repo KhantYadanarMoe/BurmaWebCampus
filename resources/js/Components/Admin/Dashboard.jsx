@@ -37,18 +37,6 @@ export default function UserGrowthChart({
     height = 220,
     compact = false,
 }) {
-    const sampleData = [
-        { date: "2025-01-01", users: 120 },
-        { date: "2025-02-01", users: 150 },
-        { date: "2025-03-01", users: 190 },
-        { date: "2025-04-01", users: 230 },
-        { date: "2025-05-01", users: 290 },
-        { date: "2025-06-01", users: 330 },
-        { date: "2025-07-01", users: 360 },
-        { date: "2025-08-01", users: 410 },
-        { date: "2025-09-01", users: 470 },
-    ];
-
     const [open, setOpen] = useState(false);
     const [courses, setCourses] = useState([]);
     let [users, setUsers] = useState([]);
@@ -121,7 +109,24 @@ export default function UserGrowthChart({
         getSubscribers();
     }, []);
 
-    const chartData = data || sampleData;
+    const chartData = useMemo(() => {
+        if (!users || users.length === 0) return sampleData; // Fallback if no users yet
+
+        const grouped = {};
+        users.forEach((user) => {
+            if (user.created_at) {
+                const dateKey = user.created_at.slice(0, 7); // "YYYY-MM" directly from string
+                grouped[dateKey] = (grouped[dateKey] || 0) + 1;
+            }
+        });
+
+        return Object.keys(grouped)
+            .sort()
+            .map((month) => ({
+                date: month + "-01", // makes it parseable by `new Date(...)`
+                users: grouped[month],
+            }));
+    }, [users]);
 
     // compute summary metrics
     const { totalUsers, delta, deltaPercent, trend } = useMemo(() => {
