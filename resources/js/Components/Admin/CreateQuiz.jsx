@@ -24,11 +24,20 @@ import {
 } from "../ui/dropdown-menu";
 import axios from "axios";
 import { getUploadedOutlines } from "@/utils/uploadStore";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function CreateQuiz() {
     const percent = 83; // final step
     const { darkMode } = useOutletContext();
     const navigate = useNavigate();
+    const [showAlert, setShowAlert] = useState(false);
 
     // --- Quiz structure ---
     const [questions, setQuestions] = useState([
@@ -117,7 +126,7 @@ export default function CreateQuiz() {
         const uploadedOutlines = getUploadedOutlines();
 
         if (!basic.title || details.length === 0 || quiz.length === 0) {
-            alert("Please complete all steps before submitting!");
+            setShowAlert(true);
             return;
         }
 
@@ -468,6 +477,22 @@ export default function CreateQuiz() {
                     </Button>
                 </div>
             </form>
+            <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Questions and Options Required
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Please fill data for final quiz first before
+                            submitting.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <Button onClick={() => setShowAlert(false)}>OK</Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
