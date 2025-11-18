@@ -31,10 +31,19 @@ import {
 } from "lucide-react";
 import { Link, useOutletContext } from "react-router-dom";
 import axios from "axios";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "../ui/dialog";
 
 export default function Purchase() {
     const { darkMode } = useOutletContext();
     let [purchases, setPurchases] = useState([]);
+    const [open, setOpen] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState("newest");
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -154,7 +163,7 @@ export default function Purchase() {
                             </li>
                             <li className="basis-[30%] flex items-center gap-2">
                                 <img
-                                    src={CourseImg}
+                                    src={`/storage/${purchase.course.image}`}
                                     alt=""
                                     className="w-10 h-10 object-cover rounded-md flex-shrink-0"
                                 />
@@ -204,11 +213,123 @@ export default function Purchase() {
                                         align="end"
                                         className="w-40"
                                     >
-                                        <Link to="">
-                                            <DropdownMenuItem className="text-accentGreen">
-                                                View Details
-                                            </DropdownMenuItem>
-                                        </Link>
+                                        <DropdownMenuItem
+                                            className="text-accentGreen"
+                                            onSelect={(e) => {
+                                                e.preventDefault(); // Prevent Dropdown from closing immediately
+                                                setOpen(true); // Open the Dialog
+                                            }}
+                                        >
+                                            View Details
+                                        </DropdownMenuItem>
+
+                                        <Dialog
+                                            open={open}
+                                            onOpenChange={setOpen}
+                                        >
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>
+                                                        Invoice{" "}
+                                                        {purchase.invoice_no}
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        Enrolled at{" "}
+                                                        {new Date(
+                                                            purchase.created_at
+                                                        ).toLocaleDateString(
+                                                            "en-GB",
+                                                            {
+                                                                day: "2-digit",
+                                                                month: "short",
+                                                                year: "numeric",
+                                                            }
+                                                        )}
+                                                    </DialogDescription>
+                                                </DialogHeader>
+
+                                                <div className="flex gap-2 items-center mt-4 mb-2">
+                                                    <img
+                                                        src={`/storage/${purchase.course.image}`}
+                                                        alt={
+                                                            purchase.course
+                                                                .title
+                                                        }
+                                                        className="w-12 h-12 object-cover rounded-md"
+                                                    />
+                                                    <h1 className="font-medium">
+                                                        {purchase.course.title}
+                                                    </h1>
+                                                </div>
+                                                <hr className="border-t-gray-500 border-dashed" />
+                                                <div className="flex items-center justify-between">
+                                                    <p className="font-medium">
+                                                        Name -
+                                                    </p>
+                                                    <p className="text-gray-700">
+                                                        {purchase.name}
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center justify-between">
+                                                    <p className="font-medium">
+                                                        Email -
+                                                    </p>
+                                                    <p className="text-gray-700">
+                                                        {purchase.email}
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center justify-between">
+                                                    <p className="font-medium">
+                                                        Phone -
+                                                    </p>
+                                                    <p className="text-gray-700">
+                                                        {purchase.phone}
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center justify-between">
+                                                    <p className="font-medium">
+                                                        Price -
+                                                    </p>
+                                                    <p className="text-gray-700">
+                                                        {purchase.course.price}{" "}
+                                                        MMK
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center justify-between">
+                                                    <p className="font-medium">
+                                                        Discount -
+                                                    </p>
+                                                    <p className="text-gray-700">
+                                                        0 MMK
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center justify-between">
+                                                    <p className="font-medium">
+                                                        Pay with -
+                                                    </p>
+                                                    <p className="text-gray-700 uppercase">
+                                                        {
+                                                            purchase.payment_method
+                                                        }
+                                                    </p>
+                                                </div>
+                                                <div className="mt-20 md:mt-40 lg:mt-16">
+                                                    <hr className="border-t border-dashed border-gray-500" />
+                                                    <div className="flex items-center justify-between my-3">
+                                                        <p className="font-medium">
+                                                            Total -
+                                                        </p>
+                                                        <p className="text-gray-700">
+                                                            {
+                                                                purchase.course
+                                                                    .price
+                                                            }{" "}
+                                                            MMK
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </DialogContent>
+                                        </Dialog>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </li>

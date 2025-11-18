@@ -142,7 +142,7 @@ export default function UsersList() {
                             className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
                                 selectedTypeFilter === type
                                     ? "bg-gray-900 text-white"
-                                    : "border-gray-200 text-gray-300"
+                                    : "border-gray-400 text-gray-600"
                             }`}
                         >
                             {type === "all"
