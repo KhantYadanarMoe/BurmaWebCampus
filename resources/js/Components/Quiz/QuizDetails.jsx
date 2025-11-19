@@ -10,6 +10,8 @@ export default function QuizDetails() {
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const [answeredQuizzes, setAnsweredQuizzes] = useState({});
+
     useEffect(() => {
         const getDetails = async () => {
             try {
@@ -24,6 +26,10 @@ export default function QuizDetails() {
 
         getDetails();
     }, [id]);
+
+    const handleAnswer = (quizId) => {
+        setAnsweredQuizzes((prev) => ({ ...prev, [quizId]: true }));
+    };
 
     return (
         <div className="md:flex gap-3 px-5 lg:px-8">
@@ -62,6 +68,9 @@ export default function QuizDetails() {
                                                 name={`quiz-${quiz.id}`}
                                                 value={option.option_text}
                                                 className="w-4 h-4 accent-black"
+                                                onChange={() =>
+                                                    handleAnswer(quiz.id)
+                                                }
                                             />
                                             <p>{option.option_text}</p>
                                         </div>
@@ -90,12 +99,14 @@ export default function QuizDetails() {
                                         {/* Example: show Done/Not Done dynamically */}
                                         <span
                                             className={`px-2 py-1 text-sm border shadow-sm rounded-md ${
-                                                quiz.is_done
+                                                answeredQuizzes[quiz.id]
                                                     ? "bg-green-50 text-green-600 border-green-200"
                                                     : "bg-gray-50 text-gray-500 border-gray-200"
                                             }`}
                                         >
-                                            {quiz.is_done ? "Done" : "Pending"}
+                                            {answeredQuizzes[quiz.id]
+                                                ? "Done"
+                                                : "Pending"}
                                         </span>
                                     </div>
                                 </CardContent>
