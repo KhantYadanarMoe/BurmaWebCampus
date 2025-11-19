@@ -1,5 +1,5 @@
 import { ChevronsRight } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
@@ -11,6 +11,22 @@ export default function QuizDetails() {
     const [loading, setLoading] = useState(true);
 
     const [answeredQuizzes, setAnsweredQuizzes] = useState({});
+
+    const quizRefs = useRef({});
+
+    const scrollToQuiz = (quizId) => {
+        const element = quizRefs.current[quizId];
+        if (element) {
+            const navbarHeight =
+                document.querySelector("nav")?.offsetHeight || 0; // adjust selector if needed
+            const elementTop =
+                element.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({
+                top: elementTop - navbarHeight - 32,
+                behavior: "smooth",
+            });
+        }
+    };
 
     useEffect(() => {
         const getDetails = async () => {
@@ -46,6 +62,7 @@ export default function QuizDetails() {
                     course.quizzes.map((quiz, index) => (
                         <Card
                             key={quiz.id}
+                            ref={(el) => (quizRefs.current[quiz.id] = el)}
                             className="relative bg-white border border-gray-600 shadow-lg rounded-lg my-3"
                         >
                             <CardContent className="p-4">
@@ -90,7 +107,11 @@ export default function QuizDetails() {
                 <h1 className="text-lg font-medium my-3 pl-3">Navigation</h1>
                 <div className="overflow-y-auto custom-scrollbar max-h-[80vh] px-3">
                     {course?.quizzes.map((quiz, index) => (
-                        <Link key={quiz.id} to={`/quiz/${quiz.id}`}>
+                        <div
+                            key={quiz.id}
+                            onClick={() => scrollToQuiz(quiz.id)}
+                            className="cursor-pointer"
+                        >
                             <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg my-3 hover:shadow-xl transition">
                                 <CardContent className="p-3">
                                     <div className="flex gap-2 items-center justify-between">
@@ -111,7 +132,7 @@ export default function QuizDetails() {
                                     </div>
                                 </CardContent>
                             </Card>
-                        </Link>
+                        </div>
                     ))}
                 </div>
             </div>
