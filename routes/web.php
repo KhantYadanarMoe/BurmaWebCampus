@@ -9,6 +9,7 @@ use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubscribeController;
 use App\Models\Contact;
@@ -110,6 +111,9 @@ Route::post("/api/contact", [ContactController::class, 'store']);
 Route::get('/api/contact/{id}', [ContactController::class, 'show']);
 Route::post('/api/contact/marked/{id}', [ContactController::class, 'mark']);
 Route::delete('/api/contact/{contact}', [ContactController::class, 'delete']);
-    Route::post('/api/contacts/reply/{id}', [ContactController::class, 'replyToContact']);
+Route::post('/api/contacts/reply/{id}', [ContactController::class, 'replyToContact']);
+
+Route::middleware('auth:sanctum')->post('/api/quizzes/submit', [QuizController::class, 'store']);
+
 
 require __DIR__.'/auth.php';

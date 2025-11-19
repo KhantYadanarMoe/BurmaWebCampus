@@ -2,6 +2,16 @@ import { ChevronsRight } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+} from "../ui/alert-dialog";
+import { CheckCircle2 } from "lucide-react";
 import { Button } from "../ui/button";
 import axios from "axios";
 
@@ -9,8 +19,12 @@ export default function QuizDetails() {
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
 
     const [answeredQuizzes, setAnsweredQuizzes] = useState({});
+
+    const [selectedAnswers, setSelectedAnswers] = useState({});
 
     const quizRefs = useRef({});
 
@@ -18,7 +32,7 @@ export default function QuizDetails() {
         const element = quizRefs.current[quizId];
         if (element) {
             const navbarHeight =
-                document.querySelector("nav")?.offsetHeight || 0; 
+                document.querySelector("nav")?.offsetHeight || 0;
             const elementTop =
                 element.getBoundingClientRect().top + window.pageYOffset;
             window.scrollTo({
@@ -45,6 +59,76 @@ export default function QuizDetails() {
 
     const handleAnswer = (quizId) => {
         setAnsweredQuizzes((prev) => ({ ...prev, [quizId]: true }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const unanswered = course?.quizzes.filter(
+            (quiz) => !selectedAnswers[quiz.id]
+        );
+
+        if (unanswered && unanswered.length > 0) {
+            setAlertMessage("Please answer all questions before submitting.");
+            setAlertOpen(true);
+            return;
+        }
+
+        let url = `/api/quizzes/submit`;
+        let method = "post";
+
+        let formData = new FormData();
+
+        formData.append("course_id", id);
+
+        Object.entries(selectedAnswers).forEach(([quizId, optionId]) => {
+            formData.append(`answers[${quizId}]`, optionId);
+        });
+
+        console.log(
+            "FormData before submitting:",
+            Array.from(formData.entries())
+        );
+
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            const res = await axios[method](url, formData, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (res.data.score !== undefined) {
+                setAlertMessage(
+                    <div className="flex flex-col items-center gap-2">
+                        <CheckCircle2 className="w-16 h-16 text-green-500" />
+                        <p className="text-2xl font-semibold text-black">
+                            Congratulations!
+                        </p>
+                        <p className="text-black">
+                            You got{" "}
+                            <span className="font-bold">{res.data.score}</span>{" "}
+                            out of{" "}
+                            <span className="font-bold">
+                                {course?.quizzes?.length}
+                            </span>
+                        </p>
+                    </div>
+                );
+                setAlertOpen(true);
+            }
+        } catch (error) {
+            console.error("Error submitting quiz:", error);
+
+            if (error.response && error.response.status === 422) {
+                // Handle validation errors if needed
+                console.log("Validation errors:", error.response.data.errors);
+            }
+        }
     };
 
     return (
@@ -83,12 +167,20 @@ export default function QuizDetails() {
                                             <input
                                                 type="radio"
                                                 name={`quiz-${quiz.id}`}
-                                                value={option.option_text}
+                                                value={option.id} // send option ID, not text!
                                                 className="w-4 h-4 accent-black"
-                                                onChange={() =>
-                                                    handleAnswer(quiz.id)
-                                                }
+                                                onChange={() => {
+                                                    handleAnswer(quiz.id);
+                                                    setSelectedAnswers(
+                                                        (prev) => ({
+                                                            ...prev,
+                                                            [quiz.id]:
+                                                                option.id,
+                                                        })
+                                                    );
+                                                }}
                                             />
+
                                             <p>{option.option_text}</p>
                                         </div>
                                     ))}
@@ -100,7 +192,7 @@ export default function QuizDetails() {
                     <p className="text-gray-500 mt-2">No quizzes available.</p>
                 )}
                 <div className="flex justify-end items-end mb-3">
-                    <Button>Submit</Button>
+                    <Button onClick={handleSubmit}>Submit</Button>
                 </div>
             </div>
             <div className="hidden md:block md:w-1/3 md:sticky md:top-24 md:self-start">
@@ -136,6 +228,26 @@ export default function QuizDetails() {
                     ))}
                 </div>
             </div>
+            <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+                <AlertDialogTrigger asChild>
+                    <></>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            {typeof alertMessage === "string"
+                                ? "Notice." // show Notice only for warning messages
+                                : ""}
+                        </AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogDescription>
+                        {alertMessage}
+                    </AlertDialogDescription>
+                    <AlertDialogFooter>
+                        <Button onClick={() => setAlertOpen(false)}>OK</Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

@@ -173,7 +173,7 @@ export default function Details() {
                         </li>
                     </ul>
                     <div className="md:flex justify-between items-start">
-                        <div>
+                        <div className="w-2/3">
                             <h1 className="text-xl md:text-2xl font-medium mb-1">
                                 {course.title}
                             </h1>
@@ -181,8 +181,8 @@ export default function Details() {
                                 {formatDate(course.created_at)}
                             </p>
                         </div>
-                        <div>
-                            <div className="hidden md:flex items-center justify-center gap-1">
+                        <div className="w-1/3">
+                            <div className="hidden md:flex items-center justify-center">
                                 <p className="text-sm">Chapter 2/12</p>
 
                                 <Button
@@ -198,7 +198,6 @@ export default function Details() {
                                     <ChevronRight />
                                 </Button>
                             </div>
-                            {/* <ReviewModal /> */}
                         </div>
                     </div>
                     {/* video */}
