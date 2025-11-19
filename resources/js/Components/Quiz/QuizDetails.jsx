@@ -18,7 +18,7 @@ export default function QuizDetails() {
         const element = quizRefs.current[quizId];
         if (element) {
             const navbarHeight =
-                document.querySelector("nav")?.offsetHeight || 0; // adjust selector if needed
+                document.querySelector("nav")?.offsetHeight || 0; 
             const elementTop =
                 element.getBoundingClientRect().top + window.pageYOffset;
             window.scrollTo({

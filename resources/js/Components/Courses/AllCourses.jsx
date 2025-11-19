@@ -21,7 +21,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function AllCourses() {
     const [courses, setCourses] = useState([]);
@@ -29,6 +29,19 @@ export default function AllCourses() {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 6;
+
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const defaultCategory = params.get("category");
+
+    const categoryId = new URLSearchParams(location.search).get("category");
+
+    useEffect(() => {
+        if (defaultCategory) {
+            setSelectedCategory(Number(defaultCategory));
+            setCurrentPage(1);
+        }
+    }, [defaultCategory]);
 
     const getCourses = async () => {
         try {
@@ -87,31 +100,27 @@ export default function AllCourses() {
                         <div className="w-1 h-1 bg-accentRed rounded-full ml-2"></div>
                     </div>
                 </div>
-                <Select>
+                <Select
+                    value={selectedCategory ? String(selectedCategory) : "all"}
+                    onValueChange={(value) => {
+                        if (value === "all") {
+                            setSelectedCategory(null);
+                        } else {
+                            setSelectedCategory(Number(value));
+                        }
+                        setCurrentPage(1);
+                    }}
+                >
                     <SelectTrigger className="w-[180px] border-gray-700">
                         <SelectValue placeholder="Filter By Categories" />
                     </SelectTrigger>
+
                     <SelectContent>
-                        <SelectItem value={null}>
-                            <button
-                                onClick={() => {
-                                    setSelectedCategory(null);
-                                    setCurrentPage(1);
-                                }}
-                            >
-                                All
-                            </button>
-                        </SelectItem>
-                        {categories.map((category) => (
-                            <SelectItem value={category.name} key={category.id}>
-                                <button
-                                    onClick={() => {
-                                        setSelectedCategory(category.id);
-                                        setCurrentPage(1);
-                                    }}
-                                >
-                                    {category.name}
-                                </button>
+                        <SelectItem value="all">All</SelectItem>
+
+                        {categories.map((cat) => (
+                            <SelectItem key={cat.id} value={String(cat.id)}>
+                                {cat.name}
                             </SelectItem>
                         ))}
                     </SelectContent>

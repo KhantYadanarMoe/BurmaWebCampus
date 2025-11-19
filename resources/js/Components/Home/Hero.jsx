@@ -1,12 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BookOpenText, MoveUpRight, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import Frontend from "../../../assets/Frontend.jpg";
 import Backend from "../../../assets/Backend.jpg";
 import Blog from "../../../assets/Blog.jpg";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Hero() {
+    let [categories, setCategories] = useState([]);
+    const [topCategories, setTopCategories] = useState([]);
+
+    let getCategories = async () => {
+        try {
+            let res = await axios.get("/api/course/categories");
+            let data = res.data;
+
+            setCategories(data.categories);
+            const sorted = [...data.categories]
+                .sort((a, b) => b.courses_count - a.courses_count)
+                .slice(0, 2);
+
+            setTopCategories(sorted);
+
+            const visibilityMap = {};
+            data.categories.forEach((cat) => {
+                visibilityMap[cat.id] = !!+cat.is_visible;
+            });
+            setVisibility(visibilityMap);
+        } catch (error) {
+            console.error("Failed to fetch categories:", error);
+        }
+    };
+
+    useEffect(() => {
+        getCategories();
+    }, []);
     return (
         <div className="px-5 md:px-8">
             <div className="md:flex gap-3">
@@ -49,7 +78,10 @@ export default function Hero() {
                 </div>
             </div>
             <div className="flex flex-col md:flex-row gap-3 mt-5">
-                <div className="md:w-1/3 xl:w-2/5 flex flex-col justify-end">
+                <Link
+                    to={`/courses?category=${topCategories[0]?.id}`}
+                    className="md:w-1/3 xl:w-2/5 flex flex-col justify-end"
+                >
                     <div className="relative group md:mt-20">
                         <img
                             src={Frontend}
@@ -63,17 +95,19 @@ export default function Hero() {
                         </div>
                         <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent text-white rounded-b-xl">
                             <h1 className="text-lg font-semibold">
-                                Frontend Courses
+                                {topCategories[0]?.name} Courses
                             </h1>
-                            <p className="text-sm">
-                                Learn the art of building beautiful user
-                                interfaces
+                            <p className="text-xs md:text-sm">
+                                Explore our courses and upgrade your career.
                             </p>
                         </div>
                     </div>
-                </div>
+                </Link>
 
-                <div className="md:w-1/3 xl:w-1/5 flex md:flex-col gap-3">
+                <Link
+                    to={`/courses?category=${topCategories[1]?.id}`}
+                    className="md:w-1/3 xl:w-1/5 flex md:flex-col gap-3"
+                >
                     <div className="relative group flex-1">
                         <img
                             src={Backend}
@@ -89,10 +123,10 @@ export default function Hero() {
 
                         <div className="absolute bottom-0 left-0 w-full p-2 md:p-4 bg-gradient-to-t from-black/70 to-transparent text-white rounded-b-xl">
                             <h1 className="text-base md:text-lg font-semibold">
-                                Backend Course
+                                {topCategories[1]?.name} Courses
                             </h1>
                             <p className="text-xs md:text-sm">
-                                Master the server-side logic and databases
+                                Explore our courses and upgrade your career.
                             </p>
                         </div>
                     </div>
@@ -111,9 +145,12 @@ export default function Hero() {
                             </p>
                         </div>
                     </div>
-                </div>
+                </Link>
 
-                <div className="md:w-1/3 xl:w-2/5 flex flex-col justify-end">
+                <Link
+                    to="/blogs"
+                    className="md:w-1/3 xl:w-2/5 flex flex-col justify-end"
+                >
                     <div className="relative group">
                         <img
                             src={Blog}
@@ -136,7 +173,7 @@ export default function Hero() {
                             </p>
                         </div>
                     </div>
-                </div>
+                </Link>
             </div>
         </div>
     );
