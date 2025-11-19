@@ -10,74 +10,71 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
- public function store(Request $request){
-    $details = json_decode($request->input('details', '[]'), true);
-    $quiz = json_decode($request->input('quiz', '[]'), true);
+    public function store(Request $request){
+        $details = json_decode($request->input('details', '[]'), true);
+        $quiz = json_decode($request->input('quiz', '[]'), true);
 
-     $imagePath = null;
-     if ($request->hasFile('image')) {
-         $file = $request->file('image');
-         if ($file->isValid()) {
-             $imagePath = $file->store('course_images', 'public');
-         }
-     }
-
-    // 2️⃣ Save main course
-    $course = Courses::create([
-        'title' => $request->input('title', ''),
-        'category_id' => $request->input('category', 1), // make sure this is ID
-        'price' => $request->input('price', 0),
-        'description' => $request->input('description', ''),
-        'outcomes' => $request->input('outcomes', ''),
-        'image'   => $imagePath, 
-    ]);
-
-    
-    foreach ($details as $unit) {
-    // Create the outline (Unit)
-    $outline = $course->outlines()->create([
-        'title' => $unit['title'] ?? '',
-    ]);
-
-    foreach ($unit['sublectures'] ?? [] as $sub) {
-    $videoPath = null;
-
-    // Check if frontend uploaded a file for this subtitle
-    if (!empty($sub['upload_key']) && $request->hasFile($sub['upload_key'])) {
-            $file = $request->file($sub['upload_key']);
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
             if ($file->isValid()) {
-                $videoPath = $file->store('videos', 'public'); // stored in storage/app/public/videos
+                $imagePath = $file->store('course_images', 'public');
             }
         }
 
-        $outline->subtitles()->create([
-            'subtitle' => $sub['subtitle'] ?? '',
-            'video_path' => $videoPath,
-        ]);
-    }
-
-    }
-
-
-
-    // 4️⃣ Save quizzes
-    foreach ($quiz as $q) {
-        $quizModel = $course->quizzes()->create([
-            'question' => $q['question'] ?? ''
+        // 2️⃣ Save main course
+        $course = Courses::create([
+            'title' => $request->input('title', ''),
+            'category_id' => $request->input('category', 1), // make sure this is ID
+            'price' => $request->input('price', 0),
+            'description' => $request->input('description', ''),
+            'outcomes' => $request->input('outcomes', ''),
+            'image'   => $imagePath, 
         ]);
 
-        foreach ($q['options'] ?? [] as $opt) {
-            $quizModel->options()->create([
-                'option_text' => $opt['text'] ?? '',
-                'is_correct' => $opt['correct'] ?? false
+        
+        foreach ($details as $unit) {
+        // Create the outline (Unit)
+        $outline = $course->outlines()->create([
+            'title' => $unit['title'] ?? '',
+        ]);
+
+        foreach ($unit['sublectures'] ?? [] as $sub) {
+        $videoPath = null;
+
+        // Check if frontend uploaded a file for this subtitle
+        if (!empty($sub['upload_key']) && $request->hasFile($sub['upload_key'])) {
+                $file = $request->file($sub['upload_key']);
+                if ($file->isValid()) {
+                    $videoPath = $file->store('videos', 'public'); // stored in storage/app/public/videos
+                }
+            }
+
+            $outline->subtitles()->create([
+                'subtitle' => $sub['subtitle'] ?? '',
+                'video_path' => $videoPath,
             ]);
         }
+
+        }
+
+        // 4️⃣ Save quizzes
+        foreach ($quiz as $q) {
+            $quizModel = $course->quizzes()->create([
+                'question' => $q['question'] ?? ''
+            ]);
+
+            foreach ($q['options'] ?? [] as $opt) {
+                $quizModel->options()->create([
+                    'option_text' => $opt['text'] ?? '',
+                    'is_correct' => $opt['correct'] ?? false
+                ]);
+            }
+        }
+
+        return response()->json(['success' => true]);
     }
-
-    return response()->json(['success' => true]);
- }
-
-    
+ 
     public function index(Request $request){
         // Get the sort option from query params, default to 'newest'
         $sort = $request->query('sort', 'newest');
@@ -88,12 +85,12 @@ class CourseController extends Controller
             'outlines.subtitles',
             'quizzes.options'  ,
             'purchases'   
-        ])->withCount([
-    'purchases', 
-    'purchases as certified_count' => function ($query) {
-        $query->where('completed', true); 
-    }
-]);
+            ])->withCount([
+            'purchases', 
+            'purchases as certified_count' => function ($query) {
+                $query->where('completed', true); 
+            }
+        ]);
 
 
         // Apply sorting
@@ -133,5 +130,10 @@ class CourseController extends Controller
         }
     }
 
-
+    public function delete(Courses $course){
+        $course->delete();
+        return response()->json([
+            'message' => 'Course deleted successful!'
+        ]);
+    }
 }

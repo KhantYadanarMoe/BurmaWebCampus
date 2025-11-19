@@ -73,45 +73,44 @@ class AuthController extends Controller
     }
 
    public function handleGoogleCallback(){
-    try {
-        $googleUser = Socialite::driver('google')->user();
+        try {
+            $googleUser = Socialite::driver('google')->user();
 
-        $user = User::where('email', $googleUser->getEmail())->first();
+            $user = User::where('email', $googleUser->getEmail())->first();
 
-        if (!$user) {
-            $year = date('Y');
-            $latestUser = User::whereYear('created_at', $year)
-                ->orderBy('id', 'desc')
-                
-                ->first();
+            if (!$user) {
+                $year = date('Y');
+                $latestUser = User::whereYear('created_at', $year)
+                    ->orderBy('id', 'desc')
+                    
+                    ->first();
 
-            $nextNumber = 1;
-            if ($latestUser && preg_match('/STU' . $year . '-(\d+)/', $latestUser->student_id, $matches)) {
-                $nextNumber = (int)$matches[1] + 1;
+                $nextNumber = 1;
+                if ($latestUser && preg_match('/STU' . $year . '-(\d+)/', $latestUser->student_id, $matches)) {
+                    $nextNumber = (int)$matches[1] + 1;
+                }
+                $studentId = 'STU' . $year . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+                $user = User::create([
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                    'avatar' => $googleUser->getAvatar(),
+                    'student_id' => $studentId, // ✅ fix here
+                ]);
+            } else {
+                $user->update([
+                    'google_id' => $googleUser->getId(),
+                    'avatar' => $googleUser->getAvatar(),
+                ]);
             }
-            $studentId = 'STU' . $year . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-            $user = User::create([
-                'name' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-                'student_id' => $studentId, // ✅ fix here
-            ]);
-        } else {
-            $user->update([
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-            ]);
+            Auth::login($user);
+            return redirect('/');
+        } catch (\Exception $e) {
+            dd($e);  
         }
-
-        Auth::login($user);
-        return redirect('/');
-    } catch (\Exception $e) {
-        dd($e);  
     }
-}
-
 
     public function index(Request $request){
         $sort = $request->query('sort', 'newest'); // Default to 'newest' if no data is provided

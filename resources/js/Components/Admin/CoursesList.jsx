@@ -24,6 +24,17 @@ import {
 } from "lucide-react";
 import { Link, useOutletContext } from "react-router-dom";
 import axios from "axios";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 export default function CoursesList() {
     const { darkMode } = useOutletContext();
@@ -99,6 +110,26 @@ export default function CoursesList() {
     useEffect(() => {
         handleFilterChange("newest"); // initial load
     }, []);
+
+    const deleteCourse = async (id) => {
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            await axios.delete("/api/course/" + id, {
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            setCourses((prev) => prev.filter((course) => course.id !== id));
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
         <div>
             <h1 className="text-xl font-medium">Courses</h1>
@@ -269,6 +300,48 @@ export default function CoursesList() {
                                                 View Details
                                             </DropdownMenuItem>
                                         </Link>
+                                        <DropdownMenuItem asChild>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <button
+                                                        className={`text-accentRed ${
+                                                            darkMode
+                                                                ? "bg-[#09090B] hover:bg-[#212121]"
+                                                                : "bg-white hover:bg-gray-100"
+                                                        } w-full text-left text-sm px-2 py-2 rounded-md`}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>
+                                                            Are you sure you
+                                                            want to delete this
+                                                            menu?
+                                                        </AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This action cannot
+                                                            be undone.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>
+                                                            Cancel
+                                                        </AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            onClick={() =>
+                                                                deleteCourse(
+                                                                    course.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </li>

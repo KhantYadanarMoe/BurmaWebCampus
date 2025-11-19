@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('course_outlines', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('course_id')->constrained()->onDelete('cascade');
-    $table->string('title'); // Outline title
-    $table->json('subtitles')->nullable();
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->string('title'); 
             $table->timestamps();
         });
     }

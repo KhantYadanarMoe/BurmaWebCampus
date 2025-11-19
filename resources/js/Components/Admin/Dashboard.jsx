@@ -110,8 +110,6 @@ export default function UserGrowthChart({
     }, []);
 
     const chartData = useMemo(() => {
-        if (!users || users.length === 0) return sampleData; // Fallback if no users yet
-
         const grouped = {};
         users.forEach((user) => {
             if (user.created_at) {
