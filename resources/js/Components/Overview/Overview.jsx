@@ -6,7 +6,7 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
 import CoursesImg from "../../../assets/Courses.jpg";
 import { Button } from "../ui/button";
@@ -24,6 +24,8 @@ export default function Overview({ course }) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogMessage, setDialogMessage] = useState("");
 
+    const navigate = useNavigate();
+
     const handleEnroll = (course) => {
         try {
             const existing =
@@ -36,14 +38,10 @@ export default function Overview({ course }) {
                     "enrolledCourses",
                     JSON.stringify(existing)
                 );
-                setDialogMessage(
-                    `${course.title} has been added to your cart.`
-                );
-            } else {
-                setDialogMessage(`${course.title} is already in your cart.`);
             }
 
-            setDialogOpen(true); // open dialog
+            // Redirect to checkout page
+            navigate("/checkout");
         } catch (error) {
             console.error("Error storing course in localStorage:", error);
         }

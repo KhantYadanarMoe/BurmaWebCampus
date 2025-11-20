@@ -37,6 +37,7 @@ export default function CheckoutForm() {
         email: "",
         phone: "",
     });
+    const [errors, setErrors] = useState({});
     const [invoiceNumber, setInvoiceNumber] = useState("");
     const [showPaymentDialog, setShowPaymentDialog] = useState(false);
     const { user, setUser } = useAuth();
@@ -267,6 +268,11 @@ export default function CheckoutForm() {
                                         onChange={handleInputChange}
                                         className="mt-1 border-gray-400"
                                     />
+                                    {errors.name && (
+                                        <p className="text-red-500 mt-1 text-sm">
+                                            {errors.name[0]}
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="lg:flex gap-2">
                                     <div className="my-2 lg:w-1/2">
@@ -278,16 +284,27 @@ export default function CheckoutForm() {
                                             onChange={handleInputChange}
                                             className="mt-1 border-gray-400"
                                         />
+                                        {errors.email && (
+                                            <p className="text-red-500 mt-1 text-sm">
+                                                {errors.email[0]}
+                                            </p>
+                                        )}
                                     </div>
                                     <div className="my-2 lg:w-1/2">
                                         <Label>Phone (Optional)</Label>
                                         <Input
                                             id="phone"
                                             name="phone"
+                                            type="number"
                                             value={form.phone}
                                             onChange={handleInputChange}
                                             className="mt-1 border-gray-400"
                                         />
+                                        {errors.phone && (
+                                            <p className="text-red-500 mt-1 text-sm">
+                                                {errors.phone[0]}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="my-5">

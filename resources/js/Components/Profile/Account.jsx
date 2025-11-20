@@ -188,9 +188,10 @@ export default function Account() {
                 const data = error.response.data;
 
                 if (data.errors) {
-                    setPasswordErrors(data.errors); // Object with field errors
+                    // Laravel validation errors: object with arrays
+                    setPasswordErrors(data.errors);
                 } else if (data.message) {
-                    // Wrap single message into an object keyed by a general field or 'form'
+                    // Single message: wrap it
                     setPasswordErrors({ general: [data.message] });
                 } else {
                     setPasswordErrors({});
@@ -289,6 +290,11 @@ export default function Account() {
                                 onChange={uploadImg}
                                 className="mt-1 border-gray-400"
                             />
+                            {errors.image && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.image[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="flex flex-col md:flex-row md:gap-3">
                             <div className="my-2 md:w-1/2">
@@ -302,6 +308,11 @@ export default function Account() {
                                     className="border-gray-400 mt-1"
                                     placeholder="Enter your first name"
                                 />
+                                {errors.firstName && (
+                                    <p className="text-red-500 mt-1 text-sm">
+                                        {errors.firstName[0]}
+                                    </p>
+                                )}
                             </div>
                             <div className="my-2 md:w-1/2">
                                 <Label>Last Name</Label>
@@ -314,6 +325,11 @@ export default function Account() {
                                     className="border-gray-400 mt-1"
                                     placeholder="Enter your last name"
                                 />
+                                {errors.lastName && (
+                                    <p className="text-red-500 mt-1 text-sm">
+                                        {errors.lastName[0]}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className="flex flex-col md:flex-row md:gap-3">
@@ -328,6 +344,11 @@ export default function Account() {
                                     value={form.email}
                                     onChange={handleInputChange}
                                 />
+                                {errors.email && (
+                                    <p className="text-red-500 mt-1 text-sm">
+                                        {errors.email[0]}
+                                    </p>
+                                )}
                             </div>
                             <div className="my-2 md:w-1/2">
                                 <Label>Phone (Optional)</Label>
@@ -340,6 +361,11 @@ export default function Account() {
                                     value={form.phone}
                                     onChange={handleInputChange}
                                 />
+                                {errors.phone && (
+                                    <p className="text-red-500 mt-1 text-sm">
+                                        {errors.phone[0]}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className="my-3">
@@ -355,6 +381,11 @@ export default function Account() {
                                 }
                                 onChange={handleInputChange}
                             />
+                            {errors.DoB && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.DoB[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="my-4">
                             <Label>Bio (Optional)</Label>
@@ -367,6 +398,11 @@ export default function Account() {
                                 value={form.bio}
                                 onChange={handleInputChange}
                             />
+                            {errors.bio && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.bio[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="flex justify-end mt-3">
                             <Button onClick={submit}>Submit</Button>
@@ -387,11 +423,22 @@ export default function Account() {
                                 onChange={handlePasswordChange}
                                 className="border-gray-400 mt-1"
                             />
-                            {passwordErrors.general && (
-                                <p className="text-red-500 mt-1 text-sm">
-                                    {passwordErrors.general[0]}
+                            {passwordErrors.currentPassword?.map((err, i) => (
+                                <p
+                                    key={i}
+                                    className="text-red-500 mt-1 text-sm"
+                                >
+                                    {err}
                                 </p>
-                            )}
+                            ))}
+                            {passwordErrors.general?.map((err, i) => (
+                                <p
+                                    key={i}
+                                    className="text-red-500 mt-1 text-sm"
+                                >
+                                    {err}
+                                </p>
+                            ))}
                         </div>
                         <div className="my-2">
                             <Label>New Password</Label>
@@ -404,11 +451,14 @@ export default function Account() {
                                 placeholder="Enter your new password"
                                 className="border-gray-400 mt-1"
                             />
-                            {passwordErrors.confirmPassword && (
-                                <p className="text-red-500 mt-1 text-sm">
-                                    {passwordErrors.confirmPassword}
+                            {passwordErrors.newPassword?.map((err, i) => (
+                                <p
+                                    key={i}
+                                    className="text-red-500 mt-1 text-sm"
+                                >
+                                    {err}
                                 </p>
-                            )}
+                            ))}
                         </div>
                         <div className="my-2">
                             <Label>Confirm Password</Label>
@@ -421,6 +471,14 @@ export default function Account() {
                                 placeholder="Confirm your password"
                                 className="border-gray-400 mt-1"
                             />
+                            {passwordErrors.confirmPassword?.map((err, i) => (
+                                <p
+                                    key={i}
+                                    className="text-red-500 mt-1 text-sm"
+                                >
+                                    {err}
+                                </p>
+                            ))}
                         </div>
                         <div className="flex justify-end mt-3">
                             <Button onClick={handlePasswordSubmit}>
