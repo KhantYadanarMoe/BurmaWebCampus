@@ -9,7 +9,7 @@ import {
     PaginationPrevious,
 } from "@/Components/ui/pagination";
 import { Card, CardContent } from "@/components/ui/card";
-import CoursesImg from "../../../assets/Courses.jpg";
+import Empty from "../../../assets/Empty.png";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "../ui/button";
 import { Clock, Users } from "lucide-react";
@@ -88,12 +88,18 @@ export default function AllCourses() {
         }
     };
 
+    const selectedCategoryName = selectedCategory
+        ? categories.find((cat) => cat.id === selectedCategory)?.name
+        : null;
+
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-xl md:text-2xl font-medium relative inline-block">
-                        All Courses
+                        {selectedCategoryName
+                            ? `${selectedCategoryName} Courses`
+                            : "All Courses"}
                     </h2>
                     <div className="flex items-center">
                         <div className="w-10 md:w-20 h-[2px] bg-accentRed"></div>
@@ -127,48 +133,70 @@ export default function AllCourses() {
                 </Select>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {currentCourses.map((course) => (
-                    <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                        <CardContent className="p-4">
-                            <div>
-                                <img
-                                    src={`/storage/${course.image}`}
-                                    alt=""
-                                    className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                                />
-                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                    {course.category.name}
-                                </span>
-                                <h1 className="my-3 font-medium text-lg">
-                                    {course.title}
-                                </h1>
-                                <div className="flex items-center gap-1 text-sm py-2">
-                                    <Users size={16} /> {course.purchases_count}{" "}
-                                    students enrolled
-                                </div>
-                                <div className="flex items-center gap-1 text-sm py-2">
-                                    <Clock size={16} /> 18 hours long
-                                </div>
-                                <div className="py-3">
-                                    <div className="flex justify-between">
-                                        <h1 className="text-gray-700">
-                                            Progress
-                                        </h1>
-                                        <p className="text-black font-medium">
-                                            0%
-                                        </p>
+                {currentCourses.length > 0 ? (
+                    currentCourses.map((course) => (
+                        <Card
+                            key={course.id}
+                            className="relative bg-white border border-gray-600 shadow-lg rounded-lg"
+                        >
+                            <CardContent className="p-4">
+                                <div>
+                                    <img
+                                        src={`/storage/${course.image}`}
+                                        alt={course.title}
+                                        className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
+                                    />
+                                    <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                        {course.category.name}
+                                    </span>
+                                    <h1 className="my-3 font-medium text-lg">
+                                        {course.title}
+                                    </h1>
+                                    <div className="flex items-center gap-1 text-sm py-2">
+                                        <Users size={16} />{" "}
+                                        {course.purchases_count} students
+                                        enrolled
                                     </div>
-                                    <Progress value={0} className="mt-2" />
+                                    <div className="flex items-center gap-1 text-sm py-2">
+                                        <Clock size={16} /> 18 hours long
+                                    </div>
+                                    <div className="py-3">
+                                        <div className="flex justify-between">
+                                            <h1 className="text-gray-700">
+                                                Progress
+                                            </h1>
+                                            <p className="text-black font-medium">
+                                                0%
+                                            </p>
+                                        </div>
+                                        <Progress value={0} className="mt-2" />
+                                    </div>
+                                    <Link to={`/course/${course.id}`}>
+                                        <Button className="w-full mt-3">
+                                            Enroll Now
+                                        </Button>
+                                    </Link>
                                 </div>
-                                <Link to={`/course/${course.id}`}>
-                                    <Button className="w-full mt-3">
-                                        Enroll Now
-                                    </Button>
-                                </Link>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                            </CardContent>
+                        </Card>
+                    ))
+                ) : (
+                    <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-2">
+                        <img
+                            src={Empty}
+                            alt="No courses"
+                            className="w-32 h-32 mb-4 object-contain"
+                        />
+                        <h2 className="text-xl font-semibold mb-2">
+                            No Courses Found
+                        </h2>
+                        <p className="text-gray-500 text-center">
+                            Sorry, there are no courses available for this
+                            category right now. Please check back later or
+                            select a different category.
+                        </p>
+                    </div>
+                )}
             </div>
             <div className="my-4">
                 <Pagination className="text-accentRed">

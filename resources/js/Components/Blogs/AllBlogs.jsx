@@ -9,7 +9,7 @@ import {
     PaginationPrevious,
 } from "@/Components/ui/pagination";
 import { Card, CardContent } from "@/components/ui/card";
-import BlogImg from "../../../assets/Blog.jpg";
+import Empty from "../../../assets/Empty.png";
 import { Link } from "react-router-dom";
 import {
     Select,
@@ -88,75 +88,104 @@ export default function AllBlogs() {
         return `${minutes} min${minutes > 1 ? "s" : ""} read`;
     }
 
+    const selectedCategoryName = selectedCategory
+        ? categories.find((cat) => cat.id === selectedCategory)?.name
+        : null;
+
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-2 md:mb-0">
                 <div>
                     <h2 className="text-xl md:text-2xl font-medium relative inline-block">
-                        All Blogs
+                        {selectedCategoryName
+                            ? `${selectedCategoryName} Blogs`
+                            : "All Blogs"}
                     </h2>
                     <div className="flex items-center">
                         <div className="w-10 md:w-20 h-[2px] bg-accentRed"></div>
                         <div className="w-1 h-1 bg-accentRed rounded-full ml-2"></div>
                     </div>
                 </div>
-                <Select>
+                <Select
+                    value={selectedCategory ? String(selectedCategory) : "all"}
+                    onValueChange={(value) => {
+                        if (value === "all") {
+                            setSelectedCategory(null);
+                        } else {
+                            setSelectedCategory(Number(value));
+                        }
+                        setCurrentPage(1);
+                    }}
+                >
                     <SelectTrigger className="w-[180px] border-gray-700">
                         <SelectValue placeholder="Filter By Categories" />
                     </SelectTrigger>
+
                     <SelectContent>
-                        {categories.map((category) => (
-                            <SelectItem value={category.name}>
-                                <button
-                                    key={category.id}
-                                    onClick={() => {
-                                        setSelectedCategory(category.id);
-                                        setCurrentPage(1);
-                                    }}
-                                >
-                                    {category.name}
-                                </button>
+                        <SelectItem value="all">All</SelectItem>
+
+                        {categories.map((cat) => (
+                            <SelectItem key={cat.id} value={String(cat.id)}>
+                                {cat.name}
                             </SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {currentBlogs.map((blog) => (
-                    <div className="p-1 mt-4 md:mt-8">
-                        {blog.cover && (
-                            <img
-                                src={`/storage/${blog.cover}`}
-                                alt={blog.title}
-                                className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
-                            />
-                        )}
-                        <Link to={`/blog/${blog.id}`}>
-                            <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
-                                <CardContent className="p-4">
-                                    <div>
-                                        <div className="flex justify-between">
-                                            <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                                {blog.category.name}
-                                            </span>
-                                            <p className="text-sm text-gray-600">
-                                                {getReadingTime(
-                                                    blog?.paragraph
-                                                )}
-                                            </p>
+                {currentBlogs.length > 0 ? (
+                    currentBlogs.map((blog) => (
+                        <div className="p-1 mt-4 md:mt-8">
+                            {blog.cover && (
+                                <img
+                                    src={`/storage/${blog.cover}`}
+                                    alt={blog.title}
+                                    className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
+                                />
+                            )}
+                            <Link to={`/blog/${blog.id}`}>
+                                <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
+                                    <CardContent className="p-4">
+                                        <div>
+                                            <div className="flex justify-between">
+                                                <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                    {blog.category.name}
+                                                </span>
+                                                <p className="text-sm text-gray-600">
+                                                    {getReadingTime(
+                                                        blog?.paragraph
+                                                    )}
+                                                </p>
+                                            </div>
+                                            <h1 className="my-2 font-medium text-lg">
+                                                {blog.title}
+                                            </h1>
+                                            <div className="text-sm line-clamp-4">
+                                                {stripHtml(blog.paragraph)}
+                                            </div>
                                         </div>
-                                        <h1 className="my-2 font-medium text-lg">
-                                            {blog.title}
-                                        </h1>
-                                        <div className="text-sm line-clamp-4">
-                                            {stripHtml(blog.paragraph)}
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </Link>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        </div>
+                    ))
+                ) : (
+                    <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-5">
+                        <img
+                            src={Empty}
+                            alt="No blogs"
+                            className="w-32 h-32 mb-4 object-contain"
+                        />
+                        <h2 className="text-xl font-semibold mb-2">
+                            No Blogs Found
+                        </h2>
+                        <p className="text-gray-500 text-center">
+                            Sorry, there are no blogs available for this
+                            category right now. Please check back later or
+                            select a different category.
+                        </p>
                     </div>
-                ))}
+                )}
             </div>
             <div className="my-4">
                 <Pagination className="text-accentRed">
