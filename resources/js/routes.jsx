@@ -36,6 +36,7 @@ import CreateQuiz from "./Components/Admin/CreateQuiz";
 import Quiz from "./Pages/Quiz";
 import Dashboard from "./Components/Admin/Dashboard";
 import ReviewModal from "./Components/ReviewModal";
+import ThankYou from "./Components/Checkout/ThankYou";
 
 const routes = createBrowserRouter([
     {
@@ -65,6 +66,10 @@ const routes = createBrowserRouter([
             {
                 path: "/checkout",
                 element: <Checkout />,
+            },
+            {
+                path: "/thank-you",
+                element: <ThankYou />,
             },
             {
                 path: "/course/:id", //it should be course name

@@ -204,15 +204,21 @@ export default function Subscribers() {
                                             <Ellipsis size={20} />
                                         </button>
                                     </DropdownMenuTrigger>
+
                                     <DropdownMenuContent
                                         align="end"
                                         className="w-40"
                                     >
-                                        <Link to="">
-                                            <DropdownMenuItem className="text-accentGreen">
-                                                View Profile
-                                            </DropdownMenuItem>
-                                        </Link>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                navigator.clipboard.writeText(
+                                                    subscriber.email
+                                                )
+                                            }
+                                            className="cursor-pointer"
+                                        >
+                                            Copy Email
+                                        </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </li>

@@ -138,7 +138,7 @@ export default function CheckoutForm() {
             if (res.data.message === "Course purchased successfully.") {
                 localStorage.removeItem("enrolledCourses");
                 localStorage.removeItem("invoiceNumber");
-                navigate("/");
+                navigate("/thank-you");
             }
         } catch (error) {
             console.error("Error while purchasing:", error);

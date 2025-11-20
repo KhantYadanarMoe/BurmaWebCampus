@@ -205,9 +205,8 @@ export default function AdminProfile() {
                 const data = error.response.data;
 
                 if (data.errors) {
-                    setPasswordErrors(data.errors); // Object with field errors
+                    setPasswordErrors(data.errors);
                 } else if (data.message) {
-                    // Wrap single message into an object keyed by a general field or 'form'
                     setPasswordErrors({ general: [data.message] });
                 } else {
                     setPasswordErrors({});
@@ -283,6 +282,11 @@ export default function AdminProfile() {
                                 } mt-1`}
                                 placeholder="Enter your first name"
                             />
+                            {errors.firstName && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.firstName[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="my-3 md:w-1/2">
                             <Label>Last Name</Label>
@@ -299,6 +303,11 @@ export default function AdminProfile() {
                                 } mt-1`}
                                 placeholder="Enter your last name"
                             />
+                            {errors.lastName && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.lastName[0]}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className="md:flex gap-2">
@@ -317,6 +326,11 @@ export default function AdminProfile() {
                                 onChange={handleInputChange}
                                 placeholder="Enter your email"
                             />
+                            {errors.email && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.email[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="my-3 md:w-1/2">
                             <Label>Phone</Label>
@@ -333,6 +347,11 @@ export default function AdminProfile() {
                                         : "border-gray-500"
                                 } mt-1`}
                             />
+                            {errors.phone && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.phone[0]}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className="flex justify-end mt-3">
@@ -356,11 +375,16 @@ export default function AdminProfile() {
                                 darkMode ? "border-gray-300" : "border-gray-500"
                             } mt-1`}
                         />
-                        {passwordErrors.general && (
-                            <p className="text-red-500 mt-1 text-sm">
-                                {passwordErrors.general[0]}
+                        {passwordErrors.currentPassword?.map((err, i) => (
+                            <p key={i} className="text-red-500 mt-1 text-sm">
+                                {err}
                             </p>
-                        )}
+                        ))}
+                        {passwordErrors.general?.map((err, i) => (
+                            <p key={i} className="text-red-500 mt-1 text-sm">
+                                {err}
+                            </p>
+                        ))}
                     </div>
                     <div className="md:flex gap-2">
                         <div className="my-3 md:w-1/2">
@@ -378,11 +402,14 @@ export default function AdminProfile() {
                                         : "border-gray-500"
                                 } mt-1`}
                             />
-                            {passwordErrors.confirmPassword && (
-                                <p className="text-red-500 mt-1 text-sm">
-                                    {passwordErrors.confirmPassword}
+                            {passwordErrors.newPassword?.map((err, i) => (
+                                <p
+                                    key={i}
+                                    className="text-red-500 mt-1 text-sm"
+                                >
+                                    {err}
                                 </p>
-                            )}
+                            ))}
                         </div>
                         <div className="my-3 md:w-1/2">
                             <Label>Confirm Password</Label>
@@ -399,6 +426,14 @@ export default function AdminProfile() {
                                         : "border-gray-500"
                                 } mt-1`}
                             />
+                            {passwordErrors.confirmPassword?.map((err, i) => (
+                                <p
+                                    key={i}
+                                    className="text-red-500 mt-1 text-sm"
+                                >
+                                    {err}
+                                </p>
+                            ))}
                         </div>
                     </div>
                     <div className="flex justify-end">

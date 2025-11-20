@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function ReviewModal() {
     const [rating, setRating] = useState(0);
+    const [courses, setCourses] = useState([]);
 
     const [form, setForm] = useState({
         name: "",
@@ -35,6 +36,19 @@ export default function ReviewModal() {
     const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
+
+    const getCourses = async () => {
+        try {
+            const res = await axios.get("/api/courses");
+            setCourses(res.data.courses);
+        } catch (error) {
+            console.error("Failed to fetch courses:", error);
+        }
+    };
+
+    useEffect(() => {
+        getCourses();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -158,36 +172,14 @@ export default function ReviewModal() {
                             </SelectTrigger>
 
                             <SelectContent className="w-96 max-h-60">
-                                <SelectItem value="1">
-                                    HTML & CSS Fundamentals
-                                </SelectItem>
-                                <SelectItem value="2">
-                                    JavaScript & DOM Manipulation
-                                </SelectItem>
-                                <SelectItem value="3">
-                                    React.js & Next.js Development
-                                </SelectItem>
-                                <SelectItem value="4">
-                                    Backend with Node.js & Express
-                                </SelectItem>
-                                <SelectItem value="5">
-                                    Database Design (MongoDB / SQL)
-                                </SelectItem>
-                                <SelectItem value="6">
-                                    Full Stack Web Development
-                                </SelectItem>
-                                <SelectItem value="7">
-                                    API Integration & RESTful Services
-                                </SelectItem>
-                                <SelectItem value="8">
-                                    UI/UX for Web Developers
-                                </SelectItem>
-                                <SelectItem value="9">
-                                    Tailwind CSS & Responsive Design
-                                </SelectItem>
-                                <SelectItem value="10">
-                                    Deployment & DevOps Basics
-                                </SelectItem>
+                                {courses.map((course) => (
+                                    <SelectItem
+                                        key={course.id}
+                                        value={String(course.id)}
+                                    >
+                                        {course?.title}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
