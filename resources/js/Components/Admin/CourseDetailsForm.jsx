@@ -33,7 +33,7 @@ export default function CourseDetailsForm() {
 
     // --- outline structure ---
     const [outlines, setOutlines] = useState([
-        { title: "", sublectures: [{ subtitle: "", files: [] }] },
+        { title: "", sublectures: [{ subtitle: "", video_url: "" }] },
     ]);
 
     // --- restore saved outlines from localStorage ---
@@ -63,11 +63,9 @@ export default function CourseDetailsForm() {
         setOutlines(updated);
     };
 
-    // --- handle file upload ---
-    const handleFileUpload = (outlineIndex, subIndex, e) => {
-        const files = Array.from(e.target.files);
+    const handleVideoUrlChange = (outlineIndex, subIndex, value) => {
         const updated = [...outlines];
-        updated[outlineIndex].sublectures[subIndex].files = files;
+        updated[outlineIndex].sublectures[subIndex].video_url = value;
         setOutlines(updated);
     };
 
@@ -82,7 +80,8 @@ export default function CourseDetailsForm() {
     // --- add new sublecture (chapter) under an outline ---
     const addSublecture = (outlineIndex) => {
         const updated = [...outlines];
-        updated[outlineIndex].sublectures.push({ subtitle: "", files: [] });
+        updated[outlineIndex].sublectures.push({ subtitle: "", video_url: "" });
+
         setOutlines(updated);
     };
 
@@ -109,7 +108,7 @@ export default function CourseDetailsForm() {
             title: outline.title,
             sublectures: outline.sublectures.map((sub) => ({
                 subtitle: sub.subtitle,
-                fileName: sub.files[0]?.name || null,
+                video_url: sub.video_url || "",
             })),
         }));
 
@@ -314,64 +313,22 @@ export default function CourseDetailsForm() {
                                                     />
                                                 </div>
                                                 <div className="w-full md:w-1/3">
-                                                    <div
-                                                        className={`flex items-center justify-center gap-2 border ${
+                                                    <Input
+                                                        value={sub.video_url}
+                                                        onChange={(e) =>
+                                                            handleVideoUrlChange(
+                                                                outlineIndex,
+                                                                subIndex,
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        placeholder="YouTube video URL"
+                                                        className={`${
                                                             darkMode
                                                                 ? "border-gray-200"
                                                                 : "border-gray-400"
-                                                        } p-2 rounded-md cursor-pointer`}
-                                                    >
-                                                        <FilePlus2
-                                                            size={20}
-                                                            className={`${
-                                                                darkMode
-                                                                    ? "text-gray-400"
-                                                                    : "text-gray-700"
-                                                            }`}
-                                                        />
-                                                        <Label
-                                                            htmlFor={`lecture-upload-${outlineIndex}-${subIndex}`}
-                                                            className={`cursor-pointer ${
-                                                                darkMode
-                                                                    ? "text-gray-400"
-                                                                    : "text-gray-700"
-                                                            }`}
-                                                        >
-                                                            <p className="hidden md:block">
-                                                                {outline
-                                                                    .sublectures[
-                                                                    subIndex
-                                                                ].files.length >
-                                                                0
-                                                                    ? outline.sublectures[
-                                                                          subIndex
-                                                                      ].files
-                                                                          .map(
-                                                                              (
-                                                                                  f
-                                                                              ) =>
-                                                                                  f.name
-                                                                          )
-                                                                          .join(
-                                                                              ", "
-                                                                          )
-                                                                    : "Add Files / Media"}
-                                                            </p>
-                                                        </Label>
-                                                        <Input
-                                                            id={`lecture-upload-${outlineIndex}-${subIndex}`}
-                                                            type="file"
-                                                            multiple
-                                                            onChange={(e) =>
-                                                                handleFileUpload(
-                                                                    outlineIndex,
-                                                                    subIndex,
-                                                                    e
-                                                                )
-                                                            }
-                                                            className="hidden"
-                                                        />
-                                                    </div>
+                                                        }`}
+                                                    />
                                                 </div>
                                             </div>
                                         )

@@ -67,7 +67,7 @@ export default function AdminSidebar({
                         >
                             Home
                         </h2>
-                        <Link to="/admin/dashboard">
+                        <Link to="/admin">
                             <div
                                 className={`flex items-center gap-3 px-5 py-3 rounded-lg hover:bg-gray-100 text-black border-l-4 ${
                                     darkMode

@@ -76,7 +76,8 @@ export default function Reviews() {
                                                             Review to:
                                                         </p>
                                                         <p className="text-xs text-gray-800 font-medium">
-                                                            {review.course_id}
+                                                            {review.course
+                                                                ?.title || ""}
                                                         </p>
                                                     </div>
                                                 </div>

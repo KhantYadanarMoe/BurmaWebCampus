@@ -201,11 +201,13 @@ export default function Details() {
                         </div>
                     </div>
                     {/* video */}
-                    <img
-                        src={Course}
-                        alt=""
-                        className="w-full h-64 md:h-96 object-cover my-5"
-                    />
+                    <iframe
+                        src="https://www.youtube.com/embed/{{ $subtitle->video_path }}"
+                        width="100%"
+                        height="450"
+                        frameborder="0"
+                        allowfullscreen
+                    ></iframe>
 
                     {/* <div className="my-3">
                         <h1 className="text-lg font-medium">Resources</h1>

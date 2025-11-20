@@ -36,7 +36,7 @@ export default function RelatedBlogs() {
         const minutes = Math.ceil(words / wordsPerMinute);
         return `${minutes} min${minutes > 1 ? "s" : ""} read`;
     }
-    
+
     return (
         <div className="px-4 md:px-5 lg:px-8 pb-8">
             <hr className="my-5 border-t-gray-500" />
@@ -45,7 +45,7 @@ export default function RelatedBlogs() {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {randomBlogs.map((blog) => (
-                    <div className="p-1 mt-4 md:mt-6">
+                    <Link to={`/blog/${blog.id}`} className="p-1 mt-4 md:mt-6">
                         <img
                             src={`/storage/${blog.cover}`}
                             alt={blog.title}
@@ -78,7 +78,7 @@ export default function RelatedBlogs() {
                                 </CardContent>
                             </Card>
                         </Link>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>

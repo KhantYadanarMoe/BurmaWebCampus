@@ -41,7 +41,7 @@ class ReviewController extends Controller
 
     public function index(Request $request){
         $sort = $request->query('sort', 'newest'); 
-        $query = Review::query();
+        $query = Review::with('course');
 
         switch ($sort) {
             case 'oldest':
@@ -65,7 +65,7 @@ class ReviewController extends Controller
                 break;
         }
 
-        $reviews = $query->latest()->get();
+        $reviews = $query->get();
 
         // send data to frontend
         return response()->json([

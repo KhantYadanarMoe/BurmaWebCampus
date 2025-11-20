@@ -114,6 +114,11 @@ export default function Navbar() {
                                     {/* Dropdown Menu */}
                                     {dropdownOpen && (
                                         <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg z-50">
+                                            <Link to="/user">
+                                                <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                                                    Profile
+                                                </button>
+                                            </Link>
                                             <button
                                                 onClick={logout}
                                                 className="w-full text-left px-4 py-2 hover:bg-gray-100"

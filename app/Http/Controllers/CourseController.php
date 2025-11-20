@@ -10,70 +10,67 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function store(Request $request){
-        $details = json_decode($request->input('details', '[]'), true);
-        $quiz = json_decode($request->input('quiz', '[]'), true);
+   public function store(Request $request){
+    $details = json_decode($request->input('details', '[]'), true);
+    $quiz = json_decode($request->input('quiz', '[]'), true);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            if ($file->isValid()) {
-                $imagePath = $file->store('course_images', 'public');
-            }
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        if ($file->isValid()) {
+            $imagePath = $file->store('course_images', 'public');
         }
+    }
 
-        // 2️⃣ Save main course
-        $course = Courses::create([
-            'title' => $request->input('title', ''),
-            'category_id' => $request->input('category', 1), // make sure this is ID
-            'price' => $request->input('price', 0),
-            'description' => $request->input('description', ''),
-            'outcomes' => $request->input('outcomes', ''),
-            'image'   => $imagePath, 
-        ]);
+    $course = Courses::create([
+        'title' => $request->input('title', ''),
+        'category_id' => $request->input('category', 1),
+        'price' => $request->input('price', 0),
+        'description' => $request->input('description', ''),
+        'outcomes' => $request->input('outcomes', ''),
+        'image'   => $imagePath, 
+    ]);
 
-        
-        foreach ($details as $unit) {
-        // Create the outline (Unit)
+    foreach ($details as $unit) {
         $outline = $course->outlines()->create([
             'title' => $unit['title'] ?? '',
         ]);
 
         foreach ($unit['sublectures'] ?? [] as $sub) {
-        $videoPath = null;
-
-        // Check if frontend uploaded a file for this subtitle
-        if (!empty($sub['upload_key']) && $request->hasFile($sub['upload_key'])) {
-                $file = $request->file($sub['upload_key']);
-                if ($file->isValid()) {
-                    $videoPath = $file->store('videos', 'public'); // stored in storage/app/public/videos
-                }
-            }
+            $youtubeId = $this->extractYoutubeId($sub['video_url'] ?? '');
 
             $outline->subtitles()->create([
                 'subtitle' => $sub['subtitle'] ?? '',
-                'video_path' => $videoPath,
+                'video_path' => $youtubeId,  // store YouTube video ID
             ]);
         }
-
-        }
-
-        // 4️⃣ Save quizzes
-        foreach ($quiz as $q) {
-            $quizModel = $course->quizzes()->create([
-                'question' => $q['question'] ?? ''
-            ]);
-
-            foreach ($q['options'] ?? [] as $opt) {
-                $quizModel->options()->create([
-                    'option_text' => $opt['text'] ?? '',
-                    'is_correct' => $opt['correct'] ?? false
-                ]);
-            }
-        }
-
-        return response()->json(['success' => true]);
     }
+
+    foreach ($quiz as $q) {
+        $quizModel = $course->quizzes()->create([
+            'question' => $q['question'] ?? '',
+        ]);
+
+        foreach ($q['options'] ?? [] as $opt) {
+            $quizModel->options()->create([
+                'option_text' => $opt['text'] ?? '',
+                'is_correct' => $opt['correct'] ?? false,
+            ]);
+        }
+    }
+
+    return response()->json(['success' => true]);
+}
+
+    private function extractYoutubeId($url){
+        if (!$url) return null;
+
+        // Match different YouTube URL formats
+        preg_match('/(youtu\.be\/|v=|embed\/)([^&?\/]+)/', $url, $matches);
+
+        return $matches[2] ?? null;
+    }
+
  
     public function index(Request $request){
         // Get the sort option from query params, default to 'newest'

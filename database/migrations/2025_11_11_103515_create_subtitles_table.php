@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('course_outline_id')->constrained('course_outlines')->onDelete('cascade');
             $table->string('subtitle'); 
-            $table->string('video_path')->nullable(); 
+            $table->string('video_path')->nullable();
             $table->timestamps();
         });
     }

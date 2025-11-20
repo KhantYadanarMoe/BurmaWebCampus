@@ -134,7 +134,7 @@ export default function QuizDetails() {
     return (
         <div className="md:flex gap-3 px-5 lg:px-8">
             <div className="md:w-2/3">
-                <div className="flex gap-1 items-end text-gray-800 my-3 text-sm md:text-base">
+                <div className="hidden md:flex gap-1 items-end text-gray-800 my-3 text-sm md:text-base">
                     <Link to={`/course/${course?.id}/details`}>
                         {course?.title}
                     </Link>
@@ -235,9 +235,7 @@ export default function QuizDetails() {
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>
-                            {typeof alertMessage === "string"
-                                ? "Notice." // show Notice only for warning messages
-                                : ""}
+                            {typeof alertMessage === "string" ? "Notice." : ""}
                         </AlertDialogTitle>
                     </AlertDialogHeader>
                     <AlertDialogDescription>

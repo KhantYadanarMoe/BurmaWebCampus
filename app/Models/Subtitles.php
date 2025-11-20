@@ -23,10 +23,11 @@ public function course() {
     return $this->hasOneThrough(
         Courses::class,
         CourseOutline::class,
-        'id',             // Foreign key on CourseOutline table...
-        'id',             // Foreign key on Courses table...
-        'course_outline_id', // Local key on Subtitles table
-        'course_id'       // Local key on CourseOutline table
+        'id',             
+        'id',            
+        'course_outline_id', 
+        'course_id' ,
+        'youtube_video_id',     
     );
 }
 
