@@ -5,6 +5,14 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Mail, Phone } from "lucide-react";
 import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
+import {
     FaFacebook,
     FaInstagram,
     FaTwitter,
@@ -25,6 +33,8 @@ export default function Contact() {
     });
 
     const [errors, setErrors] = useState({});
+
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
     const navigate = useNavigate();
 
@@ -72,6 +82,7 @@ export default function Contact() {
                     phone: "",
                     message: "",
                 });
+                setShowSuccessDialog(true);
                 navigate("/");
             }
         } catch (error) {
@@ -85,7 +96,6 @@ export default function Contact() {
 
     return (
         <div className="px-5 lg:px-8 pb-8 pt-5 md:pt-8 md:flex items-center gap-3 lg:gap-5">
-            {/* Text section */}
             <div className="md:w-1/2 order-1 md:order-2">
                 <div className="my-5">
                     <h2 className="font-semibold mb-1 relative inline-block">
@@ -135,7 +145,6 @@ export default function Contact() {
                 </div>
             </div>
 
-            {/* Form section */}
             <form action="" className="md:w-1/2 order-2 md:order-1">
                 <div className="md:w-[95%] mx-auto">
                     <div className="my-3">
@@ -211,6 +220,28 @@ export default function Contact() {
                     </Button>
                 </div>
             </form>
+
+            <AlertDialog
+                open={showSuccessDialog}
+                onOpenChange={setShowSuccessDialog}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Thank you for contacting us!
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Your contact message was sent successfully! We'll
+                            contact you soon.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <Button onClick={() => setShowSuccessDialog(false)}>
+                            OK
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

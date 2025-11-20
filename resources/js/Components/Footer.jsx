@@ -6,6 +6,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { useState } from "react";
 import axios from "axios";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 export default function Footer() {
     const [form, setForm] = useState({
@@ -13,6 +21,8 @@ export default function Footer() {
     });
 
     const [errors, setErrors] = useState({});
+
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
     const navigate = useNavigate();
 
@@ -54,6 +64,8 @@ export default function Footer() {
                 setForm({
                     email: "",
                 });
+                setErrors({});
+                setShowSuccessDialog(true);
                 navigate("/");
             }
         } catch (error) {
@@ -81,13 +93,18 @@ export default function Footer() {
                             value={form.email}
                             onChange={handleInputChange}
                             type="text"
-                            className="border-gray-400 mt-1"
+                            className="border-gray-400"
                             placeholder="Enter your email"
                         />
                         <Button type="submit" onClick={submit}>
                             Subscribe
                         </Button>
                     </div>
+                    {errors.email && (
+                        <p className="text-red-500 text-sm">
+                            {errors.email[0]}
+                        </p>
+                    )}
                 </div>
                 <div className="hidden md:block md:w-1/2 lg:w-1/3">
                     <ul className="flex space-x-5 items-center justify-end mr-4">
@@ -126,6 +143,26 @@ export default function Footer() {
             <p className="text-gray-700 text-sm py-3">
                 &copy; 2025 Khart. All rights reserved.
             </p>
+            <AlertDialog
+                open={showSuccessDialog}
+                onOpenChange={setShowSuccessDialog}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Thank you for subscribing!
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Now you'll know the every update of us.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <Button onClick={() => setShowSuccessDialog(false)}>
+                            OK
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
