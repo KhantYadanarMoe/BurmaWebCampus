@@ -172,7 +172,7 @@ const routes = createBrowserRouter([
                 element: <BlogForm />,
             },
             {
-                path: "/admin/blogs/:id/edit",
+                path: "/admin/blogs/:slug/edit",
                 element: <BlogForm />,
             },
             {

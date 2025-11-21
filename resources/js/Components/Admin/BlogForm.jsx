@@ -21,7 +21,7 @@ import { Switch } from "../ui/switch";
 export default function BlogForm() {
     let [categories, setCategories] = useState([]);
 
-    let { id } = useParams();
+    let { slug } = useParams();
     let [isEdit, setIsEdit] = useState(false);
 
     const [cover, setCover] = useState(null);
@@ -81,19 +81,31 @@ export default function BlogForm() {
     }, []);
 
     useEffect(() => {
-        console.log(id);
-        setIsEdit(!!id);
-    }, [id]);
+        setIsEdit(!!slug);
+    }, [slug]);
 
-    let getDetails = async (id) => {
-        let res = await fetch("/api/blog/" + id);
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
+    let getDetails = async () => {
+        let res = await fetch("/api/blogs");
         let data = await res.json();
-        setBlogDetails(data.blog);
+
+        const blog = data.blogs.find((b) => slugify(b.title) === slug);
+
+        setBlogDetails(blog);
     };
 
     useEffect(() => {
-        getDetails(id);
-    }, [id]);
+        if (slug) {
+            setIsEdit(true);
+            getDetails();
+        }
+    }, [slug]);
 
     useEffect(() => {
         if (blogDetail) {

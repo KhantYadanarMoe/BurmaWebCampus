@@ -89,6 +89,13 @@ export default function BlogsList() {
         }
     };
 
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     const handleFilterChange = (filterValue) => {
         setSelectedFilter(filterValue);
 
@@ -357,7 +364,9 @@ export default function BlogsList() {
                                                 </Link>
                                                 <DropdownMenuItem>
                                                     <Link
-                                                        to={`/admin/blogs/${blog.id}/edit`}
+                                                        to={`/admin/blogs/${slugify(
+                                                            blog.title
+                                                        )}/edit`}
                                                     >
                                                         Edit
                                                     </Link>
