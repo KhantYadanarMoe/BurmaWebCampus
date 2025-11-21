@@ -30,6 +30,8 @@ export default function BlogDetails() {
             }
         };
 
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
         getDetails();
         incrementView();
     }, [id]);
