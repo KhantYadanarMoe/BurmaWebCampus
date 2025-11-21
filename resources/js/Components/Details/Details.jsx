@@ -34,7 +34,7 @@ dayjs.extend(relativeTime);
 export default function Details() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [showReply, setShowReply] = useState(false);
-    const { id } = useParams();
+    const { courseId, subtitleId } = useParams();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
@@ -50,7 +50,7 @@ export default function Details() {
     useEffect(() => {
         const getDetails = async () => {
             try {
-                const res = await axios.get(`/api/course/${id}`);
+                const res = await axios.get(`/api/course/${courseId}`);
                 setCourse(res.data.course);
             } catch (err) {
                 console.error("Error fetching course:", err);
@@ -59,16 +59,34 @@ export default function Details() {
             }
         };
         getDetails();
-    }, [id]);
+    }, [courseId]);
+
+    useEffect(() => {
+        if (!course) return;
+
+        if (!subtitleId) {
+            const firstOutline = course.outlines[0];
+
+            const firstSubtitle = firstOutline.subtitles[0];
+
+            navigate(`/course/${courseId}/details/${firstSubtitle.id}`, {
+                replace: true,
+            });
+        }
+    }, [course, subtitleId]);
+
+    const selectedSubtitle = course?.outlines
+        ?.flatMap((outline) => outline.subtitles)
+        .find((sub) => sub.id.toString() === subtitleId);
 
     // Fetch comments whenever selected subtitle changes
     useEffect(() => {
-        if (!form.subtitle_id) return;
+        if (!subtitleId) return;
 
         const fetchComments = async () => {
             try {
                 const res = await axios.get(
-                    `/api/subtitle/${form.subtitle_id}/comments`
+                    `/api/subtitle/${subtitleId}/comments`
                 );
                 setComments(res.data.comments);
             } catch (err) {
@@ -77,6 +95,16 @@ export default function Details() {
         };
         fetchComments();
     }, [form.subtitle_id]);
+
+    useEffect(() => {
+        if (subtitleId) {
+            setForm((prev) => ({
+                ...prev,
+                subtitle_id: subtitleId,
+                parent_id: null,
+            }));
+        }
+    }, [subtitleId]);
 
     const formatDate = (date) => dayjs(date).format("D MMM YYYY, h:mm A");
 
@@ -200,12 +228,12 @@ export default function Details() {
                             </div>
                         </div>
                     </div>
-                    {/* video */}
                     <iframe
-                        src="https://www.youtube.com/embed/{{ $subtitle->video_path }}"
+                        src={`https://www.youtube.com/embed/${selectedSubtitle?.video_path}`}
                         width="100%"
                         height="450"
                         frameborder="0"
+                        className="mt-3 rounded-lg"
                         allowfullscreen
                     ></iframe>
 
@@ -260,12 +288,6 @@ export default function Details() {
                     <hr className="mt-7 border-t-gray-500" />
                     <div className="my-3">
                         <h1 className="text-lg font-medium mb-3">Comments</h1>
-                        <p className="text-sm text-gray-500">
-                            Commenting on subtitle:{" "}
-                            {form.subtitle_id
-                                ? `#${form.subtitle_id}`
-                                : "(not selected)"}
-                        </p>
 
                         <div className="my-3 px-3 md:px-4 py-3 md:py-4 border border-gray-300 rounded-md shadow-lg">
                             <Textarea
@@ -497,11 +519,9 @@ export default function Details() {
                                                         key={sub.id}
                                                         className="flex gap-2 items-center py-2"
                                                         onClick={() =>
-                                                            setForm((prev) => ({
-                                                                ...prev,
-                                                                subtitle_id:
-                                                                    sub.id,
-                                                            }))
+                                                            navigate(
+                                                                `/course/${courseId}/details/${sub.id}`
+                                                            )
                                                         }
                                                     >
                                                         <p className="px-4 py-2 rounded-full border-2 border-gray-800">

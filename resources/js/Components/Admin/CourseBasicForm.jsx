@@ -15,6 +15,14 @@ import CourseImg from "../../../assets/Courses.jpg";
 import { Textarea } from "../ui/textarea";
 import { Card, CardContent } from "../ui/card";
 import axios from "axios";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function CourseBasicForm() {
     const { darkMode } = useOutletContext();
@@ -25,6 +33,8 @@ export default function CourseBasicForm() {
 
     const [categories, setCategories] = useState([]);
     const [errors, setErrors] = useState({});
+
+    const [showWarningDialog, setShowWarningDialog] = useState(false);
 
     const [form, setForm] = useState({
         image: null,
@@ -72,17 +82,6 @@ export default function CourseBasicForm() {
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    // --- handle image upload ---
-    // const handleImage = (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         const previewUrl = URL.createObjectURL(file);
-    //         setImageFile(file);
-    //         setImagePreview(previewUrl);
-    //         setForm((prev) => ({ ...prev, imagePreview: previewUrl }));
-    //     }
-    // };
-
     const handleImage = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -103,7 +102,7 @@ export default function CourseBasicForm() {
         e.preventDefault();
 
         if (!form.title || !form.category_id) {
-            alert("Please fill out required fields before continuing.");
+            setShowWarningDialog(true);
             return;
         }
 
@@ -337,6 +336,11 @@ export default function CourseBasicForm() {
                                     className="border-gray-400 mt-1"
                                     placeholder="Write the title of your course"
                                 />
+                                {errors.title && (
+                                    <p className="text-red-500 mt-1 text-sm">
+                                        {errors.title[0]}
+                                    </p>
+                                )}
                             </div>
                             <div className="my-3 md:w-1/2">
                                 <Label>Category</Label>
@@ -359,6 +363,11 @@ export default function CourseBasicForm() {
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {errors.category && (
+                                    <p className="text-red-500 mt-1 text-sm">
+                                        {errors.category[0]}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -373,6 +382,11 @@ export default function CourseBasicForm() {
                                 className="border-gray-400 mt-1"
                                 placeholder="Enter course price"
                             />
+                            {errors.price && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.price[0]}
+                                </p>
+                            )}
                         </div>
 
                         {/* Description */}
@@ -385,6 +399,11 @@ export default function CourseBasicForm() {
                                 className="border-gray-400 mt-1"
                                 placeholder="Explain about your course"
                             />
+                            {errors.description && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.description[0]}
+                                </p>
+                            )}
                         </div>
 
                         {/* Outcomes */}
@@ -397,6 +416,11 @@ export default function CourseBasicForm() {
                                 className="border-gray-400 mt-1"
                                 placeholder="Skills students will gain from this course"
                             />
+                            {errors.outcomes && (
+                                <p className="text-red-500 mt-1 text-sm">
+                                    {errors.outcomes[0]}
+                                </p>
+                            )}
                         </div>
 
                         <div className="flex justify-end">
@@ -469,6 +493,28 @@ export default function CourseBasicForm() {
                     </CardContent>
                 </Card>
             </div>
+            <AlertDialog
+                open={showWarningDialog}
+                onOpenChange={setShowWarningDialog}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Form Submission Incomplete
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            You tried to submit the form without filling in any
+                            data. Please enter the required information to
+                            create a course.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <Button onClick={() => setShowWarningDialog(false)}>
+                            OK
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

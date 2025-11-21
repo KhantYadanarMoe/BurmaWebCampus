@@ -311,7 +311,7 @@ export default function Reviews() {
                             </q>
                             <hr className="my-4 border-t-gray-400" />
                             <div className="flex items-center justify-between">
-                                <div className="flex gap-2 items-center">
+                                <div className="flex gap-2 items-center w-4/5">
                                     <img
                                         src={Profile}
                                         alt=""
@@ -321,9 +321,9 @@ export default function Reviews() {
                                         <h1 className="text-sm font-medium">
                                             {review.name}
                                         </h1>
-                                        <div className="flex gap-2 items-center mt-2">
+                                        <div className="flex gap-2 items-start mt-2">
                                             <p
-                                                className={`text-xs ${
+                                                className={`w-1/3 text-xs ${
                                                     darkMode
                                                         ? "text-gray-400"
                                                         : "text-gray-800"
@@ -332,28 +332,28 @@ export default function Reviews() {
                                                 Review to:
                                             </p>
                                             <p
-                                                className={`text-xs ${
+                                                className={`w-2/3 text-xs ${
                                                     darkMode
                                                         ? "text-gray-300"
                                                         : "text-gray-800"
                                                 } font-medium`}
                                             >
-                                                {review.course_id}
+                                                {review.course?.title || ""}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex gap-1 flex-col justify-end items-end">
+                                <div className="w-1/5 flex gap-1 flex-col justify-end items-end">
+                                    {Number(review.visibility) === 1 ? (
+                                        <span className="p-1 text-green-600 bg-green-100 text-xs rounded-md">
+                                            Published
+                                        </span>
+                                    ) : null}
                                     {Number(review.marked) === 1 ? (
                                         <Flag
                                             size={16}
                                             className="text-yellow-400 fill-yellow-400"
                                         />
-                                    ) : null}
-                                    {Number(review.visibility) === 1 ? (
-                                        <span className="p-1 text-green-600 bg-green-100 text-xs rounded-md">
-                                            Published
-                                        </span>
                                     ) : null}
                                 </div>
                             </div>
