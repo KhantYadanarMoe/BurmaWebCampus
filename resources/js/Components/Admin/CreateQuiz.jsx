@@ -37,7 +37,11 @@ export default function CreateQuiz() {
     const percent = 83; // final step
     const { darkMode } = useOutletContext();
     const navigate = useNavigate();
-    const [showAlert, setShowAlert] = useState(false);
+    const [alertDialog, setAlertDialog] = useState({
+        open: false,
+        title: "",
+        description: "",
+    });
 
     // --- Quiz structure ---
     const [questions, setQuestions] = useState([
@@ -126,7 +130,12 @@ export default function CreateQuiz() {
         const uploadedOutlines = getUploadedOutlines();
 
         if (!basic.title || details.length === 0 || quiz.length === 0) {
-            setShowAlert(true);
+            setAlertDialog({
+                open: true,
+                title: "Questions and Options Required",
+                description:
+                    "Please fill data for final quiz first before submitting.",
+            });
             return;
         }
 
@@ -194,15 +203,25 @@ export default function CreateQuiz() {
             });
 
             if (res.data.success) {
-                alert("Course created successfully!");
                 localStorage.removeItem("course_basic");
                 localStorage.removeItem("course_details");
                 localStorage.removeItem("course_quiz");
-                navigate("/admin/courses");
+                setAlertDialog({
+                    open: true,
+                    title: "Course Created Successfully!",
+                    description:
+                        "Your course is recorded in our database. Thank you!",
+                    onClose: () => navigate("/admin/courses"),
+                });
             }
         } catch (error) {
             console.error("Error creating course:", error);
-            alert("Failed to create course. Check console for details.");
+            setAlertDialog({
+                open: true,
+                title: "Failed to Create Course",
+                description:
+                    "An error occurred while creating the course. Check console for details.",
+            });
         }
     };
 
@@ -477,19 +496,31 @@ export default function CreateQuiz() {
                     </Button>
                 </div>
             </form>
-            <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+            <AlertDialog
+                open={alertDialog.open}
+                onOpenChange={(open) =>
+                    setAlertDialog((prev) => ({ ...prev, open }))
+                }
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Questions and Options Required
-                        </AlertDialogTitle>
+                        <AlertDialogTitle>{alertDialog.title}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Please fill data for final quiz first before
-                            submitting.
+                            {alertDialog.description}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <Button onClick={() => setShowAlert(false)}>OK</Button>
+                        <Button
+                            onClick={() => {
+                                setAlertDialog((prev) => ({
+                                    ...prev,
+                                    open: false,
+                                }));
+                                if (alertDialog.onClose) alertDialog.onClose();
+                            }}
+                        >
+                            OK
+                        </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
