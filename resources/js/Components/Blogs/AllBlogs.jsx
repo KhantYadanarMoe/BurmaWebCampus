@@ -46,6 +46,13 @@ export default function AllBlogs() {
         getCategories();
     }, []);
 
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     const getBlogs = async () => {
         try {
             const res = await axios.get("/api/blogs");
@@ -143,7 +150,7 @@ export default function AllBlogs() {
                                     className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
                                 />
                             )}
-                            <Link to={`/blog/${blog.id}`}>
+                            <Link to={`/blog/${slugify(blog.title)}`}>
                                 <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
                                     <CardContent className="p-4">
                                         <div>

@@ -60,7 +60,7 @@ const routes = createBrowserRouter([
                 element: <Blogs />,
             },
             {
-                path: "/blog/:id",
+                path: "/blog/:slug",
                 element: <Blog />,
             },
             {

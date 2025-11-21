@@ -6,15 +6,39 @@ import axios from "axios";
 import { useEffect } from "react";
 
 export default function BlogDetails() {
-    const { id } = useParams();
+    const { slug } = useParams();
     const [blog, setBlog] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Helper to create slug from title
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     useEffect(() => {
-        const getDetails = async () => {
+        const loadBlog = async () => {
             try {
-                const res = await axios.get(`/api/blog/${id}`);
-                setBlog(res.data.blog);
+                // 1) Fetch all blogs
+                const res = await axios.get("/api/blogs");
+                const blogs = res.data.blogs;
+
+                // 2) Find blog with matching slug
+                const found = blogs.find((b) => slugify(b.title) === slug);
+
+                if (!found) {
+                    setLoading(false);
+                    return;
+                }
+
+                // 3) Fetch full blog details using the ID
+                const detailRes = await axios.get(`/api/blog/${found.id}`);
+                setBlog(detailRes.data.blog);
+
+                // 4) Increment view
+                await axios.post(`/api/blog/${found.id}/view`);
             } catch (err) {
                 console.error("Error fetching blog:", err);
             } finally {
@@ -22,19 +46,9 @@ export default function BlogDetails() {
             }
         };
 
-        const incrementView = async () => {
-            try {
-                await axios.post(`/api/blog/${id}/view`);
-            } catch (err) {
-                console.error("Error incrementing view:", err);
-            }
-        };
-
         window.scrollTo({ top: 0, behavior: "smooth" });
-
-        getDetails();
-        incrementView();
-    }, [id]);
+        loadBlog();
+    }, [slug]);
 
     if (loading) return <p>Loading...</p>;
     if (!blog) return <p>Blog not found.</p>;

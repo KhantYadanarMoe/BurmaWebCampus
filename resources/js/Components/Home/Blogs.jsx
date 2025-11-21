@@ -45,6 +45,13 @@ export default function Blogs() {
         return tmp.textContent || tmp.innerText || "";
     }
 
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     function getReadingTime(content) {
         const wordsPerMinute = 200;
         const words = content.trim().split(/\s+/).length;
@@ -81,7 +88,9 @@ export default function Blogs() {
                                                 className="h-52 md:h-56 object-cover w-full rounded-lg border-2 border-gray-600"
                                             />
                                         )}
-                                        <Link to={`/blog/${blog.id}`}>
+                                        <Link
+                                            to={`/blog/${slugify(blog.title)}`}
+                                        >
                                             <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
                                                 <CardContent className="p-4">
                                                     <div>
