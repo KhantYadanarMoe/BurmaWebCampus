@@ -30,6 +30,13 @@ export default function Courses() {
         getCourses();
     }, []);
 
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     return (
         <div className="px-5 lg:px-8">
             <div className="pb-8 md:pb-12">
@@ -92,7 +99,9 @@ export default function Courses() {
                                                         />
                                                     </div>
                                                     <Link
-                                                        to={`/course/${course.id}`}
+                                                        to={`/course/${slugify(
+                                                            course.title
+                                                        )}`}
                                                     >
                                                         <Button className="w-full mt-3">
                                                             Enroll Now

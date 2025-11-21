@@ -72,6 +72,13 @@ export default function CoursesList() {
         getCategories();
     }, []);
 
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     const filteredCourses = selectedCategory
         ? courses.filter((course) => course.category?.id === selectedCategory)
         : courses;
@@ -333,7 +340,9 @@ export default function CoursesList() {
                                                 className="w-40"
                                             >
                                                 <Link
-                                                    to={`/course/${course.id}`}
+                                                    to={`/course/${slugify(
+                                                        course.title
+                                                    )}`}
                                                 >
                                                     <DropdownMenuItem className="text-accentGreen">
                                                         View Details

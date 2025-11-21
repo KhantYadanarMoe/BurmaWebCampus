@@ -43,6 +43,13 @@ export default function AllCourses() {
         }
     }, [defaultCategory]);
 
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     const getCourses = async () => {
         try {
             const res = await axios.get("/api/courses");
@@ -171,7 +178,9 @@ export default function AllCourses() {
                                         </div>
                                         <Progress value={0} className="mt-2" />
                                     </div>
-                                    <Link to={`/course/${course.id}`}>
+                                    <Link
+                                        to={`/course/${slugify(course.title)}`}
+                                    >
                                         <Button className="w-full mt-3">
                                             Enroll Now
                                         </Button>
