@@ -16,7 +16,7 @@ import { Button } from "../ui/button";
 import axios from "axios";
 
 export default function QuizDetails() {
-    const { id } = useParams();
+    const { slug } = useParams();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [alertOpen, setAlertOpen] = useState(false);
@@ -45,7 +45,7 @@ export default function QuizDetails() {
     useEffect(() => {
         const getDetails = async () => {
             try {
-                const res = await axios.get(`/api/course/${id}`);
+                const res = await axios.get(`/api/course/${slug}`);
                 setCourse(res.data.course);
             } catch (err) {
                 console.error("Error fetching course:", err);
@@ -55,7 +55,7 @@ export default function QuizDetails() {
         };
 
         getDetails();
-    }, [id]);
+    }, [slug]);
 
     const handleAnswer = (quizId) => {
         setAnsweredQuizzes((prev) => ({ ...prev, [quizId]: true }));

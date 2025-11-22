@@ -116,16 +116,29 @@ class CourseController extends Controller
         ]);
     }
 
-    public function show($id){
-        $course = Courses::with('category', 'outlines.subtitles', // outlines and their subtitles
-            'quizzes.options' )->withCount('purchases')->findOrFail($id); 
+    public function show($slug)
+{
+    // Convert the slug to lowercase and replace dashes with spaces
+    $title = str_replace('-', ' ', strtolower($slug));
 
-        if ($course) {
-            return response()->json(['course' => $course]);
-        } else {
-            return response()->json(['message' => 'Course not found'], 404);
-        }
+    // Fetch the course with relationships, match title case-insensitively
+    $course = Courses::with([
+        'category',
+        'outlines.subtitles',
+        'quizzes.options'
+    ])
+    ->withCount('purchases')
+    ->whereRaw('LOWER(REPLACE(title, "-", " ")) = ?', [$title])
+    ->first();
+
+    // Return course if found, else 404
+    if ($course) {
+        return response()->json(['course' => $course]);
+    } else {
+        return response()->json(['message' => 'Course not found'], 404);
     }
+}
+
 
     public function delete(Courses $course){
         $course->delete();
