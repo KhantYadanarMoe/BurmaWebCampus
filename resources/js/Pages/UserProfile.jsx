@@ -8,12 +8,12 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export default function UserProfile() {
-    const { id } = useParams();
+    const { slug } = useParams();
     let [user, setUser] = useState([]);
 
     const getDetails = async () => {
         try {
-            const res = await axios.get(`/api/user/${id}/details`);
+            const res = await axios.get(`/api/user/${slug}/details`);
             setUser(res.data.user);
         } catch (err) {
             console.error("Error fetching user:", err);
@@ -22,7 +22,7 @@ export default function UserProfile() {
 
     useEffect(() => {
         getDetails();
-    }, [id]);
+    }, [slug]);
     return (
         <div className="px-5 lg:px-8 pb-3 md:flex gap-3 items-start">
             <div className="w-full md:w-1/3 lg:w-2/5 md:sticky md:top-24 md:self-start">

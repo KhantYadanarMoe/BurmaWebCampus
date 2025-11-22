@@ -144,8 +144,11 @@ class AuthController extends Controller
         ]);
     }
 
-    public function show($id){
-    $user = User::with(['purchases.course'])->withCount('purchases')->findOrFail($id);
+    public function show($slug){
+    $user = User::with(['purchases.course'])
+                ->withCount('purchases')
+                ->where('name', str_replace('-', ' ', $slug)) 
+                ->firstOrFail();
 
     return response()->json([
         'message' => 'User retrieved successfully.',

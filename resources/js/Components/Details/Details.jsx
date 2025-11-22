@@ -96,6 +96,13 @@ export default function Details() {
         fetchComments();
     }, [form.subtitle_id]);
 
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     useEffect(() => {
         if (subtitleId) {
             setForm((prev) => ({
@@ -316,7 +323,9 @@ export default function Details() {
                                     {/* Parent comment */}
                                     <div className="flex gap-2 items-center">
                                         <Link
-                                            to={`/user/${comment.user?.id}/profile`}
+                                            to={`/${slugify(
+                                                comment.user?.name
+                                            )}/profile`}
                                         >
                                             <img
                                                 src={
@@ -331,7 +340,9 @@ export default function Details() {
 
                                         <div>
                                             <Link
-                                                to={`/user/${comment.user?.id}/profile`}
+                                                to={`/${slugify(
+                                                    comment.user?.name
+                                                )}/profile`}
                                             >
                                                 <h1 className="text-base font-medium">
                                                     {comment.user?.name}
@@ -406,7 +417,11 @@ export default function Details() {
                                                         >
                                                             <div className="flex gap-2 items-center">
                                                                 <Link
-                                                                    to={`/user/${reply.user?.id}/profile`}
+                                                                    to={`/${slugify(
+                                                                        reply
+                                                                            .user
+                                                                            ?.name
+                                                                    )}/profile`}
                                                                 >
                                                                     <img
                                                                         src={
@@ -422,7 +437,11 @@ export default function Details() {
                                                                 </Link>
                                                                 <div>
                                                                     <Link
-                                                                        to={`/user/${reply.user?.id}/profile`}
+                                                                        to={`/${slugify(
+                                                                            reply
+                                                                                .user
+                                                                                ?.name
+                                                                        )}/profile`}
                                                                     >
                                                                         <h2 className="text-sm font-medium">
                                                                             {

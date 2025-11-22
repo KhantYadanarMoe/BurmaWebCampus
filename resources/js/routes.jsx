@@ -80,7 +80,7 @@ const routes = createBrowserRouter([
                 element: <CourseDetails />,
             },
             {
-                path: "/user/:id/profile", //user must be the name and it is user's pf from other's pov
+                path: "/:slug/profile",
                 element: <UserProfile />,
             },
             {
