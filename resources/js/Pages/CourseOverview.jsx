@@ -10,33 +10,10 @@ export default function CourseOverview() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const loadCourse = async () => {
+        const getDetails = async () => {
             try {
-                console.log("Fetching all courses...");
-                const res = await axios.get("/api/courses");
-                const courses = res.data.courses;
-                console.log("Courses fetched:", courses);
-
-                const slugify = (t) =>
-                    t
-                        ?.toLowerCase()
-                        .replace(/[^a-z0-9]+/g, "-")
-                        .replace(/(^-|-$)/g, "");
-
-                const found = courses.find((c) => slugify(c.title) === slug);
-                console.log("Course found by slug:", found);
-
-                if (!found) {
-                    console.warn("No course matched the slug:", slug);
-                    setLoading(false);
-                    return;
-                }
-
-                console.log(`Fetching details for course ID: ${found.id}`);
-                const detailRes = await axios.get(`/api/course/${found.id}`);
-                console.log("Fetching details for course ID:", found.id);
-
-                setCourse(detailRes.data.course);
+                const res = await axios.get(`/api/course/${slug}`);
+                setCourse(res.data.course);
             } catch (err) {
                 console.error("Error fetching course:", err);
             } finally {
@@ -45,7 +22,7 @@ export default function CourseOverview() {
         };
 
         window.scrollTo({ top: 0, behavior: "smooth" });
-        loadCourse();
+        getDetails();
     }, [slug]);
 
     if (loading) return <p>Loading...</p>;

@@ -49,6 +49,13 @@ export default function UsersList() {
 
     const { darkMode } = useOutletContext();
 
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
     // fetch data that send from backend
     let getUsers = async () => {
         try {
@@ -286,7 +293,11 @@ export default function UsersList() {
                                         align="end"
                                         className="w-40"
                                     >
-                                        <Link to={`/admin/${user.id}/details`}>
+                                        <Link
+                                            to={`/admin/${slugify(
+                                                user.name
+                                            )}/details`}
+                                        >
                                             <DropdownMenuItem>
                                                 View Details
                                             </DropdownMenuItem>

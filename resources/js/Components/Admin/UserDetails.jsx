@@ -15,13 +15,13 @@ import { Progress } from "../ui/progress";
 import axios from "axios";
 
 export default function UsersList() {
-    const { id } = useParams();
+    const { slug } = useParams();
     let [user, setUser] = useState([]);
     const { darkMode } = useOutletContext();
 
     const getDetails = async () => {
         try {
-            const res = await axios.get(`/api/user/${id}/details`);
+            const res = await axios.get(`/api/user/${slug}/details`);
             setUser(res.data.user);
         } catch (err) {
             console.error("Error fetching user:", err);
@@ -30,7 +30,7 @@ export default function UsersList() {
 
     useEffect(() => {
         getDetails();
-    }, [id]);
+    }, [slug]);
 
     return (
         <div>
