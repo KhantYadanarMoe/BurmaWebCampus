@@ -34,7 +34,7 @@ dayjs.extend(relativeTime);
 export default function Details() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [showReply, setShowReply] = useState(false);
-    const { courseId, subtitleId } = useParams();
+    const { courseSlug, subtitleSlug } = useParams();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
@@ -50,7 +50,7 @@ export default function Details() {
     useEffect(() => {
         const getDetails = async () => {
             try {
-                const res = await axios.get(`/api/course/${courseId}`);
+                const res = await axios.get(`/api/course/${courseSlug}`);
                 setCourse(res.data.course);
             } catch (err) {
                 console.error("Error fetching course:", err);
@@ -59,34 +59,39 @@ export default function Details() {
             }
         };
         getDetails();
-    }, [courseId]);
+    }, [courseSlug]);
 
     useEffect(() => {
         if (!course) return;
 
-        if (!subtitleId) {
+        if (!subtitleSlug) {
             const firstOutline = course.outlines[0];
 
             const firstSubtitle = firstOutline.subtitles[0];
 
-            navigate(`/course/${courseId}/details/${firstSubtitle.id}`, {
-                replace: true,
-            });
+            navigate(
+                `/course/${courseSlug}/details/${slugify(
+                    firstSubtitle.subtitle
+                )}`,
+                {
+                    replace: true,
+                }
+            );
         }
-    }, [course, subtitleId]);
+    }, [course, subtitleSlug]);
 
     const selectedSubtitle = course?.outlines
         ?.flatMap((outline) => outline.subtitles)
-        .find((sub) => sub.id.toString() === subtitleId);
+        .find((sub) => slugify(sub.subtitle) === subtitleSlug);
 
     // Fetch comments whenever selected subtitle changes
     useEffect(() => {
-        if (!subtitleId) return;
+        if (!selectedSubtitle) return;
 
         const fetchComments = async () => {
             try {
                 const res = await axios.get(
-                    `/api/subtitle/${subtitleId}/comments`
+                    `/api/subtitle/${selectedSubtitle.id}/comments`
                 );
                 setComments(res.data.comments);
             } catch (err) {
@@ -94,7 +99,7 @@ export default function Details() {
             }
         };
         fetchComments();
-    }, [form.subtitle_id]);
+    }, [selectedSubtitle]);
 
     function slugify(text) {
         return text
@@ -104,14 +109,14 @@ export default function Details() {
     }
 
     useEffect(() => {
-        if (subtitleId) {
+        if (selectedSubtitle) {
             setForm((prev) => ({
                 ...prev,
-                subtitle_id: subtitleId,
+                subtitle_id: selectedSubtitle.id, // numeric ID
                 parent_id: null,
             }));
         }
-    }, [subtitleId]);
+    }, [selectedSubtitle]);
 
     const formatDate = (date) => dayjs(date).format("D MMM YYYY, h:mm A");
 
@@ -539,7 +544,9 @@ export default function Details() {
                                                         className="flex gap-2 items-center py-2"
                                                         onClick={() =>
                                                             navigate(
-                                                                `/course/${courseId}/details/${sub.id}`
+                                                                `/course/${courseSlug}/details/${slugify(
+                                                                    sub.subtitle
+                                                                )}`
                                                             )
                                                         }
                                                     >

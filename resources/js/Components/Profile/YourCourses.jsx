@@ -12,6 +12,7 @@ import {
     PaginationPrevious,
 } from "../ui/pagination";
 import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 export default function YourCourses() {
     const { user, loading } = useAuth();
@@ -25,6 +26,13 @@ export default function YourCourses() {
     const uniqueCourses = Array.from(
         new Map(user.courses.map((c) => [c.id, c])).values()
     );
+
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
 
     const indexOfLastCourse = currentPage * rowsPerPage;
     const indexOfFirstCourse = indexOfLastCourse - rowsPerPage;
@@ -62,7 +70,16 @@ export default function YourCourses() {
                         </div>
 
                         <CardContent className="p-4">
-                            <div>
+                            <Link
+                                to={`/course/${slugify(course.title)}/details/${
+                                    course.outlines?.[0]?.subtitles?.[0]
+                                        ? slugify(
+                                              course.outlines[0].subtitles[0]
+                                                  .subtitle
+                                          )
+                                        : ""
+                                }`}
+                            >
                                 <img
                                     src={
                                         course.image
@@ -101,7 +118,7 @@ export default function YourCourses() {
                                         className="mt-2"
                                     />
                                 </div>
-                            </div>
+                            </Link>
                         </CardContent>
                     </Card>
                 ))}

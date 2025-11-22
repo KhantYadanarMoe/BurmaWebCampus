@@ -76,7 +76,7 @@ const routes = createBrowserRouter([
                 element: <CourseOverview />,
             },
             {
-                path: "/course/:courseId/details/:subtitleId?", //it should be course name with user (John/frontendDev)
+                path: "/course/:courseSlug/details/:subtitleSlug?",
                 element: <CourseDetails />,
             },
             {
