@@ -152,12 +152,46 @@ export default function Details() {
             );
 
             console.log("Progress sent!");
-            alert("Subtitle marked as completed!");
         } catch (error) {
             console.error("Error sending progress:", error);
-            alert("Failed to mark as completed");
         }
     };
+
+    useEffect(() => {
+        if (!selectedSubtitle) return;
+
+        // Load YouTube API script if not already loaded
+        if (!window["YT"]) {
+            const tag = document.createElement("script");
+            tag.src = "https://www.youtube.com/iframe_api";
+            document.body.appendChild(tag);
+        }
+
+        // Define callback after API is ready
+        window.onYouTubeIframeAPIReady = () => {
+            new window["YT"].Player("videoPlayer", {
+                events: {
+                    onStateChange: onPlayerStateChange,
+                },
+            });
+        };
+
+        // Triggered when video state changes
+        function onPlayerStateChange(event) {
+            // 0 = video ended
+            if (event.data === window["YT"].PlayerState.ENDED) {
+                console.log(
+                    "Video finished! Sending progress automatically..."
+                );
+                markSubtitleAsDone(); // call the same function you use for the button
+            }
+        }
+
+        // Cleanup function to avoid multiple listeners
+        return () => {
+            window.onYouTubeIframeAPIReady = null;
+        };
+    }, [selectedSubtitle]);
 
     const formatDate = (date) => dayjs(date).format("D MMM YYYY, h:mm A");
 
@@ -273,7 +307,8 @@ export default function Details() {
                         src={`https://www.youtube.com/embed/${selectedSubtitle?.video_path}?enablejsapi=1`}
                         width="100%"
                         height="450"
-                        className="mt-3 rounded-lg"
+                        frameBorder="0"
+                        allowFullScreen
                     ></iframe>
 
                     {/* <div className="my-3">
