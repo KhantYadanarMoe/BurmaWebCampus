@@ -13,12 +13,14 @@ class Subtitles extends Model
         'description',
     ];
 
+    
+    protected $table = 'subtitles'; 
+
     public function outline()
     {
         return $this->belongsTo(CourseOutline::class, 'course_outline_id');
     }
 
-    // Subtitles.php
 public function course() {
     return $this->hasOneThrough(
         Courses::class,

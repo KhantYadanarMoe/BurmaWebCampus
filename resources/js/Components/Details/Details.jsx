@@ -44,6 +44,9 @@ export default function Details() {
     });
     const [errors, setErrors] = useState({});
     const [comments, setComments] = useState([]);
+    const [courseProgress, setCourseProgress] = useState(0);
+    const [completedSubtitles, setCompletedSubtitles] = useState([]);
+
     const navigate = useNavigate();
 
     // Fetch course details
@@ -79,6 +82,17 @@ export default function Details() {
             );
         }
     }, [course, subtitleSlug]);
+
+    const fetchProgress = async () => {
+        if (!course) return;
+        try {
+            const res = await axios.get(`/api/course/${course.id}/progress`);
+            setCourseProgress(res.data.percentage);
+            setCompletedSubtitles(res.data.completed_ids);
+        } catch (err) {
+            console.error("Error fetching course progress:", err);
+        }
+    };
 
     const selectedSubtitle = course?.outlines
         ?.flatMap((outline) => outline.subtitles)
@@ -151,11 +165,21 @@ export default function Details() {
                 }
             );
 
+            setCompletedSubtitles((prev) => [
+                ...new Set([...prev, selectedSubtitle.id]),
+            ]);
             console.log("Progress sent!");
+            fetchProgress();
         } catch (error) {
             console.error("Error sending progress:", error);
         }
     };
+
+    useEffect(() => {
+        if (!course) return;
+
+        fetchProgress();
+    }, [course]);
 
     useEffect(() => {
         if (!selectedSubtitle) return;
@@ -577,11 +601,11 @@ export default function Details() {
                         <div className="my-5">
                             <div className="flex justify-between">
                                 <p className="text-sm text-gray-700">
-                                    Completed 45% out of 100%
+                                    Completed {courseProgress}% out of 100%
                                 </p>
                                 <Trophy size={20} />
                             </div>
-                            <Progress value={45} className="mt-2" />
+                            <Progress value={courseProgress} className="mt-2" />
                         </div>
                         <div>
                             <Accordion

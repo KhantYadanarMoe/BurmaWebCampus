@@ -11,7 +11,7 @@ class CommentController extends Controller
 {
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
-            'subtitle_id' => ['required', 'exists:subtitles,id'],
+            'subtitle_id' => ['required', 'exists:subtitle,id'],
             'content' => ['required', 'string', 'max:1000'],
             'parent_id' => ['nullable', 'exists:comments,id'],
         ]);

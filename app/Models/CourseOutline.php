@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class CourseOutline extends Model
 {
-    protected $fillable = ['course_id', 'title', 'subtitles'];
+    protected $fillable = ['course_id', 'title'];
 
-    protected $casts = [
-        'subtitles' => 'array', // Auto-convert JSON to array
-    ];
+    // protected $casts = [
+    //     'subtitles' => 'array', // Auto-convert JSON to array
+    // ];
 
     public function course()
     {
@@ -18,9 +18,10 @@ class CourseOutline extends Model
     }
 
     public function subtitles()
-    {
-        return $this->hasMany(Subtitles::class, 'course_outline_id');
-    }
+{
+    return $this->hasMany(Subtitles::class, 'course_outline_id');
+}
+
 
     
 }
