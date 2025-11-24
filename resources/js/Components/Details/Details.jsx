@@ -7,7 +7,7 @@ import {
     Trophy,
     X,
 } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "../ui/button";
 import Course from "../../../assets/Courses.jpg";
@@ -108,6 +108,18 @@ export default function Details() {
             .replace(/(^-|-$)/g, "");
     }
 
+    const sendProgress = async (subtitleId) => {
+        try {
+            await axios.post("/api/progress/update", {
+                subtitle_id: subtitleId,
+            });
+
+            console.log("Progress sent!");
+        } catch (err) {
+            console.error("Error sending progress:", err);
+        }
+    };
+
     useEffect(() => {
         if (selectedSubtitle) {
             setForm((prev) => ({
@@ -117,6 +129,35 @@ export default function Details() {
             }));
         }
     }, [selectedSubtitle]);
+
+    const markSubtitleAsDone = async () => {
+        if (!selectedSubtitle) return;
+
+        try {
+            const csrfToken = document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content");
+
+            await axios.post(
+                `/api/subtitle/${selectedSubtitle.id}/complete`,
+                {
+                    subtitle_id: selectedSubtitle.id, // send the ID
+                },
+                {
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    withCredentials: true, // include session cookie
+                }
+            );
+
+            console.log("Progress sent!");
+            alert("Subtitle marked as completed!");
+        } catch (error) {
+            console.error("Error sending progress:", error);
+            alert("Failed to mark as completed");
+        }
+    };
 
     const formatDate = (date) => dayjs(date).format("D MMM YYYY, h:mm A");
 
@@ -212,7 +253,7 @@ export default function Details() {
                             </Link>
                         </li>
                     </ul>
-                    <div className="md:flex justify-between items-start">
+                    <div className="md:flex justify-between items-center">
                         <div className="w-2/3">
                             <h1 className="text-xl md:text-2xl font-medium mb-1">
                                 {course.title}
@@ -221,32 +262,18 @@ export default function Details() {
                                 {formatDate(course.created_at)}
                             </p>
                         </div>
-                        <div className="w-1/3">
-                            <div className="hidden md:flex items-center justify-center">
-                                <p className="text-sm">Chapter 2/12</p>
-
-                                <Button
-                                    variant="outline"
-                                    className="px-1 py-1 border-none shadow-none hover:bg-white"
-                                >
-                                    <ChevronLeft />
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="px-1 py-1 border-none shadow-none hover:bg-white"
-                                >
-                                    <ChevronRight />
-                                </Button>
-                            </div>
+                        <div className="w-1/3 flex justify-end">
+                            <Button onClick={markSubtitleAsDone}>
+                                Mark as Done
+                            </Button>
                         </div>
                     </div>
                     <iframe
-                        src={`https://www.youtube.com/embed/${selectedSubtitle?.video_path}`}
+                        id="videoPlayer"
+                        src={`https://www.youtube.com/embed/${selectedSubtitle?.video_path}?enablejsapi=1`}
                         width="100%"
                         height="450"
-                        frameborder="0"
                         className="mt-3 rounded-lg"
-                        allowfullscreen
                     ></iframe>
 
                     {/* <div className="my-3">

@@ -7,6 +7,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseProgressController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\QuizController;
@@ -79,6 +80,8 @@ Route::get('/api/courses', [CourseController::class, 'index']);
 Route::post('/api/courses/create', [CourseController::class, 'store']);
 Route::get('/api/course/{slug}', [CourseController::class, 'show']);
 Route::delete('/api/course/{course}', [CourseController::class, 'delete']);
+
+Route::post('/api/subtitle/{id}/complete', [CourseProgressController::class, 'updateProgress']);
 
 Route::get('/api/comments', [CommentController::class, 'index']);
 Route::post("/api/comment/create", [CommentController::class, 'store']);
