@@ -90,11 +90,16 @@ export default function Courses() {
                                                                 Progress
                                                             </h1>
                                                             <p className="text-black font-medium">
-                                                                0%
+                                                                {
+                                                                    course.progress_percentage
+                                                                }
+                                                                %
                                                             </p>
                                                         </div>
                                                         <Progress
-                                                            value={0}
+                                                            value={
+                                                                course.progress_percentage
+                                                            }
                                                             className="mt-2"
                                                         />
                                                     </div>

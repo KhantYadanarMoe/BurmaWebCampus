@@ -8,15 +8,6 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Progress } from "@/components/ui/progress";
-import {
-    ArrowLeft,
-    ArrowRight,
-    ChevronRight,
-    Clock,
-    Users,
-} from "lucide-react";
-import BlogImg from "../../../assets/Blogs.jpg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";

@@ -7,6 +7,7 @@ use App\Models\Courses;
 use App\Models\Quiz;
 use App\Models\QuizOption;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -72,49 +73,71 @@ class CourseController extends Controller
     }
 
  
-    public function index(Request $request){
-        // Get the sort option from query params, default to 'newest'
-        $sort = $request->query('sort', 'newest');
+    public function index(Request $request)
+{
+    $sort = $request->query('sort', 'newest');
 
-        // Start the query with relationships eager-loaded
-        $query = Courses::with([
-            'category',           
-            'outlines.subtitles',
-            'quizzes.options'  ,
-            'purchases'   
-            ])->withCount([
-            'purchases', 
-            'purchases as certified_count' => function ($query) {
-                $query->where('completed', true); 
+    $userId = Auth::id(); // Or pass the user ID from the request
+
+    $query = Courses::with([
+        'category',
+        'outlines.subtitles.progress' => function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        },
+        'quizzes.options',
+        'purchases'
+    ])->withCount([
+        'purchases',
+        'purchases as certified_count' => function ($q) {
+            $q->where('completed', true);
+        }
+    ]);
+
+    switch ($sort) {
+        case 'oldest':
+            $query->orderBy('created_at', 'asc');
+            break;
+        case 'a-z':
+            $query->orderBy('title', 'asc');
+            break;
+        case 'z-a':
+            $query->orderBy('title', 'desc');
+            break;
+        case 'newest':
+        default:
+            $query->orderBy('created_at', 'desc');
+            break;
+    }
+
+    $courses = $query->get();
+
+    // Calculate progress percentage per course
+    $courses->map(function ($course) {
+        $totalSubtitles = 0;
+        $completedSubtitles = 0;
+
+        foreach ($course->outlines as $outline) {
+            foreach ($outline->subtitles as $subtitle) {
+                $totalSubtitles++;
+
+                if ($subtitle->progress && $subtitle->progress->is_completed) {
+                    $completedSubtitles++;
+                }
             }
-        ]);
-
-
-        // Apply sorting
-        switch ($sort) {
-            case 'oldest':
-                $query->orderBy('created_at', 'asc');
-                break;
-            case 'a-z':
-                $query->orderBy('title', 'asc');
-                break;
-            case 'z-a':
-                $query->orderBy('title', 'desc');
-                break;
-            case 'newest':
-            default:
-                $query->orderBy('created_at', 'desc');
-                break;
         }
 
-        // Execute query
-        $courses = $query->get();
+        $course->progress_percentage = $totalSubtitles > 0
+            ? round(($completedSubtitles / $totalSubtitles) * 100)
+            : 0;
 
-        // Return as JSON
-        return response()->json([
-            'courses' => $courses
-        ]);
-    }
+        return $course;
+    });
+
+    return response()->json([
+        'courses' => $courses
+    ]);
+}
+
 
     public function show($slug)
 {

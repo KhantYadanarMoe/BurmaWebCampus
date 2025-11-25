@@ -173,10 +173,13 @@ export default function AllCourses() {
                                                 Progress
                                             </h1>
                                             <p className="text-black font-medium">
-                                                0%
+                                                {course.progress_percentage}%
                                             </p>
                                         </div>
-                                        <Progress value={0} className="mt-2" />
+                                        <Progress
+                                            value={course.progress_percentage}
+                                            className="mt-2"
+                                        />
                                     </div>
                                     <Link
                                         to={`/course/${slugify(course.title)}`}
