@@ -145,17 +145,79 @@ class AuthController extends Controller
     }
 
     public function show($slug){
-    $user = User::with(['purchases.course'])
-                ->withCount('purchases')
-                ->where('name', str_replace('-', ' ', $slug)) 
-                ->firstOrFail();
+        // Fetch profile owner (the user being viewed)
+        $user = User::where('name', str_replace('-', ' ', $slug))->firstOrFail();
 
-    return response()->json([
-        'message' => 'User retrieved successfully.',
-        'user' => $user
+        $profileUserId = $user->id; // IMPORTANT
+
+        // Load purchases + course + outlines + subtitles + progress for the profile owner
+        $user->load([
+            'purchases.course.outlines.subtitles.progress' => function ($q) use ($profileUserId) {
+                $q->where('user_id', $profileUserId);
+            }
+        ]);
+
+
+        // Compute progress for each purchased course
+        foreach ($user->purchases as $purchase) {
+            $course = $purchase->course;
+
+            $total = 0;
+            $completed = 0;
+
+            foreach ($course->outlines as $outline) {
+                foreach ($outline->subtitles as $subtitle) {
+                    $total++;
+
+                    if ($subtitle->progress && $subtitle->progress->is_completed) {
+                        $completed++;
+                    }
+                }
+            }
+
+            $course->progress_percentage = $total > 0
+                ? round(($completed / $total) * 100)
+                : 0;
+        }
+
+        return response()->json([
+            'message' => 'User retrieved successfully.',
+            'user' => $user
+        ]);
+    }
+
+    public function details(Request $request){
+        $user = $request->user();
+
+    $user->load([
+        'courses.outlines.subtitles.progress' => function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        }
     ]);
-}
 
+    // Calculate course progress
+    $user->courses->map(function ($course) {
+        $total = 0;
+        $done = 0;
+
+        foreach ($course->outlines as $outline) {
+            foreach ($outline->subtitles as $subtitle) {
+                $total++;
+
+                if ($subtitle->progress && $subtitle->progress->is_completed) {
+                    $done++;
+                }
+            }
+        }
+
+        $course->progress = $total > 0 ? round(($done / $total) * 100) : 0;
+    });
+
+    $user->loadCount('purchases');
+
+    return $user;
+
+    }
 
     public function updateUser(User $user){
         $validator = Validator::make(request()->all(), [

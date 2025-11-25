@@ -73,70 +73,69 @@ class CourseController extends Controller
     }
 
  
-    public function index(Request $request)
-{
-    $sort = $request->query('sort', 'newest');
+    public function index(Request $request){
+        $sort = $request->query('sort', 'newest');
 
-    $userId = Auth::id(); // Or pass the user ID from the request
+        $userId = Auth::id(); // Or pass the user ID from the request
 
-    $query = Courses::with([
-        'category',
-        'outlines.subtitles.progress' => function ($q) use ($userId) {
-            $q->where('user_id', $userId);
-        },
-        'quizzes.options',
-        'purchases'
-    ])->withCount([
-        'purchases',
-        'purchases as certified_count' => function ($q) {
-            $q->where('completed', true);
+        $query = Courses::with([
+            'category',
+            'outlines.subtitles.progress' => function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            },
+            'quizzes.options',
+            'purchases'
+        ])->withCount([
+            'purchases',
+            'purchases as certified_count' => function ($q) {
+                $q->where('completed', true);
+            }
+        ]);
+
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'a-z':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'z-a':
+                $query->orderBy('title', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
         }
-    ]);
 
-    switch ($sort) {
-        case 'oldest':
-            $query->orderBy('created_at', 'asc');
-            break;
-        case 'a-z':
-            $query->orderBy('title', 'asc');
-            break;
-        case 'z-a':
-            $query->orderBy('title', 'desc');
-            break;
-        case 'newest':
-        default:
-            $query->orderBy('created_at', 'desc');
-            break;
-    }
+        $courses = $query->get();
 
-    $courses = $query->get();
+        // Calculate progress percentage per course
+        $courses->map(function ($course) {
+            $totalSubtitles = 0;
+            $completedSubtitles = 0;
 
-    // Calculate progress percentage per course
-    $courses->map(function ($course) {
-        $totalSubtitles = 0;
-        $completedSubtitles = 0;
+            foreach ($course->outlines as $outline) {
+                foreach ($outline->subtitles as $subtitle) {
+                    $totalSubtitles++;
 
-        foreach ($course->outlines as $outline) {
-            foreach ($outline->subtitles as $subtitle) {
-                $totalSubtitles++;
-
-                if ($subtitle->progress && $subtitle->progress->is_completed) {
-                    $completedSubtitles++;
+                    if ($subtitle->progress && $subtitle->progress->is_completed) {
+                        $completedSubtitles++;
+                    }
                 }
             }
-        }
 
-        $course->progress_percentage = $totalSubtitles > 0
-            ? round(($completedSubtitles / $totalSubtitles) * 100)
-            : 0;
+            $course->progress_percentage = $totalSubtitles > 0
+                ? round(($completedSubtitles / $totalSubtitles) * 100)
+                : 0;
 
-        return $course;
-    });
+            return $course;
+        });
 
-    return response()->json([
-        'courses' => $courses
-    ]);
-}
+        return response()->json([
+            'courses' => $courses
+        ]);
+    }
 
 
     public function show($slug)

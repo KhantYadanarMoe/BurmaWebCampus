@@ -257,7 +257,6 @@ export default function CreateQuiz() {
                 <Button onClick={handleSubmit}>Submit</Button>
             </div>
 
-            {/* Progress Bar */}
             <div className="w-full">
                 <div className="relative">
                     <div

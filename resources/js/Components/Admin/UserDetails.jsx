@@ -250,11 +250,18 @@ export default function UsersList() {
                                                 Progress
                                             </h1>
                                             <p className="text-black font-medium">
-                                                {purchase.progress ?? 0}%
+                                                {
+                                                    purchase.course
+                                                        .progress_percentage
+                                                }
+                                                %
                                             </p>
                                         </div>
                                         <Progress
-                                            value={purchase.progress ?? 0}
+                                            value={
+                                                purchase.course
+                                                    .progress_percentage
+                                            }
                                             className="mt-2 w-full"
                                         />
                                     </div>

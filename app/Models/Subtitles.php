@@ -34,10 +34,11 @@ class Subtitles extends Model
     }
 
 
-    public function progress(){
-        return $this->hasOne(CourseProgress::class, 'subtitle_id')
-            ->where('user_id', Auth::id());
-    }
+    public function progress()
+{
+    return $this->hasOne(CourseProgress::class, 'subtitle_id');
+}
+
 
 
 }
