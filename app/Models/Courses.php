@@ -28,6 +28,13 @@ class Courses extends Model
     public function users(){
         return $this->belongsToMany(User::class)->withPivot('completed')->withTimestamps();
     }
+
+    public function completedUsers()
+{
+    return $this->hasMany(CourseProgress::class)->where('is_completed', true);
+}
+
+
 }
 
 

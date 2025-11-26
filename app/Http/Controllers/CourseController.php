@@ -8,6 +8,7 @@ use App\Models\Quiz;
 use App\Models\QuizOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -80,16 +81,15 @@ class CourseController extends Controller
 
         $query = Courses::with([
             'category',
-            'outlines.subtitles.progress' => function ($q) use ($userId) {
-                $q->where('user_id', $userId);
-            },
+            // 'outlines.subtitles.progress' => function ($q) use ($userId) {
+            //     $q->where('user_id', $userId);
+            // },
+            'outlines.subtitles.progress',
             'quizzes.options',
             'purchases'
         ])->withCount([
             'purchases',
-            'purchases as certified_count' => function ($q) {
-                $q->where('completed', true);
-            }
+
         ]);
 
         switch ($sort) {
@@ -112,25 +112,33 @@ class CourseController extends Controller
 
         // Calculate progress percentage per course
         $courses->map(function ($course) {
-            $totalSubtitles = 0;
-            $completedSubtitles = 0;
 
-            foreach ($course->outlines as $outline) {
-                foreach ($outline->subtitles as $subtitle) {
-                    $totalSubtitles++;
+    // Count total subtitles in the course
+    $totalSubtitles = $course->outlines->flatMap(fn($o) => $o->subtitles)->count();
 
-                    if ($subtitle->progress && $subtitle->progress->is_completed) {
-                        $completedSubtitles++;
-                    }
-                }
-            }
+    if ($totalSubtitles === 0) {
+        $course->total_completed_users = 0;
+        return $course;
+    }
 
-            $course->progress_percentage = $totalSubtitles > 0
-                ? round(($completedSubtitles / $totalSubtitles) * 100)
-                : 0;
+    // Query course_progress table grouped by user_id
+    $totalCompletedUsers = DB::table('course_progress')
+    ->join('subtitles', 'course_progress.subtitle_id', '=', 'subtitles.id')
+    ->join('course_outlines', 'subtitles.course_outline_id', '=', 'course_outlines.id') // correct column name
+    ->where('course_outlines.course_id', $course->id)
+    ->where('course_progress.is_completed', true)
+    ->select('course_progress.user_id', DB::raw('COUNT(course_progress.id) as completed_count'))
+    ->groupBy('course_progress.user_id')
+    ->having('completed_count', '=', $totalSubtitles)
+    ->count();
 
-            return $course;
-        });
+$course->total_completed_users = $totalCompletedUsers;
+
+
+
+    return $course;
+});
+
 
         return response()->json([
             'courses' => $courses

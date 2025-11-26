@@ -319,7 +319,7 @@ export default function CoursesList() {
                                         {course.purchases_count}
                                     </li>
                                     <li className="basis-[10%]">
-                                        {course.certified_count ?? "--"}
+                                        {course.total_completed_users ?? "0"}
                                     </li>
                                     <li className="basis-[10%]">18 hours</li>
                                     <li className="basis-[5%]">
