@@ -189,33 +189,35 @@ class AuthController extends Controller
     public function details(Request $request){
         $user = $request->user();
 
-    $user->load([
-        'courses.outlines.subtitles.progress' => function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        }
-    ]);
+        $user->load([
+            'courses.outlines.subtitles.progress' => function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            }
+        ]);
 
-    // Calculate course progress
-    $user->courses->map(function ($course) {
-        $total = 0;
-        $done = 0;
+        $user->courses->loadCount('purchases as purchases_count');
 
-        foreach ($course->outlines as $outline) {
-            foreach ($outline->subtitles as $subtitle) {
-                $total++;
+        // Calculate course progress
+        $user->courses->map(function ($course) {
+            $total = 0;
+            $done = 0;
 
-                if ($subtitle->progress && $subtitle->progress->is_completed) {
-                    $done++;
+            foreach ($course->outlines as $outline) {
+                foreach ($outline->subtitles as $subtitle) {
+                    $total++;
+
+                    if ($subtitle->progress && $subtitle->progress->is_completed) {
+                        $done++;
+                    }
                 }
             }
-        }
 
-        $course->progress = $total > 0 ? round(($done / $total) * 100) : 0;
-    });
+            $course->progress = $total > 0 ? round(($done / $total) * 100) : 0;
+        });
 
-    $user->loadCount('purchases');
+        $user->loadCount('purchases');
 
-    return $user;
+        return $user;
 
     }
 

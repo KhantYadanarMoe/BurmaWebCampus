@@ -97,7 +97,7 @@ export default function YourCourses() {
                                 </h1>
                                 <div className="flex items-center gap-1 text-sm py-2">
                                     <Users size={16} />{" "}
-                                    {course.students_count || 0} students
+                                    {course.purchases_count || 0} students
                                     enrolled
                                 </div>
                                 <div className="flex items-center gap-1 text-sm py-2">

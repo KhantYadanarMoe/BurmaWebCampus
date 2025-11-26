@@ -108,7 +108,7 @@ class CourseController extends Controller
         $courses = $query->get();
 
         // Calculate progress percentage per course
-        $courses->map(function ($course) use ($userId) {
+        $courses->map(function ($course) use ($userId)  {
 
             // Count total subtitles in the course
             $totalSubtitles = $course->outlines->flatMap(fn($o) => $o->subtitles)->count();

@@ -11,7 +11,7 @@ class CommentController extends Controller
 {
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
-            'subtitle_id' => ['required', 'exists:subtitle,id'],
+            'subtitle_id' => ['required', 'exists:subtitles,id'],
             'content' => ['required', 'string', 'max:1000'],
             'parent_id' => ['nullable', 'exists:comments,id'],
         ]);
@@ -37,10 +37,10 @@ class CommentController extends Controller
 
     public function index(){
         $comments = Comments::with([
-    'user:id,name,image',
-    'subtitle:id,subtitle,course_outline_id',
-    'subtitle.outline.course'
-])->latest()->get();
+            'user:id,name,image',
+            'subtitle:id,subtitle,course_outline_id',
+            'subtitle.outline.course'
+        ])->latest()->get();
                         
 
         return response()->json([
@@ -48,22 +48,20 @@ class CommentController extends Controller
         ]);
     }
 
-   public function getBySubtitle($subtitleId){
-    $comments = Comments::with([
-        'user:id,name,image', 
-        'replies.user:id,name,image', 
-        'replies.replies.user:id,name,image', 
-        'subtitle:id,subtitle'
-    ])
-    ->where('subtitle_id', $subtitleId)
-    ->whereNull('parent_id') 
-    ->orderBy('created_at', 'asc')
-    ->get();
+    public function getBySubtitle($subtitleId){
+        $comments = Comments::with([
+            'user:id,name,image', 
+            'replies.user:id,name,image', 
+            'replies.replies.user:id,name,image', 
+            'subtitle:id,subtitle'
+        ])
+        ->where('subtitle_id', $subtitleId)
+        ->whereNull('parent_id') 
+        ->orderBy('created_at', 'asc')
+        ->get();
 
-    return response()->json([
-        'comments' => $comments
-    ]);
-}
-
-
+        return response()->json([
+            'comments' => $comments
+        ]);
+    }
 }
