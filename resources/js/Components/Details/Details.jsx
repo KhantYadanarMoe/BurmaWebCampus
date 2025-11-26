@@ -27,6 +27,15 @@ import Pf from "../../../assets/Profile.jpg";
 import ReviewModal from "../ReviewModal";
 import axios from "axios";
 import relativeTime from "dayjs/plugin/relativeTime";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
@@ -46,6 +55,13 @@ export default function Details() {
     const [comments, setComments] = useState([]);
     const [courseProgress, setCourseProgress] = useState(0);
     const [completedSubtitles, setCompletedSubtitles] = useState([]);
+    const [showCompletionDialog, setShowCompletionDialog] = useState(false);
+
+    useEffect(() => {
+        if (courseProgress === 100) {
+            setShowCompletionDialog(true);
+        }
+    }, [courseProgress]);
 
     const navigate = useNavigate();
 
@@ -661,6 +677,28 @@ export default function Details() {
                     </button>
                 )}
             </div>
+            <AlertDialog
+                open={showCompletionDialog}
+                onOpenChange={setShowCompletionDialog}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Congratulations!</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            You successfully finished{" "}
+                            <strong>{course?.title}</strong> 🎉
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter>
+                        <AlertDialogAction
+                            onClick={() => setShowCompletionDialog(false)}
+                        >
+                            Close
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
