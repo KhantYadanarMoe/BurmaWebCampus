@@ -30,4 +30,14 @@ class CertificateController extends Controller
             'file_url' => asset('storage/' . $path),
         ]);
     }
+
+    public function userCertificates(Request $request){
+        $user = $request->user();
+
+        $certificates = Certificate::with('course') 
+            ->where('user_id', $user->id)
+            ->latest()->get();
+
+        return response()->json($certificates);
+    }
 }

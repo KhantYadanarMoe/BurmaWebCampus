@@ -114,6 +114,7 @@ Route::post('/api/contact/marked/{id}', [ContactController::class, 'mark']);
 Route::delete('/api/contact/{contact}', [ContactController::class, 'delete']);
 Route::post('/api/contacts/reply/{id}', [ContactController::class, 'replyToContact']);
 
+Route::get('/api/certificates', [CertificateController::class, 'userCertificates']);
 Route::post('/api/certificates', [CertificateController::class, 'store']);
 
 Route::middleware('auth:sanctum')->post('/api/quizzes/submit', [QuizController::class, 'store']);
