@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseCategoryController;
@@ -112,6 +113,8 @@ Route::get('/api/contact/{id}', [ContactController::class, 'show']);
 Route::post('/api/contact/marked/{id}', [ContactController::class, 'mark']);
 Route::delete('/api/contact/{contact}', [ContactController::class, 'delete']);
 Route::post('/api/contacts/reply/{id}', [ContactController::class, 'replyToContact']);
+
+Route::post('/api/certificates', [CertificateController::class, 'store']);
 
 Route::middleware('auth:sanctum')->post('/api/quizzes/submit', [QuizController::class, 'store']);
 

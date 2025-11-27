@@ -25,7 +25,7 @@ return new class extends Migration
     {
         Schema::table('course_outlines', function (Blueprint $table) {
             $table->json('subtitles')->nullable();
-
+            
         });
     }
 };

@@ -14,9 +14,14 @@ import {
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "../ui/button";
 import axios from "axios";
+import html2canvas from "html2canvas";
+import Logo from "../../../assets/Logo.png";
+import CertiBg from "../../../assets/CertiBg.jpg";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function QuizDetails() {
     const { slug } = useParams();
+    const { user } = useAuth();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [alertOpen, setAlertOpen] = useState(false);
@@ -25,6 +30,8 @@ export default function QuizDetails() {
     const [answeredQuizzes, setAnsweredQuizzes] = useState({});
 
     const [selectedAnswers, setSelectedAnswers] = useState({});
+
+    const [certificateOpen, setCertificateOpen] = useState(false);
 
     const quizRefs = useRef({});
 
@@ -79,7 +86,7 @@ export default function QuizDetails() {
 
         let formData = new FormData();
 
-        formData.append("course_id", id);
+        formData.append("course_id", course?.id);
 
         Object.entries(selectedAnswers).forEach(([quizId, optionId]) => {
             formData.append(`answers[${quizId}]`, optionId);
@@ -120,6 +127,9 @@ export default function QuizDetails() {
                     </div>
                 );
                 setAlertOpen(true);
+                setTimeout(() => {
+                    setCertificateOpen(true);
+                }, 500);
             }
         } catch (error) {
             console.error("Error submitting quiz:", error);
@@ -130,6 +140,37 @@ export default function QuizDetails() {
             }
         }
     };
+
+    async function saveCertificate(courseId) {
+        const element = document.getElementById("certificateImage");
+
+        await Promise.all(
+            Array.from(element.getElementsByTagName("img")).map((img) => {
+                if (!img.complete) {
+                    return new Promise((res) => {
+                        img.onload = img.onerror = res;
+                    });
+                }
+                return Promise.resolve();
+            })
+        );
+
+        const canvas = await html2canvas(element, { useCORS: true });
+        const dataUrl = canvas.toDataURL("image/png");
+
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], "certificate.png", { type: "image/png" });
+
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("course_id", courseId);
+
+        const response = await axios.post("/api/certificates", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        alert("Certificate Saved!");
+    }
 
     return (
         <div className="md:flex gap-3 px-5 lg:px-8">
@@ -243,6 +284,77 @@ export default function QuizDetails() {
                     </AlertDialogDescription>
                     <AlertDialogFooter>
                         <Button onClick={() => setAlertOpen(false)}>OK</Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+            {/* Certificate Modal */}
+            <AlertDialog
+                open={certificateOpen}
+                onOpenChange={setCertificateOpen}
+            >
+                <AlertDialogContent className="max-w-xl">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-center text-xl font-bold">
+                            Your Certificate 🎉
+                        </AlertDialogTitle>
+                    </AlertDialogHeader>
+
+                    <AlertDialogDescription>
+                        <div
+                            id="certificateImage"
+                            className="relative w-[285px] h-[400px] bg-white mx-auto border shadow-lg overflow-hidden rounded-md text-black"
+                            style={{
+                                backgroundImage: `url(/images/CertiBg.jpg)`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                            }}
+                        >
+                            <div className="mt-9">
+                                <img
+                                    src="/images/Logo.png"
+                                    className="w-12 mx-auto"
+                                />
+                                <p className="mt-1 text-xs text-center text-black">
+                                    Burma Web Campus
+                                </p>
+                            </div>
+                            <div className="mt-6 text-center">
+                                <p className="text-sm">
+                                    Certificate of completion
+                                </p>
+                                <p className="text-[0.5rem] mt-1">
+                                    This certificate is proudly present to:
+                                </p>
+                                <h1 className="text-base my-3 text-black font-medium">
+                                    {user?.name}
+                                </h1>
+                                <p className="text-[0.5rem]">
+                                    for successfully completed
+                                </p>
+                                <h1 className="text-xs my-1 text-black font-medium px-8">
+                                    {course?.title}
+                                </h1>
+                            </div>
+                            <div className="absolute bottom-12 w-full text-center">
+                                <h1 className="text-xs font-medium text-black my-1">
+                                    Khant Yadanar Moe
+                                </h1>
+                                <hr className="border-t-gray-500 mx-auto w-1/2" />
+                                <h1 className="text-[0.6rem] font-medium text-black my-1">
+                                    Founder of BWC
+                                </h1>
+                            </div>
+                        </div>
+                    </AlertDialogDescription>
+
+                    <AlertDialogFooter className="flex justify-between mt-5">
+                        <Button onClick={() => setCertificateOpen(false)}>
+                            Close
+                        </Button>
+
+                        <Button onClick={() => saveCertificate(course.id)}>
+                            Save Certificate
+                        </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
