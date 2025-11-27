@@ -137,6 +137,12 @@ export default function CoursesList() {
         }
     };
 
+    const formatHours = (totalHours) => {
+        const hours = Math.floor(totalHours); // full hours
+        const minutes = Math.round((totalHours - hours) * 60); // remaining minutes
+        return `${hours}h ${minutes}m`;
+    };
+
     return (
         <div>
             {filteredCourses.length === 0 ? (
@@ -321,7 +327,9 @@ export default function CoursesList() {
                                     <li className="basis-[10%]">
                                         {course.total_completed_users ?? "0"}
                                     </li>
-                                    <li className="basis-[10%]">18 hours</li>
+                                    <li className="basis-[10%]">
+                                        {formatHours(course?.total_hours)}
+                                    </li>
                                     <li className="basis-[5%]">
                                         <DropdownMenu modal={false}>
                                             <DropdownMenuTrigger asChild>
