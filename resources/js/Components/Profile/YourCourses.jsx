@@ -48,6 +48,13 @@ export default function YourCourses() {
             setCurrentPage(page);
         }
     };
+
+    const formatHours = (totalHours) => {
+        const hours = Math.floor(totalHours);
+        const minutes = Math.round((totalHours - hours) * 60);
+        return `${hours}h ${minutes}m`;
+    };
+
     return (
         <div className="px-5 md:px-6 lg:px-10 py-8">
             <h1 className="text-2xl font-medium mb-6">Your Courses</h1>
@@ -101,8 +108,8 @@ export default function YourCourses() {
                                     enrolled
                                 </div>
                                 <div className="flex items-center gap-1 text-sm py-2">
-                                    <Clock size={16} /> {course.duration || "0"}{" "}
-                                    hours long
+                                    <Clock size={16} />{" "}
+                                    {formatHours(course.total_hours)} long
                                 </div>
                                 <div className="py-3">
                                     <div className="flex justify-between">

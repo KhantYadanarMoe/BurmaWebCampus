@@ -56,6 +56,7 @@ export default function Details() {
     const [courseProgress, setCourseProgress] = useState(0);
     const [completedSubtitles, setCompletedSubtitles] = useState([]);
     const [showCompletionDialog, setShowCompletionDialog] = useState(false);
+    const [totalHours, setTotalHours] = useState(0);
 
     useEffect(() => {
         if (courseProgress === 100) {
@@ -159,6 +160,17 @@ export default function Details() {
             }));
         }
     }, [selectedSubtitle]);
+
+    useEffect(() => {
+        const fetchCourse = async () => {
+            const res = await axios.get(`/api/course/${courseSlug}`);
+            setCourse(res.data.course);
+            setTotalHours(res.data.total_hours); // already calculated on backend
+        };
+        fetchCourse();
+    }, []);
+
+    console.log(totalHours);
 
     const markSubtitleAsDone = async () => {
         if (!selectedSubtitle) return;

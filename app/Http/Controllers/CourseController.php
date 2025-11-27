@@ -73,7 +73,6 @@ class CourseController extends Controller
         return $matches[2] ?? null;
     }
 
- 
     public function index(Request $request){
         $sort = $request->query('sort', 'newest');
 
@@ -109,8 +108,6 @@ class CourseController extends Controller
 
         // Calculate progress percentage per course
         $courses->map(function ($course) use ($userId)  {
-
-            // Count total subtitles in the course
             $totalSubtitles = $course->outlines->flatMap(fn($o) => $o->subtitles)->count();
 
             if ($totalSubtitles === 0) {
@@ -119,7 +116,6 @@ class CourseController extends Controller
                 return $course;
             }
 
-            // Query course_progress table grouped by user_id
             $totalCompletedUsers = DB::table('course_progress')
             ->join('subtitles', 'course_progress.subtitle_id', '=', 'subtitles.id')
             ->join('course_outlines', 'subtitles.course_outline_id', '=', 'course_outlines.id') // correct column name
@@ -140,6 +136,16 @@ class CourseController extends Controller
 
             $course->progress_percentage = round(($completedSubtitles / $totalSubtitles) * 100);
 
+            $totalSeconds = 0;
+            foreach ($course->outlines as $outline) {
+                foreach ($outline->subtitles as $subtitle) {
+                    if ($subtitle->video_path) {
+                        $totalSeconds += $this->getYoutubeVideoDuration($subtitle->video_path);
+                    }
+                }
+            }
+            $course->total_hours = round($totalSeconds / 3600, 2);
+            
             return $course;
         });
 
@@ -148,28 +154,61 @@ class CourseController extends Controller
         ]);
     }
 
-    public function show($slug)
-{
-    // Convert the slug to lowercase and replace dashes with spaces
-    $title = str_replace('-', ' ', strtolower($slug));
+    private function getYoutubeVideoDuration($videoId){
+        if (!$videoId) return 0;
 
-    // Fetch the course with relationships, match title case-insensitively
-    $course = Courses::with([
-        'category',
-        'outlines.subtitles',
-        'quizzes.options'
-    ])
-    ->withCount('purchases')
-    ->whereRaw('LOWER(REPLACE(title, "-", " ")) = ?', [$title])
-    ->first();
+        $apiKey = env('YOUTUBE_API_KEY');
+        $url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id={$videoId}&key={$apiKey}";
+        
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+        
+        if (empty($data['items'])) return 0;
 
-    // Return course if found, else 404
-    if ($course) {
-        return response()->json(['course' => $course]);
-    } else {
-        return response()->json(['message' => 'Course not found'], 404);
+        $duration = $data['items'][0]['contentDetails']['duration'];
+
+        if (preg_match('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', $duration, $matches)) {
+            $hours = isset($matches[1]) ? (int)$matches[1] : 0;
+            $minutes = isset($matches[2]) ? (int)$matches[2] : 0;
+            $seconds = isset($matches[3]) ? (int)$matches[3] : 0;
+
+            return $hours * 3600 + $minutes * 60 + $seconds;
+        }
+
+        return 0;
     }
-}
+
+    public function show($slug){
+        $title = str_replace('-', ' ', strtolower($slug));
+
+        $course = Courses::with([
+            'category',
+            'outlines.subtitles',
+            'quizzes.options'
+        ])
+        ->withCount('purchases')
+        ->whereRaw('LOWER(REPLACE(title, "-", " ")) = ?', [$title])
+        ->first();
+
+        $totalSeconds = 0;
+
+        foreach ($course->outlines as $outline) {
+            foreach ($outline->subtitles as $subtitle) {
+                if ($subtitle->video_path) {
+                    $totalSeconds += $this->getYoutubeVideoDuration($subtitle->video_path);
+                }
+            }
+        }
+
+        $totalHours = round($totalSeconds / 3600, 2);
+
+        if ($course) {
+            $course->total_hours = $totalHours;
+            return response()->json(['course' => $course]);
+        } else {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+    }
 
 
     public function delete(Courses $course){

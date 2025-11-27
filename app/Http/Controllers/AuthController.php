@@ -186,6 +186,30 @@ class AuthController extends Controller
         ]);
     }
 
+    private function getYoutubeVideoDuration($videoId){
+        if (!$videoId) return 0;
+
+        $apiKey = env('YOUTUBE_API_KEY');
+        $url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id={$videoId}&key={$apiKey}";
+        
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+        
+        if (empty($data['items'])) return 0;
+
+        $duration = $data['items'][0]['contentDetails']['duration'];
+
+        if (preg_match('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', $duration, $matches)) {
+            $hours = isset($matches[1]) ? (int)$matches[1] : 0;
+            $minutes = isset($matches[2]) ? (int)$matches[2] : 0;
+            $seconds = isset($matches[3]) ? (int)$matches[3] : 0;
+
+            return $hours * 3600 + $minutes * 60 + $seconds;
+        }
+
+        return 0;
+    }
+
     public function details(Request $request){
         $user = $request->user();
 
@@ -213,6 +237,16 @@ class AuthController extends Controller
             }
 
             $course->progress = $total > 0 ? round(($done / $total) * 100) : 0;
+
+             $totalSeconds = 0;
+            foreach ($course->outlines as $outline) {
+                foreach ($outline->subtitles as $subtitle) {
+                    if ($subtitle->video_path) {
+                        $totalSeconds += $this->getYoutubeVideoDuration($subtitle->video_path);
+                    }
+                }
+            }
+            $course->total_hours = round($totalSeconds / 3600, 2);
         });
 
         $user->loadCount('purchases');

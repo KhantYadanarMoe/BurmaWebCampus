@@ -99,6 +99,12 @@ export default function AllCourses() {
         ? categories.find((cat) => cat.id === selectedCategory)?.name
         : null;
 
+    const formatHours = (totalHours) => {
+        const hours = Math.floor(totalHours); // full hours
+        const minutes = Math.round((totalHours - hours) * 60); // remaining minutes
+        return `${hours}h ${minutes}m`;
+    };
+
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-6">
@@ -165,7 +171,9 @@ export default function AllCourses() {
                                         enrolled
                                     </div>
                                     <div className="flex items-center gap-1 text-sm py-2">
-                                        <Clock size={16} /> 18 hours long
+                                        <Clock size={16} />{" "}
+                                        {formatHours(course.total_hours)} {}
+                                        long
                                     </div>
                                     <div className="py-3">
                                         <div className="flex justify-between">

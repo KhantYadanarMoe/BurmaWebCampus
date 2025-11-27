@@ -47,6 +47,12 @@ export default function Overview({ course }) {
         }
     };
 
+    const formatHours = (totalHours) => {
+        const hours = Math.floor(totalHours);
+        const minutes = Math.round((totalHours - hours) * 60);
+        return `${hours}h ${minutes}m`;
+    };
+
     return (
         <div className="px-5 lg:px-8 py-3">
             <div className="md:flex gap-3">
@@ -179,7 +185,8 @@ export default function Overview({ course }) {
                                     students enrolled
                                 </div>
                                 <div className="flex items-center gap-1 text-xs lg:text-sm py-2">
-                                    <Clock size={16} /> 18 hours long
+                                    <Clock size={16} />{" "}
+                                    {formatHours(course.total_hours)} long
                                 </div>
                                 <span className="text-xl font-medium my-2 flex justify-between">
                                     <span className="text-gray-700 text-base">
