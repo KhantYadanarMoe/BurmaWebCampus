@@ -31,12 +31,15 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function AllCourses() {
+    const { user } = useAuth();
     const [courses, setCourses] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [showCartAlert, setShowCartAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 6;
 
@@ -108,15 +111,23 @@ export default function AllCourses() {
     const navigate = useNavigate();
 
     const handleEnrollClick = (course) => {
+        // Check if user already enrolled
+        const alreadyEnrolled = user?.courses?.some((c) => c.id === course.id);
+
+        if (alreadyEnrolled) {
+            setAlertMessage("You already enrolled this course!");
+            setShowCartAlert(true);
+            return;
+        }
+
         const storedCart = JSON.parse(
             localStorage.getItem("enrolledCourses") || "[]"
         );
 
         if (storedCart.length > 0) {
-            // Something is already in the cart
+            setAlertMessage("Something is already in your cart!");
             setShowCartAlert(true);
         } else {
-            // Add course to cart and navigate to checkout
             localStorage.setItem("enrolledCourses", JSON.stringify([course]));
             navigate(`/course/${slugify(course.title)}`);
         }
@@ -300,7 +311,7 @@ export default function AllCourses() {
                         <AlertDialogHeader>
                             <AlertDialogTitle>Cart Alert</AlertDialogTitle>
                             <AlertDialogDescription>
-                                Something is already in your cart!
+                                {alertMessage}
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
