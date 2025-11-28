@@ -14,12 +14,14 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubscribeController;
-use App\Models\Contact;
-use App\Models\Subscribe;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+
+// =======================
+// PUBLIC (NO MIDDLEWARE)
+// =======================
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -30,16 +32,20 @@ Route::get('/', function () {
     ]);
 });
 
-
 Route::middleware(['web', 'guest'])->group(function () {
     Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
     Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 });
 
-
+// Catch-all for React
 Route::get('/{any}', function () {
     return view('app');
 })->where('any', '^(?!api).*');
+
+
+// =======================
+// AUTHENTICATED ROUTES
+// =======================
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -47,88 +53,103 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('auth:sanctum')->get('/api/user', [AuthController::class, 'details']);
+
+// =======================
+// PUBLIC API ROUTES
+// =======================
 
 Route::post('/api/register', [AuthController::class, 'register']);
 Route::post('/api/login', [AuthController::class, 'login']);
 Route::post('/api/logout', [AuthController::class, 'logout']);
 
-Route::get('/api/users', [AuthController::class, 'index']);
 Route::get('/api/user/{name}/details', [AuthController::class, 'show']);
+Route::get('/api/users', [AuthController::class, 'index']);
 
 Route::get('/api/course/categories', [CourseCategoryController::class, 'index']);
-Route::get('/api/course/category/{id}', [CourseCategoryController::class, 'show']);
-
 Route::get('/api/courses', [CourseController::class, 'index']);
 Route::get('/api/course/{slug}', [CourseController::class, 'show']);
+
+Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
+Route::get('/api/blogs', [BlogController::class, 'index']);
+Route::get('/api/blog/{id}', [BlogController::class, 'show']);
 
 Route::get('/api/comments', [CommentController::class, 'index']);
 Route::get('api/subtitle/{subtitle}/comments', [CommentController::class, 'getBySubtitle']);
 
-Route::get('/api/blog/categories', [BlogCategoryController::class, 'index']);
-Route::get('/api/blog/category/{id}', [BlogCategoryController::class, 'show']);
-
-Route::get('/api/blogs', [BlogController::class, 'index']);
-Route::get('/api/blog/{id}', [BlogController::class, 'show']);
-Route::post('/api/blog/{id}/view', [BlogController::class, 'incrementView']);
-
 Route::post("/api/subscribe", [SubscribeController::class, 'store']);
-
-Route::get('/api/reviews', [ReviewController::class, 'index']);
-Route::post("/api/review", [ReviewController::class, 'store']);
-
 Route::post("/api/contact", [ContactController::class, 'store']);
 
-Route::middleware(['auth:sanctum', 'user'])->group(function () {
-    Route::post('/api/user/default-payment', [AuthController::class, 'setDefaultPayment']);
 
-    Route::get('/api/course/purchase', [PurchaseController::class, 'index']);
+// ======================================================
+// USER-ONLY ROUTES (is_admin = 0)
+// ======================================================
+
+Route::middleware(['auth:sanctum', 'user'])->group(function () {
+
     Route::post('/api/course/purchase/create', [PurchaseController::class, 'store']);
     Route::get('/api/user/purchases', [PurchaseController::class, 'purchaseHistory']);
 
     Route::post('/api/subtitle/{id}/complete', [CourseProgressController::class, 'updateProgress']);
     Route::get('/api/course/{course}/progress', [CourseProgressController::class, 'getCourseProgress']);
-    
+
     Route::post("/api/comment/create", [CommentController::class, 'store']);
-  
+
+    Route::post("/api/review", [ReviewController::class, 'store']);
+
+    Route::post('/api/quizzes/submit', [QuizController::class, 'store']);
+
     Route::get('/api/certificates', [CertificateController::class, 'userCertificates']);
     Route::post('/api/certificates', [CertificateController::class, 'store']);
+
 });
 
+
+// ======================================================
+// ADMIN-ONLY ROUTES (is_admin = 1)
+// ======================================================
+
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+
+    // Users
     Route::put('/api/user/{user}', [AuthController::class, 'updateUser']);
     Route::put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
     Route::post('/api/users/banned/{id}', [AuthController::class, 'ban']);
 
+    // Course categories
     Route::post("/api/course/category/create", [CourseCategoryController::class, 'store']);
     Route::put('/api/course/category/{id}/visibility', [CourseCategoryController::class, 'updateVisibility']);
     Route::put('/api/course/category/{category}', [CourseCategoryController::class, 'update']);
     Route::delete('/api/course/category/{category}', [CourseCategoryController::class, 'delete']);
-    
+
+    // Courses
     Route::post('/api/courses/create', [CourseController::class, 'store']);
     Route::delete('/api/course/{course}', [CourseController::class, 'delete']);
-  
+
+    // Blog categories
     Route::post("/api/blog/category/create", [BlogCategoryController::class, 'store']);
     Route::put('/api/blog/category/{id}/visibility', [BlogCategoryController::class, 'updateVisibility']);
     Route::put('/api/blog/category/{category}', [BlogCategoryController::class, 'update']);
     Route::delete('/api/blog/category/{category}', [BlogCategoryController::class, 'delete']);
 
+    // Blogs
     Route::post("/api/blog/create", [BlogController::class, 'store']);
     Route::put('/api/blog/{blog}', [BlogController::class, 'update']);
     Route::delete('/api/blog/{blog}', [BlogController::class, 'delete']);
 
-    Route::get('/api/subscribers', [SubscribeController::class, 'index']);
-  
-    Route::post('/api/review/published/{id}', [ReviewController::class, 'publish']);
-    Route::post('/api/review/marked/{id}', [ReviewController::class, 'mark']);
-
+    // Contact
     Route::get('/api/contact', [ContactController::class, 'index']);
     Route::get('/api/contact/{id}', [ContactController::class, 'show']);
     Route::post('/api/contact/marked/{id}', [ContactController::class, 'mark']);
-    Route::delete('/api/contact/{contact}', [ContactController::class, 'delete']);
     Route::post('/api/contacts/reply/{id}', [ContactController::class, 'replyToContact']);
+    Route::delete('/api/contact/{contact}', [ContactController::class, 'delete']);
 
-    Route::post('/api/quizzes/submit', [QuizController::class, 'store']);
+    // Subscribers
+    Route::get('/api/subscribers', [SubscribeController::class, 'index']);
+
+    // Reviews
+    Route::post('/api/review/published/{id}', [ReviewController::class, 'publish']);
+    Route::post('/api/review/marked/{id}', [ReviewController::class, 'mark']);
 });
+
 
 require __DIR__.'/auth.php';

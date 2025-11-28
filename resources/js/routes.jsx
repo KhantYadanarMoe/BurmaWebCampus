@@ -37,6 +37,7 @@ import Quiz from "./Pages/Quiz";
 import Dashboard from "./Components/Admin/Dashboard";
 import ReviewModal from "./Components/ReviewModal";
 import ThankYou from "./Components/Checkout/ThankYou";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 const routes = createBrowserRouter([
     {
@@ -103,7 +104,11 @@ const routes = createBrowserRouter([
     },
     {
         path: "/user", //it should be username
-        element: <UserLayout />,
+        element: (
+            <ProtectedRoute role="user">
+                <UserLayout />
+            </ProtectedRoute>
+        ),
         children: [
             {
                 path: "/user",
@@ -125,7 +130,11 @@ const routes = createBrowserRouter([
     },
     {
         path: "/admin",
-        element: <AdminLayout />,
+        element: (
+            <ProtectedRoute role="admin">
+                <AdminLayout />
+            </ProtectedRoute>
+        ),
         children: [
             {
                 path: "/admin",

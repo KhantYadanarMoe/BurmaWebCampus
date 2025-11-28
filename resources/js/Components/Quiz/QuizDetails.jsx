@@ -1,6 +1,6 @@
 import { ChevronsRight } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
 import {
     AlertDialog,
@@ -63,6 +63,8 @@ export default function QuizDetails() {
 
         getDetails();
     }, [slug]);
+
+    const navigate = useNavigate();
 
     const handleAnswer = (quizId) => {
         setAnsweredQuizzes((prev) => ({ ...prev, [quizId]: true }));
@@ -178,6 +180,7 @@ export default function QuizDetails() {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(link.href);
+        navigate("/");
     }
 
     return (
