@@ -30,6 +30,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import {
     AlertDialog,
     AlertDialogAction,
+    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
@@ -80,6 +81,13 @@ export default function Details() {
         };
         getDetails();
     }, [courseSlug]);
+
+    function slugify(text) {
+        return text
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
 
     useEffect(() => {
         if (!course) return;
@@ -361,6 +369,7 @@ export default function Details() {
                         height="450"
                         frameBorder="0"
                         allowFullScreen
+                        className="mt-2 rounded-md"
                     ></iframe>
 
                     {/* <div className="my-3">
@@ -697,17 +706,21 @@ export default function Details() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Congratulations!</AlertDialogTitle>
                         <AlertDialogDescription>
-                            You successfully finished{" "}
-                            <strong>{course?.title}</strong> 🎉
+                            You finished all of the lectures. Now, it's time to
+                            take the final quiz. 🎉
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
-                    <AlertDialogFooter>
-                        <AlertDialogAction
-                            onClick={() => setShowCompletionDialog(false)}
-                        >
-                            Close
+                    <AlertDialogFooter className="flex gap-2">
+                        <AlertDialogAction>
+                            <Link to={`/${slugify(course?.title)}/quiz`}>
+                                Take final quiz
+                            </Link>
                         </AlertDialogAction>
+
+                        <AlertDialogCancel>
+                            <Link to="/">Later</Link>
+                        </AlertDialogCancel>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
