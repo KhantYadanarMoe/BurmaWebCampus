@@ -127,9 +127,6 @@ export default function QuizDetails() {
                     </div>
                 );
                 setAlertOpen(true);
-                setTimeout(() => {
-                    setCertificateOpen(true);
-                }, 500);
             }
         } catch (error) {
             console.error("Error submitting quiz:", error);
@@ -144,6 +141,7 @@ export default function QuizDetails() {
     async function saveCertificate(courseId) {
         const element = document.getElementById("certificateImage");
 
+        // Wait for all images inside the certificate to load
         await Promise.all(
             Array.from(element.getElementsByTagName("img")).map((img) => {
                 if (!img.complete) {
@@ -155,21 +153,31 @@ export default function QuizDetails() {
             })
         );
 
+        // Generate canvas from certificate element
         const canvas = await html2canvas(element, { useCORS: true });
         const dataUrl = canvas.toDataURL("image/png");
 
+        // Convert to blob for both download and uploading
         const blob = await (await fetch(dataUrl)).blob();
         const file = new File([blob], "certificate.png", { type: "image/png" });
 
+        // 1️⃣ Upload to database
         const formData = new FormData();
         formData.append("image", file);
         formData.append("course_id", courseId);
 
-        const response = await axios.post("/api/certificates", formData, {
+        await axios.post("/api/certificates", formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
 
-        alert("Certificate Saved!");
+        // 2️⃣ Trigger download on user's device
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${course?.title}_certificate.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
     }
 
     return (
@@ -282,11 +290,23 @@ export default function QuizDetails() {
                     <AlertDialogDescription>
                         {alertMessage}
                     </AlertDialogDescription>
-                    <AlertDialogFooter>
+                    <AlertDialogFooter className="flex justify-between">
                         <Button onClick={() => setAlertOpen(false)}>OK</Button>
+                        {typeof alertMessage !== "string" && (
+                            <Button
+                                onClick={() => {
+                                    setCertificateOpen(true);
+                                    setAlertOpen(false);
+                                }}
+                                className=""
+                            >
+                                Show Certificate
+                            </Button>
+                        )}
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
             {/* Certificate Modal */}
             <AlertDialog
                 open={certificateOpen}
