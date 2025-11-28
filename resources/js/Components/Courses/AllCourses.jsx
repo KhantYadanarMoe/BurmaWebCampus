@@ -40,6 +40,7 @@ export default function AllCourses() {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [showCartAlert, setShowCartAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
+    const [alertAction, setAlertAction] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 6;
 
@@ -111,7 +112,13 @@ export default function AllCourses() {
     const navigate = useNavigate();
 
     const handleEnrollClick = (course) => {
-        // Check if user already enrolled
+        if (!user) {
+            setAlertMessage("You must register first!");
+            setAlertAction(() => () => navigate("/register"));
+            setShowCartAlert(true);
+            return;
+        }
+
         const alreadyEnrolled = user?.courses?.some((c) => c.id === course.id);
 
         if (alreadyEnrolled) {
@@ -317,10 +324,21 @@ export default function AllCourses() {
                         <AlertDialogFooter>
                             <AlertDialogCancel
                                 onClick={() => setShowCartAlert(false)}
-                                className="rounded-lg px-4 py-2 bg-black text-white hover:bg-gray-800"
+                                className="rounded-lg px-4 py-2 "
                             >
                                 OK
                             </AlertDialogCancel>
+                            {alertAction && (
+                                <Button
+                                    onClick={() => {
+                                        setShowCartAlert(false);
+                                        alertAction();
+                                    }}
+                                    className="rounded-lg px-4 py-2"
+                                >
+                                    Register Now
+                                </Button>
+                            )}
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>

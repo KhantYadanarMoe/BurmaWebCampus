@@ -10,12 +10,25 @@ import {
 } from "@/components/ui/carousel";
 import { Progress } from "@/components/ui/progress";
 import { Clock, Users } from "lucide-react";
-import CoursesImg from "../../../assets/Courses.jpg";
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Courses() {
+    const { user } = useAuth();
     const [courses, setCourses] = useState([]);
+    const [alertAction, setAlertAction] = useState(null);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [showCartAlert, setShowCartAlert] = useState(false);
 
     const getCourses = async () => {
         try {
@@ -29,6 +42,37 @@ export default function Courses() {
     useEffect(() => {
         getCourses();
     }, []);
+
+    const navigate = useNavigate();
+
+    const handleEnrollClick = (course) => {
+        if (!user) {
+            setAlertMessage("You must register first!");
+            setAlertAction(() => () => navigate("/register"));
+            setShowCartAlert(true);
+            return;
+        }
+
+        const alreadyEnrolled = user?.courses?.some((c) => c.id === course.id);
+
+        if (alreadyEnrolled) {
+            setAlertMessage("You already enrolled this course!");
+            setShowCartAlert(true);
+            return;
+        }
+
+        const storedCart = JSON.parse(
+            localStorage.getItem("enrolledCourses") || "[]"
+        );
+
+        if (storedCart.length > 0) {
+            setAlertMessage("Something is already in your cart!");
+            setShowCartAlert(true);
+        } else {
+            localStorage.setItem("enrolledCourses", JSON.stringify([course]));
+            navigate(`/course/${slugify(course.title)}`);
+        }
+    };
 
     function slugify(text) {
         return text
@@ -112,15 +156,16 @@ export default function Courses() {
                                                             className="mt-2"
                                                         />
                                                     </div>
-                                                    <Link
-                                                        to={`/course/${slugify(
-                                                            course.title
-                                                        )}`}
+                                                    <Button
+                                                        className="w-full mt-3"
+                                                        onClick={() =>
+                                                            handleEnrollClick(
+                                                                course
+                                                            )
+                                                        }
                                                     >
-                                                        <Button className="w-full mt-3">
-                                                            Enroll Now
-                                                        </Button>
-                                                    </Link>
+                                                        Enroll Now
+                                                    </Button>
                                                 </div>
                                             </CardContent>
                                         </Card>
@@ -132,6 +177,35 @@ export default function Courses() {
                 </Carousel>
             </div>
             <hr className="border-t-gray-600" />
+            <AlertDialog open={showCartAlert} onOpenChange={setShowCartAlert}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Cart Alert</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {alertMessage}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel
+                            onClick={() => setShowCartAlert(false)}
+                            className="rounded-lg px-4 py-2"
+                        >
+                            OK
+                        </AlertDialogCancel>
+                        {alertAction && (
+                            <Button
+                                onClick={() => {
+                                    setShowCartAlert(false);
+                                    alertAction();
+                                }}
+                                className="rounded-lg px-4 py-2"
+                            >
+                                Register Now
+                            </Button>
+                        )}
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
