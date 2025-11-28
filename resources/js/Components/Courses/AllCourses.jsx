@@ -21,12 +21,22 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import axios from "axios";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function AllCourses() {
     const [courses, setCourses] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [showCartAlert, setShowCartAlert] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 6;
 
@@ -92,6 +102,23 @@ export default function AllCourses() {
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
+        }
+    };
+
+    const navigate = useNavigate();
+
+    const handleEnrollClick = (course) => {
+        const storedCart = JSON.parse(
+            localStorage.getItem("enrolledCourses") || "[]"
+        );
+
+        if (storedCart.length > 0) {
+            // Something is already in the cart
+            setShowCartAlert(true);
+        } else {
+            // Add course to cart and navigate to checkout
+            localStorage.setItem("enrolledCourses", JSON.stringify([course]));
+            navigate(`/course/${slugify(course.title)}`);
         }
     };
 
@@ -189,13 +216,14 @@ export default function AllCourses() {
                                             className="mt-2"
                                         />
                                     </div>
-                                    <Link
-                                        to={`/course/${slugify(course.title)}`}
+                                    <Button
+                                        className="w-full mt-3"
+                                        onClick={() =>
+                                            handleEnrollClick(course)
+                                        }
                                     >
-                                        <Button className="w-full mt-3">
-                                            Enroll Now
-                                        </Button>
-                                    </Link>
+                                        Enroll Now
+                                    </Button>
                                 </div>
                             </CardContent>
                         </Card>
@@ -264,6 +292,27 @@ export default function AllCourses() {
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
+                <AlertDialog
+                    open={showCartAlert}
+                    onOpenChange={setShowCartAlert}
+                >
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Cart Alert</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Something is already in your cart!
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel
+                                onClick={() => setShowCartAlert(false)}
+                                className="rounded-lg px-4 py-2 bg-black text-white hover:bg-gray-800"
+                            >
+                                OK
+                            </AlertDialogCancel>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </div>
     );
