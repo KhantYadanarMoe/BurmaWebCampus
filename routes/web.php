@@ -13,7 +13,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\siteInfoSettingController;
 use App\Http\Controllers\SubscribeController;
+use App\Http\Middleware\IsAdmin;
 use App\Models\Contact;
 use App\Models\Subscribe;
 use Illuminate\Foundation\Application;
@@ -95,7 +97,7 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
     Route::post('/api/certificates', [CertificateController::class, 'store']);
 });
 
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
     Route::put('/api/user/{user}', [AuthController::class, 'updateUser']);
     Route::put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
     Route::post('/api/users/banned/{id}', [AuthController::class, 'ban']);
@@ -129,6 +131,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/api/contacts/reply/{id}', [ContactController::class, 'replyToContact']);
 
     Route::post('/api/quizzes/submit', [QuizController::class, 'store']);
+
+    Route::get('/api/settings/info', [siteInfoSettingController::class, 'show']);
+    Route::post('/api/settings/info', [siteInfoSettingController::class, 'update']);
 });
 
 require __DIR__.'/auth.php';

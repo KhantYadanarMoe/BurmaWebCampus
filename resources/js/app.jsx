@@ -4,11 +4,14 @@ import routes from "./routes";
 import "../css/app.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import AppContent from "./AppContent";
+import { SiteInfoProvider } from "./Components/Admin/contexts/SiteInfoContext";
 
 export default function App() {
     return (
         <AuthProvider>
-            <AppContent />
+            <SiteInfoProvider>
+                <AppContent />
+            </SiteInfoProvider>
         </AuthProvider>
     );
 }

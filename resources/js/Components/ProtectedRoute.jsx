@@ -1,14 +1,15 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children, role }) => {
-    const user = JSON.parse(localStorage.getItem("user")); // Or get from context/redux
+const ProtectedRoute = ({ children, adminOnly }) => {
+    const { user, loading } = useAuth();
 
-    if (!user) {
-        return <Navigate to="/login" replace />;
-    }
+    if (loading) return <div>Loading...</div>; // or spinner
 
-    if (role && user.role !== role) {
-        return <Navigate to="/" replace />; // redirect if role doesn't match
+    if (!user) return <Navigate to="/login" replace />;
+
+    if (adminOnly && !user.isAdmin) {
+        return <Navigate to="/" replace />;
     }
 
     return children;

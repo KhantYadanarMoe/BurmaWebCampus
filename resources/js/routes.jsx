@@ -131,7 +131,7 @@ const routes = createBrowserRouter([
     {
         path: "/admin",
         element: (
-            <ProtectedRoute role="admin">
+            <ProtectedRoute adminOnly>
                 <AdminLayout />
             </ProtectedRoute>
         ),

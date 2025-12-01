@@ -19,6 +19,7 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
+import SiteInfo from "./Settings/SiteInfo";
 
 export default function Settings() {
     const [open, setOpen] = useState(false);
@@ -101,109 +102,7 @@ export default function Settings() {
                     </Link>
                 </li>
             </ul>
-            <div className="my-8">
-                <div className="flex justify-between">
-                    <div className="mb-5">
-                        <h1 className="text-lg font-medium">Site Info</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update the general information of the site.
-                        </p>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline">Cancel</Button>
-                        <Button>Save Changes</Button>
-                    </div>
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Site Name</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update your site name here.
-                        </p>
-                    </div>
-                    <Input
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="Enter your site name"
-                    />
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Logo</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update your site logo image here.
-                        </p>
-                    </div>
-                    <Input
-                        type="file"
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="Choose one"
-                    />
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Header</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update your site hero header here.
-                        </p>
-                    </div>
-                    <Input
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="Enter hero header"
-                    />
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Description</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update your site hero desc here.
-                        </p>
-                    </div>
-                    <Textarea
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="Enter hero description"
-                    ></Textarea>
-                </div>
-            </div>
+            <SiteInfo />
             <hr className="border-t-gray-700 my-8" />
             <div className="my-8">
                 <div className="flex justify-between">
