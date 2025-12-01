@@ -6,11 +6,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import axios from "axios";
+import { useSetting } from "./Admin/contexts/SiteInfoContext";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [searchBox, setSearchBox] = useState(false);
     const { user, setUser } = useAuth();
+    const { form } = useSetting();
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -42,7 +44,11 @@ export default function Navbar() {
                             {isOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
 
-                        <img src={Logo} alt="" className="h-8" />
+                        <img
+                            src={`/storage/${form.logo}`}
+                            alt=""
+                            className="h-8"
+                        />
 
                         <ul className="hidden md:flex space-x-6 text-gray-800">
                             <li class="flex items-center justify-center">

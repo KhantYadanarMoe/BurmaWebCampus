@@ -18,8 +18,10 @@ import html2canvas from "html2canvas";
 import Logo from "../../../assets/Logo.png";
 import CertiBg from "../../../assets/CertiBg.jpg";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSetting } from "../Admin/contexts/SiteInfoContext";
 
 export default function QuizDetails() {
+    const { form } = useSetting();
     const { slug } = useParams();
     const { user } = useAuth();
     const [course, setCourse] = useState(null);
@@ -338,7 +340,7 @@ export default function QuizDetails() {
                                     className="w-12 mx-auto"
                                 />
                                 <p className="mt-1 text-xs text-center text-black">
-                                    Burma Web Campus
+                                    {form?.site_name || "Burma Web Campus"}
                                 </p>
                             </div>
                             <div className="mt-6 text-center">

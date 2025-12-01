@@ -1,13 +1,19 @@
 import React from "react";
 import Logo from "../../../assets/Logo.png";
+import { useSetting } from "../Admin/contexts/SiteInfoContext";
 
 export default function Hero() {
+    const { form } = useSetting();
     return (
         <div className="px-5 lg:px-8">
             <div className="pt-8 pb-16">
-                <img src={Logo} alt="" className="h-8 md:h-10 mx-auto" />
+                <img
+                    src={`/storage/${form.logo}`}
+                    alt=""
+                    className="h-8 md:h-10 mx-auto"
+                />
                 <h1 className="text-xl md:text-2xl font-medium text-center my-2 md:my-3">
-                    Courses from Burma Web Campus
+                    Courses from {form?.site_name || "Burma Web Campus"}
                 </h1>
                 <p className="text-xs md:text-base text-gray-700 text-center">
                     Start your journey in web development with our carefully

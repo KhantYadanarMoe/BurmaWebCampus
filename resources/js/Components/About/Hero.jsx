@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import AboutImg from "../../../assets/About3.jpg";
 import { Card, CardContent } from "../ui/card";
 import axios from "axios";
+import { useSetting } from "../Admin/contexts/SiteInfoContext";
 
 export default function Hero() {
     const [courses, setCourses] = useState([]);
     let [users, setUsers] = useState([]);
+    const { form } = useSetting();
     const [studentCount, setStudentCount] = useState(0);
 
     const getCourses = async () => {
@@ -45,7 +47,7 @@ export default function Hero() {
             <div className="pb-10">
                 <div className="md:w-2/3 pb-3">
                     <h1 className="text-2xl lg:text-3xl font-medium py-3">
-                        Burma Web Campus{" "}
+                        {form?.site_name || "Burma Web Campus"}
                     </h1>
                     <p className="text-gray-800 text-sm lg:text-base">
                         BurmaWebCampus is an online website development learning

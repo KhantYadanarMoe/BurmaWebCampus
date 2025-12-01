@@ -14,9 +14,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "./ui/alert-dialog";
+import { useSetting } from "./Admin/contexts/SiteInfoContext";
 
 export default function Footer() {
-    const [form, setForm] = useState({
+    const { form } = useSetting();
+    const [subscriberForm, setSubscriberForm] = useState({
         email: "",
     });
 
@@ -28,7 +30,7 @@ export default function Footer() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setForm((prevState) => ({
+        setSubscriberForm((prevState) => ({
             ...prevState,
             [name]: value,
         }));
@@ -42,9 +44,9 @@ export default function Footer() {
 
         let formData = new FormData();
 
-        console.log("Form Data before submitting:", form);
+        console.log("Form Data before submitting:", subscriberForm);
 
-        formData.append("email", form.email);
+        formData.append("email", subscriberForm.email);
 
         console.log("Form data after appending:", formData);
 
@@ -61,7 +63,7 @@ export default function Footer() {
             });
 
             if (res.data.message === "Subscribed successfully.") {
-                setForm({
+                setSubscriberForm({
                     email: "",
                 });
                 setErrors({});
@@ -81,16 +83,17 @@ export default function Footer() {
             <hr className=" border-t-gray-500" />
             <div className="md:flex justify-between py-10">
                 <div className="md:w-1/2 lg:w-1/3">
-                    <img src={Logo} alt="" className="h-8" />
+                    <img src={`/storage/${form.logo}`} alt="" className="h-8" />
                     <p className="text-gray-800 mt-2">
-                        Unlock your potential with Burma Web Campus. Learn to
-                        code, build a career.
+                        Unlock your potential with{" "}
+                        {form.site_name || "Burma Web Campus"}. Learn to code,
+                        build a career.
                     </p>
                     <div className="flex w-full max-w-sm items-center gap-2 mt-3">
                         <Input
                             id="email"
                             name="email"
-                            value={form.email}
+                            value={subscriberForm.email}
                             onChange={handleInputChange}
                             type="text"
                             className="border-gray-400"

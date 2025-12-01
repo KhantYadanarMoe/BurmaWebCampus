@@ -9,9 +9,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import axios from "axios";
+import { useSetting } from "@/Components/Admin/contexts/SiteInfoContext";
 
 export default function Login() {
-    const [form, setForm] = useState({
+    const { form } = useSetting();
+    const [loginForm, setLoginForm] = useState({
         email: "",
         password: "",
     });
@@ -22,15 +24,15 @@ export default function Login() {
     // Handle input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setLoginForm((prev) => ({ ...prev, [name]: value }));
     };
 
     const { setUser } = useAuth();
 
     const validateForm = () => {
         const newErrors = {};
-        if (!form.email.trim()) newErrors.email = ["Email is required."];
-        if (!form.password.trim())
+        if (!loginForm.email.trim()) newErrors.email = ["Email is required."];
+        if (!loginForm.password.trim())
             newErrors.password = ["Password is required."];
 
         setErrors(newErrors);
@@ -54,8 +56,8 @@ export default function Login() {
             const res = await axios.post(
                 "/api/login",
                 {
-                    email: form.email,
-                    password: form.password,
+                    email: loginForm.email,
+                    password: loginForm.password,
                 },
                 {
                     withCredentials: true,
@@ -187,15 +189,19 @@ export default function Login() {
                 className="w-full lg:w-1/2 flex flex-col justify-between px-3 md:px-6 py-8 md:py-10 lg:py-8 h-auto lg:h-screen bg-cover bg-center"
                 style={{ backgroundImage: `url(${Bg})` }}
             >
-                <img src={Logo} alt="" className="w-16 md:w-20" />
+                <img
+                    src={`/storage/${form.logo}`}
+                    alt=""
+                    className="w-16 md:w-20"
+                />
                 <div className="mt-8 md:mt-10 lg:mt-0">
                     <div className="flex-grow border-t border-gray-500 w-1/3"></div>
                     <p className="text-gray-900 mt-2 text-sm md:text-base">
-                        Welcome back to Burma Web Campus, your gateway to online
-                        learning and career growth. Log in to access your
-                        courses, track progress, and connect with our learning
-                        community. Continue your journey today and take the next
-                        step toward your goals.
+                        Welcome back to {form?.site_name || "Burma Web Campus"},
+                        your gateway to online learning and career growth. Log
+                        in to access your courses, track progress, and connect
+                        with our learning community. Continue your journey today
+                        and take the next step toward your goals.
                     </p>
                 </div>
                 <div className="hidden lg:block mt-4 text-gray-700 text-sm">

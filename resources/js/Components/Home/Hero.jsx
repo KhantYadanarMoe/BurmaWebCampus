@@ -6,10 +6,12 @@ import Backend from "../../../assets/Backend.jpg";
 import Blog from "../../../assets/Blog.jpg";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useSetting } from "../Admin/contexts/SiteInfoContext";
 
 export default function Hero() {
     let [categories, setCategories] = useState([]);
     const [topCategories, setTopCategories] = useState([]);
+    const { form } = useSetting();
 
     let getCategories = async () => {
         try {
@@ -41,14 +43,16 @@ export default function Hero() {
             <div className="md:flex gap-3">
                 <div className="md:w-1/2">
                     <h1 className="text-2xl md:text-3xl lg:text-4xl md:mb-6 leading-[38px] md:leading-[46px] lg:leading-[50px]">
-                        Start Your Web Developer Journey With Us.
+                        {form.header ||
+                            "Start Your Web Developer Journey With Us."}
                     </h1>
                     <div className="flex md:hidden">
                         <p className="my-3 text-gray-800 text-sm lg:text-base">
-                            You don’t need any coding background or prior
-                            experience. All you need to bring is your effort and
-                            curiosity. We’ll take you from zero to hero in web
-                            development.
+                            {form.description ||
+                                `You don’t need any coding background or prior
+experience. All you need to bring is your effort and
+curiosity. We’ll take you from zero to hero in web
+development.`}
                         </p>
                     </div>
                     <div className="flex gap-2 mt-2">

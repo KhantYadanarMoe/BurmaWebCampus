@@ -29,10 +29,12 @@ import {
 } from "../ui/alert-dialog";
 import { User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSetting } from "../Admin/contexts/SiteInfoContext";
 
 export default function CheckoutForm() {
+    const { form } = useSetting();
     const [courses, setCourses] = useState([]);
-    const [form, setForm] = useState({
+    const [checkoutForm, setCheckoutForm] = useState({
         name: "",
         email: "",
         phone: "",
@@ -85,7 +87,7 @@ export default function CheckoutForm() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setForm((prevState) => ({
+        setCheckoutForm((prevState) => ({
             ...prevState,
             [name]: value,
         }));
@@ -104,12 +106,12 @@ export default function CheckoutForm() {
 
         let formData = new FormData();
 
-        console.log("Form Data before submitting:", form);
+        console.log("Form Data before submitting:", checkoutForm);
 
         formData.append("invoice_no", invoiceNumber);
-        formData.append("name", form.name);
-        formData.append("email", form.email);
-        formData.append("phone", form.phone);
+        formData.append("name", checkoutForm.name);
+        formData.append("email", checkoutForm.email);
+        formData.append("phone", checkoutForm.phone);
         formData.append("payment_method", paymentMethod);
         formData.append("total_price", totalPrice);
 
@@ -157,7 +159,11 @@ export default function CheckoutForm() {
                         {/* Header */}
                         <div>
                             <div className="flex items-center justify-between">
-                                <img src={Logo} alt="" className="h-6" />
+                                <img
+                                    src={`/storage/${form.logo}`}
+                                    alt=""
+                                    className="h-6"
+                                />
                                 <h1 className="text-lg font-medium">Invoice</h1>
                             </div>
 
@@ -264,7 +270,7 @@ export default function CheckoutForm() {
                                     <Input
                                         id="name"
                                         name="name"
-                                        value={form.name}
+                                        value={checkoutForm.name}
                                         onChange={handleInputChange}
                                         className="mt-1 border-gray-400"
                                     />
@@ -280,7 +286,7 @@ export default function CheckoutForm() {
                                         <Input
                                             id="email"
                                             name="email"
-                                            value={form.email}
+                                            value={checkoutForm.email}
                                             onChange={handleInputChange}
                                             className="mt-1 border-gray-400"
                                         />
@@ -296,7 +302,7 @@ export default function CheckoutForm() {
                                             id="phone"
                                             name="phone"
                                             type="number"
-                                            value={form.phone}
+                                            value={checkoutForm.phone}
                                             onChange={handleInputChange}
                                             className="mt-1 border-gray-400"
                                         />

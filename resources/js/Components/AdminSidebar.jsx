@@ -28,6 +28,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useSetting } from "./Admin/contexts/SiteInfoContext";
 
 export default function AdminSidebar({
     isSidebarOpen,
@@ -35,6 +36,7 @@ export default function AdminSidebar({
     darkMode,
     setDarkMode,
 }) {
+    const { form } = useSetting();
     return (
         <motion.div
             initial={{ x: -100, opacity: 0 }}
@@ -52,7 +54,11 @@ export default function AdminSidebar({
             `}
             >
                 <div className="flex justify-between items-center px-6 pb-6">
-                    <img src={Logo} alt="Logo" className="w-20" />
+                    <img
+                        src={`/storage/${form.logo}`}
+                        alt="Logo"
+                        className="w-20"
+                    />
                     <button onClick={() => setIsSidebarOpen(false)}>
                         <ChevronsLeft size={24} />
                     </button>
