@@ -20,6 +20,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import SiteInfo from "./Settings/SiteInfo";
+import Appearance from "./Settings/appearance";
 
 export default function Settings() {
     const [open, setOpen] = useState(false);
@@ -74,18 +75,6 @@ export default function Settings() {
                                 : "bg-gray-100 hover:bg-gray-200 text-gray-800"
                         } duration-300 block`}
                     >
-                        Localization
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        to=""
-                        className={`whitespace-nowrap px-2 py-2 rounded-md ${
-                            darkMode
-                                ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
-                                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
-                        } duration-300 block`}
-                    >
                         Notifications
                     </Link>
                 </li>
@@ -104,124 +93,9 @@ export default function Settings() {
             </ul>
             <SiteInfo />
             <hr className="border-t-gray-700 my-8" />
-            <div className="my-8">
-                <div className="flex justify-between">
-                    <div className="mb-5">
-                        <h1 className="text-lg font-medium">Appearance</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update the appearance of the website.
-                        </p>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline">Cancel</Button>
-                        <Button>Save Changes</Button>
-                    </div>
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Theme Color</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update the theme color of the website.
-                        </p>
-                    </div>
-                    <Input
-                        type="color"
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="Enter your site name"
-                    />
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Font style</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update the font style of the website.
-                        </p>
-                    </div>
-                    <div className="md:w-1/2">
-                        <Input
-                            className="border-gray-400 mt-2 md:mt-0"
-                            placeholder="https://"
-                        />
-                        <p className="text-sm text-gray-600 mt-1 ml-1">
-                            Enter google font link here.
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <Appearance />
             <hr className="border-t-gray-700 my-8" />
-            <div className="my-8">
-                <div className="flex justify-between">
-                    <div className="mb-5">
-                        <h1 className="text-lg font-medium">Localization</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Set localization for better experience.
-                        </p>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline">Cancel</Button>
-                        <Button>Save Changes</Button>
-                    </div>
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Default Language</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Choose the default language for your website.
-                        </p>
-                    </div>
-                    <div className="md:w-1/2 mt-2 md:mt-0">
-                        <Select>
-                            <SelectTrigger
-                                id="role"
-                                name="role"
-                                className="mt-1 border-gray-400"
-                            >
-                                <span>Choose a language</span>{" "}
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="english">English</SelectItem>
-                                <SelectItem value="burmese">Burmese</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-            </div>
-            <hr className="border-t-gray-700 my-8" />
+
             <div className="my-8">
                 <div className="flex justify-between">
                     <div className="mb-5">

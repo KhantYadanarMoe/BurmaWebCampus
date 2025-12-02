@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\appearanceSettingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
@@ -134,6 +135,9 @@ Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
 
     Route::get('/api/settings/info', [siteInfoSettingController::class, 'show']);
     Route::post('/api/settings/info', [siteInfoSettingController::class, 'update']);
+
+    Route::get('/api/settings/appearance', [appearanceSettingController::class, 'show']);
+    Route::post('/api/settings/appearance', [appearanceSettingController::class, 'update']);
 });
 
 require __DIR__.'/auth.php';
