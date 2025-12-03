@@ -23,22 +23,21 @@
             <link href="{{ $setting->google_font_url }}" rel="stylesheet">
         @endif
 
-        <!-- Global font-family CSS -->
-        <style>
-            body {
-                font-family: 
-                    {{ $setting && $setting->google_font_family 
-                        ? "'{$setting->google_font_family}', Figtree, 'Playfair Display', serif" 
-                        : "'Figtree', 'Playfair Display', serif" }};
-            }
-        </style>
+
 
         <!-- Scripts -->
         @routes
         @viteReactRefresh
         @vite(['resources/js/app.jsx'])
     </head>
-    <body class="font-sans antialiased">
+    <!-- Global font-family CSS -->
+        <style>
+            html, body, #app {
+                font-family: '{{ $setting->google_font_family ?? "Figtree" }}', Figtree, serif !important;
+            }
+        </style>
+
+    <body class="antialiased">
         <div id="app"></div>
     </body>
 </html>
