@@ -8,7 +8,12 @@
 
   <p class="text-base mb-4">If you have any further questions or need additional help, feel free to reply to this message. We're here to help!</p>
 
-  <p class="text-base">Best regards,<br><span class="font-semibold">BWC, Burma Web Campus.</span></p>
+  <p class="text-base">
+    Best regards,<br>
+    <span class="font-semibold">{{ $senderName }}</span><br>
+    <span class="text-sm text-gray-600">{{ $adminEmail }}</span>
+</p>
+
 
   <hr class="my-6 border-gray-300">
   <p class="text-xs text-gray-500">This response was generated based on your inquiry submitted via our contact form.</p>

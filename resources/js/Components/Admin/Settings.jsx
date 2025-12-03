@@ -21,6 +21,7 @@ import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import SiteInfo from "./Settings/SiteInfo";
 import Appearance from "./Settings/appearance";
+import Email from "./Settings/Email";
 
 export default function Settings() {
     const [open, setOpen] = useState(false);
@@ -95,71 +96,7 @@ export default function Settings() {
             <hr className="border-t-gray-700 my-8" />
             <Appearance />
             <hr className="border-t-gray-700 my-8" />
-
-            <div className="my-8">
-                <div className="flex justify-between">
-                    <div className="mb-5">
-                        <h1 className="text-lg font-medium">
-                            Email & Notification
-                        </h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Update email and notification settings.
-                        </p>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline">Cancel</Button>
-                        <Button>Save Changes</Button>
-                    </div>
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Admin Email</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Enter the email to get the update of this website.
-                        </p>
-                    </div>
-                    <Input
-                        type="email"
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="Enter your email"
-                    />
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Sender Name</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            The name which will display in the emails send to
-                            students.
-                        </p>
-                    </div>
-                    <Input
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="e.g: Burma Web Campus"
-                    />
-                </div>
-            </div>
+            <Email />
             <hr
                 className={`${
                     darkMode ? "border-t-gray-600" : "border-t-gray-300"

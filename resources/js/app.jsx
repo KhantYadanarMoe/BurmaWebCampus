@@ -6,13 +6,16 @@ import { AuthProvider } from "./contexts/AuthContext";
 import AppContent from "./AppContent";
 import { SiteInfoProvider } from "./Components/Admin/contexts/SiteInfoContext";
 import { AppearanceProvider } from "./Components/Admin/contexts/AppearanceContext";
+import { EmailProvider } from "./Components/Admin/contexts/EmailContext";
 
 export default function App() {
     return (
         <AuthProvider>
             <SiteInfoProvider>
                 <AppearanceProvider>
-                    <AppContent />
+                    <EmailProvider>
+                        <AppContent />
+                    </EmailProvider>
                 </AppearanceProvider>
             </SiteInfoProvider>
         </AuthProvider>

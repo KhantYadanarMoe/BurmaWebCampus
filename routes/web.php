@@ -10,6 +10,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseProgressController;
+use App\Http\Controllers\emailSettingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\QuizController;
@@ -138,6 +139,9 @@ Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
 
     Route::get('/api/settings/appearance', [appearanceSettingController::class, 'show']);
     Route::post('/api/settings/appearance', [appearanceSettingController::class, 'update']);
+
+    Route::get('/api/settings/email', [emailSettingController::class, 'show']);
+    Route::post('/api/settings/email', [emailSettingController::class, 'update']);
 });
 
 require __DIR__.'/auth.php';
