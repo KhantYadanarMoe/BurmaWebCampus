@@ -9,10 +9,15 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSetting } from "@/Components/Admin/contexts/SiteInfoContext";
+import { useSetting as useSiteInfo } from "@/Components/Admin/contexts/SiteInfoContext";
+import { useSetting as useSecurity } from "@/Components/Admin/contexts/SecurityContext";
 
 export default function Register() {
-    const { form } = useSetting();
+    const { form: siteForm } = useSiteInfo();
+    const { securityForm, loading } = useSecurity();
+
+    if (loading) return <p>Loading security settings...</p>;
+
     const [registerForm, setRegisterForm] = useState({
         name: "",
         email: "",
@@ -45,6 +50,12 @@ export default function Register() {
         e.preventDefault();
         if (!validateForm()) return;
         setErrors({});
+        if (password.length < securityForm.password_length) {
+            setErrors(
+                `Password must be at least ${securityForm.password_length} characters.`
+            );
+            return;
+        }
 
         try {
             await axios.get("/sanctum/csrf-cookie", {
@@ -148,6 +159,12 @@ export default function Register() {
                                 onChange={handleInputChange}
                                 className="border-gray-400 mt-1"
                             />
+                            <p className="text-sm text-gray-700">
+                                The password must be{" "}
+                                {securityForm?.password_length || 8} characters
+                                long.
+                            </p>
+
                             {errors.password && (
                                 <p className="text-sm text-red-600 mt-1">
                                     {errors.password[0]}
@@ -216,15 +233,15 @@ export default function Register() {
                 style={{ backgroundImage: `url(${Bg})` }}
             >
                 <img
-                    src={`/storage/${form.logo}`}
+                    src={`/storage/${siteForm.logo}`}
                     alt=""
                     className="w-16 md:w-20"
                 />
                 <div className="mt-8 md:mt-10 lg:mt-0">
                     <div className="flex-grow border-t border-gray-500 w-1/3"></div>
                     <p className="text-gray-900 mt-2 text-sm md:text-base">
-                        Join {form?.site_name || "Burma Web Campus"} today and
-                        start your journey toward online learning and career
+                        Join {siteForm?.site_name || "Burma Web Campus"} today
+                        and start your journey toward online learning and career
                         advancement. Create your account to access courses,
                         track your progress, and become part of our vibrant
                         learning community. Take the first step now and unlock

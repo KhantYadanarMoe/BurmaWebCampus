@@ -4,9 +4,9 @@ import axios from "axios";
 const SettingContext = createContext();
 
 export const SecurityProvider = ({ children }) => {
-    const [form, setForm] = useState({
-        password_length: "",
-        session_timeout: "",
+    const [securityForm, setSecurityForm] = useState({
+        password_length: 8, // default
+        session_timeout: 1800, // default
     });
 
     const [loading, setLoading] = useState(true);
@@ -18,11 +18,12 @@ export const SecurityProvider = ({ children }) => {
             const res = await axios.get("/api/settings/security", {
                 withCredentials: true,
             });
+
             if (res.data.setting) {
-                const setting = res.data.setting;
-                setForm({
-                    password_length: setting.password_length || "",
-                    session_timeout: setting.session_timeout || "",
+                const { password_length, session_timeout } = res.data.setting;
+                setSecurityForm({
+                    password_length: password_length || 8,
+                    session_timeout: session_timeout || 1800,
                 });
             }
         } catch (err) {
@@ -37,11 +38,13 @@ export const SecurityProvider = ({ children }) => {
     }, []);
 
     return (
-        <SettingContext.Provider value={{ form, setForm, getSetting, loading }}>
+        <SettingContext.Provider
+            value={{ securityForm, setSecurityForm, getSetting, loading }}
+        >
             {children}
         </SettingContext.Provider>
     );
 };
 
-// Custom hook to use the setting context easily
+// Hook to use security settings
 export const useSetting = () => useContext(SettingContext);

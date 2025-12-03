@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function Security() {
     const { darkMode } = useOutletContext();
-    const { form, setForm, getSetting } = useSetting();
+    const { securityForm, setSecurityForm, getSetting } = useSetting();
     // store errors state
     const [errors, setErrors] = useState({});
 
@@ -17,7 +17,7 @@ export default function Security() {
     // Handle HTML inputs
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setForm((prevState) => ({
+        setSecurityForm((prevState) => ({
             ...prevState,
             [name]: value,
         }));
@@ -28,8 +28,8 @@ export default function Security() {
         e.preventDefault();
 
         let formData = new FormData();
-        formData.append("password_length", form.password_length);
-        formData.append("session_timeout", form.session_timeout);
+        formData.append("password_length", securityForm.password_length);
+        formData.append("session_timeout", securityForm.session_timeout);
 
         try {
             // Make sure CSRF cookie is fetched first
@@ -97,7 +97,7 @@ export default function Security() {
                     id="password_length"
                     name="password_length"
                     type="number"
-                    value={form.password_length}
+                    value={securityForm.password_length}
                     onChange={handleInputChange}
                     className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
                     placeholder="Enter the length of password"
@@ -125,7 +125,7 @@ export default function Security() {
                     id="session_timeout"
                     name="session_timeout"
                     type="number"
-                    value={form.session_timeout}
+                    value={securityForm.session_timeout}
                     onChange={handleInputChange}
                     className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
                     placeholder="Enter time for session timeout"

@@ -100,6 +100,11 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
     Route::post('/api/certificates', [CertificateController::class, 'store']);
 });
 
+Route::get('/api/settings/info', [siteInfoSettingController::class, 'show']);
+    Route::get('/api/settings/appearance', [appearanceSettingController::class, 'show']);
+    Route::get('/api/settings/security', [securitySettingController::class, 'show']);
+    Route::get('/api/settings/email', [emailSettingController::class, 'show']);
+
 Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
     Route::put('/api/user/{user}', [AuthController::class, 'updateUser']);
     Route::put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
@@ -135,17 +140,14 @@ Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
 
     Route::post('/api/quizzes/submit', [QuizController::class, 'store']);
 
-    Route::get('/api/settings/info', [siteInfoSettingController::class, 'show']);
     Route::post('/api/settings/info', [siteInfoSettingController::class, 'update']);
 
-    Route::get('/api/settings/appearance', [appearanceSettingController::class, 'show']);
     Route::post('/api/settings/appearance', [appearanceSettingController::class, 'update']);
 
-    Route::get('/api/settings/email', [emailSettingController::class, 'show']);
     Route::post('/api/settings/email', [emailSettingController::class, 'update']);
 
-    Route::get('/api/settings/security', [securitySettingController::class, 'show']);
     Route::post('/api/settings/security', [securitySettingController::class, 'update']);
 });
+
 
 require __DIR__.'/auth.php';
