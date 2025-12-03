@@ -7,6 +7,7 @@ import AppContent from "./AppContent";
 import { SiteInfoProvider } from "./Components/Admin/contexts/SiteInfoContext";
 import { AppearanceProvider } from "./Components/Admin/contexts/AppearanceContext";
 import { EmailProvider } from "./Components/Admin/contexts/EmailContext";
+import { SecurityProvider } from "./Components/Admin/contexts/SecurityContext";
 
 export default function App() {
     return (
@@ -14,7 +15,9 @@ export default function App() {
             <SiteInfoProvider>
                 <AppearanceProvider>
                     <EmailProvider>
-                        <AppContent />
+                        <SecurityProvider>
+                            <AppContent />
+                        </SecurityProvider>
                     </EmailProvider>
                 </AppearanceProvider>
             </SiteInfoProvider>

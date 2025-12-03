@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\securitySettingController;
 use App\Http\Controllers\siteInfoSettingController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Middleware\IsAdmin;
@@ -142,6 +143,9 @@ Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
 
     Route::get('/api/settings/email', [emailSettingController::class, 'show']);
     Route::post('/api/settings/email', [emailSettingController::class, 'update']);
+
+    Route::get('/api/settings/security', [securitySettingController::class, 'show']);
+    Route::post('/api/settings/security', [securitySettingController::class, 'update']);
 });
 
 require __DIR__.'/auth.php';

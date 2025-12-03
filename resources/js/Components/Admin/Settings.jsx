@@ -22,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import SiteInfo from "./Settings/SiteInfo";
 import Appearance from "./Settings/appearance";
 import Email from "./Settings/Email";
+import Security from "./Settings/Security";
 
 export default function Settings() {
     const [open, setOpen] = useState(false);
@@ -102,68 +103,7 @@ export default function Settings() {
                     darkMode ? "border-t-gray-600" : "border-t-gray-300"
                 } my-8`}
             />
-            <div className="my-8">
-                <div className="flex justify-between">
-                    <div className="mb-5">
-                        <h1 className="text-lg font-medium">Security</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Set security for this website.
-                        </p>
-                    </div>
-                    <div className="md:flex gap-2">
-                        <Button variant="outline">Cancel</Button>
-                        <Button>Save Changes</Button>
-                    </div>
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-300" : "border-t-gray-800"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">Password length (min)</h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Set min-length of password for login.
-                        </p>
-                    </div>
-                    <Input
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="Enter the length of password"
-                    />
-                </div>
-                <hr
-                    className={`${
-                        darkMode ? "border-t-gray-600" : "border-t-gray-300"
-                    }`}
-                />
-                <div className="md:flex gap-3 my-4 md:my-6">
-                    <div className="md:w-1/2">
-                        <h1 className="font-medium">
-                            Session Timeout Duration (sec)
-                        </h1>
-                        <p
-                            className={`hidden md:block text-sm ${
-                                darkMode ? "text-gray-300" : "text-gray-800"
-                            }`}
-                        >
-                            Set auto-logout time.
-                        </p>
-                    </div>
-                    <Input
-                        className="border-gray-400 md:w-1/2 mt-2 md:mt-0"
-                        placeholder="Enter time for session timeout"
-                    />
-                </div>
-            </div>
+            <Security />
         </div>
     );
 }
