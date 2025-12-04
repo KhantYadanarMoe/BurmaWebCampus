@@ -39,5 +39,6 @@
 
     <body class="antialiased">
         <div id="app"></div>
+        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     </body>
 </html>
