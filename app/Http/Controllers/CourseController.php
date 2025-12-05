@@ -61,6 +61,19 @@ class CourseController extends Controller
         }
     }
 
+    $totalSeconds = 0;
+
+    foreach ($course->outlines as $outline) {
+        foreach ($outline->subtitles as $subtitle) {
+            if ($subtitle->video_path) {
+                $totalSeconds += $this->getYoutubeVideoDuration($subtitle->video_path);
+            }
+        }
+    }
+
+    $course->total_seconds = $totalSeconds;
+    $course->save();
+
     return response()->json(['success' => true]);
 }
 
@@ -135,17 +148,8 @@ class CourseController extends Controller
                 ->count();
 
             $course->progress_percentage = round(($completedSubtitles / $totalSubtitles) * 100);
+            $course->total_hours = round($course->total_seconds / 3600, 2);
 
-            $totalSeconds = 0;
-            foreach ($course->outlines as $outline) {
-                foreach ($outline->subtitles as $subtitle) {
-                    if ($subtitle->video_path) {
-                        $totalSeconds += $this->getYoutubeVideoDuration($subtitle->video_path);
-                    }
-                }
-            }
-            $course->total_hours = round($totalSeconds / 3600, 2);
-            
             return $course;
         });
 
@@ -190,24 +194,13 @@ class CourseController extends Controller
         ->whereRaw('LOWER(REPLACE(title, "-", " ")) = ?', [$title])
         ->first();
 
-        $totalSeconds = 0;
-
-        foreach ($course->outlines as $outline) {
-            foreach ($outline->subtitles as $subtitle) {
-                if ($subtitle->video_path) {
-                    $totalSeconds += $this->getYoutubeVideoDuration($subtitle->video_path);
-                }
-            }
-        }
-
-        $totalHours = round($totalSeconds / 3600, 2);
-
         if ($course) {
-            $course->total_hours = $totalHours;
+            $course->total_hours = round($course->total_seconds / 3600, 2);
             return response()->json(['course' => $course]);
         } else {
             return response()->json(['message' => 'Course not found'], 404);
         }
+        
     }
 
 
