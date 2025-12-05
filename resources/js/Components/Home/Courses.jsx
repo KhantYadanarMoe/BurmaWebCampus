@@ -29,13 +29,17 @@ export default function Courses() {
     const [alertAction, setAlertAction] = useState(null);
     const [alertMessage, setAlertMessage] = useState("");
     const [showCartAlert, setShowCartAlert] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const getCourses = async () => {
+        setLoading(true);
         try {
             const res = await axios.get("/api/courses");
             setCourses(res.data.courses);
         } catch (error) {
             console.error("Failed to fetch courses:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -87,6 +91,41 @@ export default function Courses() {
         return `${hours}h ${minutes}m`;
     };
 
+    const SkeletonCard = () => (
+        <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+            <div className="p-1 mt-4 md:mt-8">
+                <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                    <CardContent className="p-4 space-y-4">
+                        <div className="w-full h-40 lg:h-36 bg-gray-300 animate-pulse rounded-md" />
+
+                        <div className="w-24 h-5 bg-gray-300 animate-pulse rounded-md" />
+
+                        <div className="w-3/4 h-5 bg-gray-300 animate-pulse rounded-md" />
+
+                        <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 bg-gray-300 animate-pulse rounded" />
+                            <div className="w-24 h-4 bg-gray-300 animate-pulse rounded-md" />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 bg-gray-300 animate-pulse rounded" />
+                            <div className="w-20 h-4 bg-gray-300 animate-pulse rounded-md" />
+                        </div>
+
+                        <div className="flex justify-between items-center pt-2">
+                            <div className="w-20 h-4 bg-gray-300 animate-pulse rounded-md" />
+                            <div className="w-10 h-4 bg-gray-300 animate-pulse rounded-md" />
+                        </div>
+
+                        <div className="w-full h-2 bg-gray-300 animate-pulse rounded-md" />
+
+                        <div className="w-full h-10 bg-gray-300 animate-pulse rounded-md mt-3" />
+                    </CardContent>
+                </Card>
+            </div>
+        </CarouselItem>
+    );
+
     return (
         <div className="px-5 lg:px-8">
             <div className="pb-8 md:pb-12">
@@ -108,70 +147,98 @@ export default function Courses() {
                     </div>
                     <div>
                         <CarouselContent>
-                            {courses.map((course) => (
-                                <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                                    <div className="p-1 mt-4 md:mt-8">
-                                        <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
-                                            <CardContent className="p-4">
-                                                <div>
-                                                    <img
-                                                        src={`/storage/${course.image}`}
-                                                        alt=""
-                                                        className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
-                                                    />
-                                                    <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
-                                                        {course.category.name}
-                                                    </span>
-                                                    <h1 className="my-3 font-medium text-lg">
-                                                        {course.title}
-                                                    </h1>
-                                                    <div className="flex items-center gap-1 text-sm py-2">
-                                                        <Users size={16} />{" "}
-                                                        {course.purchases_count}{" "}
-                                                        students enrolled
-                                                    </div>
-                                                    <div className="flex items-center gap-1 text-sm py-2">
-                                                        <Clock size={16} />{" "}
-                                                        {formatHours(
-                                                            course.total_hours
-                                                        )}
-                                                        {} long
-                                                    </div>
-                                                    <div className="py-3">
-                                                        <div className="flex justify-between">
-                                                            <h1 className="text-gray-700">
-                                                                Progress
-                                                            </h1>
-                                                            <p className="text-black font-medium">
-                                                                {
+                            {loading ? (
+                                Array.from({ length: 6 }).map((_, idx) => (
+                                    <SkeletonCard key={idx} />
+                                ))
+                            ) : courses.length > 0 ? (
+                                courses.map((course) => (
+                                    <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                                        <div className="p-1 mt-4 md:mt-8">
+                                            <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+                                                <CardContent className="p-4">
+                                                    <div>
+                                                        <img
+                                                            src={`/storage/${course.image}`}
+                                                            alt=""
+                                                            className="w-full h-40 lg:h-36 object-cover rounded-md mb-4"
+                                                        />
+                                                        <span className="px-2 py-1 text-sm border border-gray-700 rounded-lg">
+                                                            {
+                                                                course.category
+                                                                    .name
+                                                            }
+                                                        </span>
+                                                        <h1 className="my-3 font-medium text-lg">
+                                                            {course.title}
+                                                        </h1>
+                                                        <div className="flex items-center gap-1 text-sm py-2">
+                                                            <Users size={16} />{" "}
+                                                            {
+                                                                course.purchases_count
+                                                            }{" "}
+                                                            students enrolled
+                                                        </div>
+                                                        <div className="flex items-center gap-1 text-sm py-2">
+                                                            <Clock size={16} />{" "}
+                                                            {formatHours(
+                                                                course.total_hours
+                                                            )}
+                                                            {} long
+                                                        </div>
+                                                        <div className="py-3">
+                                                            <div className="flex justify-between">
+                                                                <h1 className="text-gray-700">
+                                                                    Progress
+                                                                </h1>
+                                                                <p className="text-black font-medium">
+                                                                    {
+                                                                        course.progress_percentage
+                                                                    }
+                                                                    %
+                                                                </p>
+                                                            </div>
+                                                            <Progress
+                                                                value={
                                                                     course.progress_percentage
                                                                 }
-                                                                %
-                                                            </p>
+                                                                className="mt-2"
+                                                            />
                                                         </div>
-                                                        <Progress
-                                                            value={
-                                                                course.progress_percentage
+                                                        <Button
+                                                            className="w-full mt-3"
+                                                            onClick={() =>
+                                                                handleEnrollClick(
+                                                                    course
+                                                                )
                                                             }
-                                                            className="mt-2"
-                                                        />
+                                                        >
+                                                            Enroll Now
+                                                        </Button>
                                                     </div>
-                                                    <Button
-                                                        className="w-full mt-3"
-                                                        onClick={() =>
-                                                            handleEnrollClick(
-                                                                course
-                                                            )
-                                                        }
-                                                    >
-                                                        Enroll Now
-                                                    </Button>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+                                    </CarouselItem>
+                                ))
+                            ) : (
+                                <div className="w-full flex justify-center py-6">
+                                    <div className="text-center font-medium text-accentRed">
+                                        <img
+                                            src={Empty}
+                                            alt="No data"
+                                            className="mx-auto w-60"
+                                        />
+                                        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+                                            No data to show.
+                                        </h2>
+                                        <p className="text-gray-500 mb-4 text-sm">
+                                            The data you are looking for is
+                                            empty.
+                                        </p>
                                     </div>
-                                </CarouselItem>
-                            ))}
+                                </div>
+                            )}
                         </CarouselContent>
                     </div>
                 </Carousel>
