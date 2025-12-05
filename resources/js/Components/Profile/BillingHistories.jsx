@@ -11,6 +11,7 @@ import axios from "axios";
 export default function BillingHistories() {
     const [purchases, setPurchases] = useState([]);
     const [defaultPayment, setDefaultPayment] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -21,6 +22,7 @@ export default function BillingHistories() {
     }, []);
 
     const fetchPurchases = async () => {
+        setLoading(true);
         try {
             const token = localStorage.getItem("auth_token"); // or from context
             const res = await axios.get("/api/user/purchases", {
@@ -31,12 +33,37 @@ export default function BillingHistories() {
             setPurchases(res.data.purchases);
         } catch (error) {
             console.error("Failed to fetch purchase history:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchPurchases();
     }, []);
+
+    const SkeletonCard = () => (
+        <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
+            <li className="basis-[4%]">
+                <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
+            </li>
+            <li className="basis-[21%]">
+                <div className="h-4 bg-gray-300 animate-pulse rounded w-5/6"></div>
+            </li>
+            <li className="basis-[35%] font-medium">
+                <div className="h-4 bg-gray-300 animate-pulse rounded w-5/6"></div>
+            </li>
+            <li className="basis-[11%]">
+                <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
+            </li>
+            <li className="basis-[15%]">
+                <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
+            </li>
+            <li className="basis-[14%]">
+                <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
+            </li>
+        </ul>
+    );
     return (
         <div className="px-5 md:px-6 lg:px-10 py-8 md:w-[97%] mx-auto ">
             <div>
@@ -102,35 +129,54 @@ export default function BillingHistories() {
                             <li className="basis-[15%]">Enrolled Date</li>
                             <li className="basis-[14%]">Access</li>
                         </ul>
-                        {purchases.length === 0 && (
-                            <p className="text-center font-medium">
-                                No purchases yet.
-                            </p>
+                        {loading ? (
+                            Array.from({ length: 6 }).map((_, idx) => (
+                                <SkeletonCard key={idx} />
+                            ))
+                        ) : purchases.length > 0 ? (
+                            purchases.map((purchase) => (
+                                <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
+                                    <li className="basis-[4%]">
+                                        {purchase.id}
+                                    </li>
+                                    <li className="basis-[21%]">
+                                        {purchase.name}
+                                    </li>
+                                    <li className="basis-[35%] font-medium">
+                                        {purchase.course.title}
+                                    </li>
+                                    <li className="basis-[11%]">
+                                        {purchase.payment_method}
+                                    </li>
+                                    <li className="basis-[15%]">
+                                        {new Date(
+                                            purchase.created_at
+                                        ).toLocaleDateString("en-GB", {
+                                            day: "numeric",
+                                            month: "short",
+                                            year: "numeric",
+                                        })}
+                                    </li>
+                                    <li className="basis-[14%]">
+                                        Life-time access
+                                    </li>
+                                </ul>
+                            ))
+                        ) : (
+                            <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-2">
+                                <img
+                                    src={Empty}
+                                    alt="No purchases"
+                                    className="w-32 h-32 mb-4 object-contain"
+                                />
+                                <h2 className="text-xl font-semibold mb-2">
+                                    No Purchases Found
+                                </h2>
+                                <p className="text-gray-500 text-center">
+                                    You haven't enrolled a course from us!
+                                </p>
+                            </div>
                         )}
-                        {purchases.map((purchase) => (
-                            <ul className="flex items-center px-3 py-4 border-b border-b-gray-300 my-2">
-                                <li className="basis-[4%]">{purchase.id}</li>
-                                <li className="basis-[21%]">{purchase.name}</li>
-                                <li className="basis-[35%] font-medium">
-                                    {purchase.course.title}
-                                </li>
-                                <li className="basis-[11%]">
-                                    {purchase.payment_method}
-                                </li>
-                                <li className="basis-[15%]">
-                                    {new Date(
-                                        purchase.created_at
-                                    ).toLocaleDateString("en-GB", {
-                                        day: "numeric",
-                                        month: "short",
-                                        year: "numeric",
-                                    })}
-                                </li>
-                                <li className="basis-[14%]">
-                                    Life-time access
-                                </li>
-                            </ul>
-                        ))}
                     </div>
                 </div>
             </div>

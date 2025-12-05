@@ -19,7 +19,51 @@ export default function YourCourses() {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 6;
 
-    if (loading) return <div>Loading courses...</div>;
+    const SkeletonCard = () => (
+        <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+            <CardContent className="p-4">
+                <div className="space-y-4">
+                    <div className="w-full h-40 lg:h-36 bg-gray-300 animate-pulse rounded-md" />
+
+                    <div className="w-24 h-5 bg-gray-300 animate-pulse rounded-md" />
+
+                    <div className="w-3/4 h-5 bg-gray-300 animate-pulse rounded-md" />
+
+                    <div className="flex items-center gap-1">
+                        <div className="w-4 h-4 bg-gray-300 animate-pulse rounded-full" />
+                        <div className="w-32 h-4 bg-gray-300 animate-pulse rounded-md" />
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                        <div className="w-4 h-4 bg-gray-300 animate-pulse rounded-full" />
+                        <div className="w-28 h-4 bg-gray-300 animate-pulse rounded-md" />
+                    </div>
+
+                    <div className="py-1">
+                        <div className="flex justify-between mb-2">
+                            <div className="w-20 h-4 bg-gray-300 animate-pulse rounded-md" />
+                            <div className="w-10 h-4 bg-gray-300 animate-pulse rounded-md" />
+                        </div>
+
+                        <div className="w-full h-3 bg-gray-300 animate-pulse rounded-md" />
+                    </div>
+
+                    <div className="w-full h-10 bg-gray-300 animate-pulse rounded-lg mt-3" />
+                </div>
+            </CardContent>
+        </Card>
+    );
+
+    if (loading) {
+        return (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {Array.from({ length: 6 }).map((_, idx) => (
+                    <CourseCardSkeleton key={idx} />
+                ))}
+            </div>
+        );
+    }
+
     if (!user || !user.courses || user.courses.length === 0)
         return <div>You have no enrolled courses.</div>;
 
