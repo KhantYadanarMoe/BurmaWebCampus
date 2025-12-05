@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Logo from "../../assets/Logo.png";
-import { ChevronDown, LogIn, Menu, Search, X } from "lucide-react";
+import { ChevronDown, LogIn, Menu, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
@@ -10,7 +10,6 @@ import { useSetting } from "./Admin/contexts/SiteInfoContext";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [searchBox, setSearchBox] = useState(false);
     const { user, setUser } = useAuth();
     const { form } = useSetting();
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -88,29 +87,12 @@ export default function Navbar() {
                         </ul>
 
                         <div className="hidden md:flex items-center justify-center gap-4">
-                            <Search
-                                size={19}
-                                className="cursor-pointer"
-                                onClick={() => setSearchBox(true)}
-                            />
-                            {searchBox && (
-                                <div
-                                    className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50"
-                                    onClick={() => setSearchBox(false)}
-                                >
-                                    <div
-                                        className="relative mt-24 w-full max-w-lg bg-white h-[75vh] rounded-xl shadow-lg p-4"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <Input
-                                            type="text"
-                                            placeholder="Search..."
-                                            className="border-gray-400 w-full"
-                                            autoFocus
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                            <Link to="/checkout">
+                                <ShoppingBag
+                                    size={22}
+                                    className="text-gray-800"
+                                />
+                            </Link>
 
                             {user ? (
                                 <div className="relative">
@@ -176,16 +158,12 @@ export default function Navbar() {
                             <X size={24} />
                         </button>
                         <div className="my-16 mx-5 relative">
-                            <Search
-                                size={19}
-                                className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-600"
-                            />
-
-                            <Input
-                                type="text"
-                                placeholder="Search..."
-                                className="pl-7 border-0 border-b-2 border-gray-300 rounded-none focus-visible:ring-0 focus:border-black"
-                            />
+                            <Link to="/checkout">
+                                <ShoppingBag
+                                    size={22}
+                                    className="text-gray-800"
+                                />
+                            </Link>
                         </div>
                         <ul className="flex flex-col space-y-6 px-5 text-gray-900">
                             <li>
