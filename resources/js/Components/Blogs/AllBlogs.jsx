@@ -31,6 +31,8 @@ export default function AllBlogs() {
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [loading, setLoading] = useState(true);
+
     const rowsPerPage = 6;
 
     const getCategories = async () => {
@@ -54,11 +56,14 @@ export default function AllBlogs() {
     }
 
     const getBlogs = async () => {
+        setLoading(true);
         try {
             const res = await axios.get("/api/blogs");
             setBlogs(res.data.blogs);
         } catch (error) {
             console.error("Failed to fetch blogs:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -98,6 +103,30 @@ export default function AllBlogs() {
     const selectedCategoryName = selectedCategory
         ? categories.find((cat) => cat.id === selectedCategory)?.name
         : null;
+
+    const SkeletonCard = () => (
+        <div className="p-1 mt-4 md:mt-8">
+            <div className="h-52 md:h-56 w-full rounded-lg border-2 border-gray-600 bg-gray-300 animate-pulse" />
+
+            <Card className="relative w-[93%] mx-auto -mt-28 h-58 bg-white border border-gray-600 shadow-lg rounded-lg">
+                <CardContent className="p-4 space-y-4">
+                    <div className="flex justify-between items-center">
+                        <div className="w-20 h-5 bg-gray-300 animate-pulse rounded-md" />
+                        <div className="w-12 h-4 bg-gray-300 animate-pulse rounded-md" />
+                    </div>
+
+                    <div className="w-3/4 h-5 bg-gray-300 animate-pulse rounded-md" />
+
+                    <div className="space-y-2">
+                        <div className="w-full h-3 bg-gray-300 animate-pulse rounded-md" />
+                        <div className="w-5/6 h-3 bg-gray-300 animate-pulse rounded-md" />
+                        <div className="w-4/6 h-3 bg-gray-300 animate-pulse rounded-md" />
+                        <div className="w-1/2 h-3 bg-gray-300 animate-pulse rounded-md" />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
 
     return (
         <div className="px-5 lg:px-8">
@@ -140,7 +169,11 @@ export default function AllBlogs() {
                 </Select>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {currentBlogs.length > 0 ? (
+                {loading ? (
+                    Array.from({ length: 6 }).map((_, idx) => (
+                        <SkeletonCard key={idx} />
+                    ))
+                ) : currentBlogs.length > 0 ? (
                     currentBlogs.map((blog) => (
                         <div className="p-1 mt-4 md:mt-8">
                             {blog.cover && (

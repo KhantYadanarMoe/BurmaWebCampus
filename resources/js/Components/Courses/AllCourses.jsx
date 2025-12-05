@@ -42,6 +42,7 @@ export default function AllCourses() {
     const [alertMessage, setAlertMessage] = useState("");
     const [alertAction, setAlertAction] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
     const rowsPerPage = 6;
 
     const location = useLocation();
@@ -65,11 +66,14 @@ export default function AllCourses() {
     }
 
     const getCourses = async () => {
+        setLoading(true);
         try {
             const res = await axios.get("/api/courses");
             setCourses(res.data.courses);
         } catch (error) {
             console.error("Failed to fetch courses:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -150,6 +154,41 @@ export default function AllCourses() {
         return `${hours}h ${minutes}m`;
     };
 
+    const SkeletonCard = () => (
+        <Card className="relative bg-white border border-gray-600 shadow-lg rounded-lg">
+            <CardContent className="p-4">
+                <div className="space-y-4">
+                    <div className="w-full h-40 lg:h-36 bg-gray-300 animate-pulse rounded-md" />
+
+                    <div className="w-24 h-5 bg-gray-300 animate-pulse rounded-md" />
+
+                    <div className="w-3/4 h-5 bg-gray-300 animate-pulse rounded-md" />
+
+                    <div className="flex items-center gap-1">
+                        <div className="w-4 h-4 bg-gray-300 animate-pulse rounded-full" />
+                        <div className="w-32 h-4 bg-gray-300 animate-pulse rounded-md" />
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                        <div className="w-4 h-4 bg-gray-300 animate-pulse rounded-full" />
+                        <div className="w-28 h-4 bg-gray-300 animate-pulse rounded-md" />
+                    </div>
+
+                    <div className="py-1">
+                        <div className="flex justify-between mb-2">
+                            <div className="w-20 h-4 bg-gray-300 animate-pulse rounded-md" />
+                            <div className="w-10 h-4 bg-gray-300 animate-pulse rounded-md" />
+                        </div>
+
+                        <div className="w-full h-3 bg-gray-300 animate-pulse rounded-md" />
+                    </div>
+
+                    <div className="w-full h-10 bg-gray-300 animate-pulse rounded-lg mt-3" />
+                </div>
+            </CardContent>
+        </Card>
+    );
+
     return (
         <div className="px-5 lg:px-8">
             <div className="flex items-center justify-between mb-6">
@@ -191,7 +230,11 @@ export default function AllCourses() {
                 </Select>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {currentCourses.length > 0 ? (
+                {loading ? (
+                    Array.from({ length: 6 }).map((_, idx) => (
+                        <SkeletonCard key={idx} />
+                    ))
+                ) : currentCourses.length > 0 ? (
                     currentCourses.map((course) => (
                         <Card
                             key={course.id}
