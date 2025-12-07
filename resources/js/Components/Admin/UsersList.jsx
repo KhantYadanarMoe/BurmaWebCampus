@@ -1,12 +1,5 @@
 import React from "react";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select";
-import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -42,6 +35,8 @@ export default function UsersList() {
     const [selectedTypeFilter, setSelectedTypeFilter] = useState("all");
     // state for pagination
     const [currentPage, setCurrentPage] = useState(1);
+    // state for loading
+    const [loading, setLoading] = useState(true);
     // rows to show in a page
     const rowsPerPage = 10;
     // state for filter
@@ -58,12 +53,15 @@ export default function UsersList() {
 
     // fetch data that send from backend
     let getUsers = async () => {
+        setLoading(true);
         try {
             let res = await axios.get("/api/users");
             let data = res.data;
             setUsers(data.users);
         } catch (error) {
             console.error("Failed to fetch users:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -134,6 +132,42 @@ export default function UsersList() {
             console.error("Failed:", error);
         }
     };
+
+    const SkeletonCard = () => (
+        <ul
+            className={`flex items-center px-3 py-3 border-b ${
+                darkMode ? "border-b-gray-700" : "border-b-gray-300"
+            } my-2`}
+        >
+            <li className="basis-[4%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[20%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[30%] mr-3">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-full" />
+            </li>
+
+            <li className="basis-[19%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[12%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[10%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[5%]">
+                <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse" />
+            </li>
+        </ul>
+    );
 
     return (
         <div>
@@ -230,100 +264,120 @@ export default function UsersList() {
                         <li className="basis-[10%]">Enrolled</li>
                         <li className="basis-[5%]"></li>
                     </ul>
-                    {users.map((user) => (
-                        <ul
-                            className={`flex items-center px-3 py-3 border-b ${
-                                darkMode
-                                    ? "border-b-gray-700"
-                                    : "border-b-gray-300"
-                            } my-2`}
-                        >
-                            <li className="basis-[4%] ">
-                                <div className="flex gap-1 items-center">
-                                    {user.id}{" "}
-                                    {Number(user.banned) === 1 ? (
-                                        <BanIcon
-                                            className="text-red-600"
-                                            size={18}
-                                        />
-                                    ) : (
-                                        ""
-                                    )}
-                                </div>
-                            </li>
-                            <li className="basis-[20%]">
-                                <h1 className="font-medium">{user.name}</h1>
-                            </li>
-                            <li className="basis-[30%]">
-                                <p>{user.email}</p>
-                            </li>
-                            <li className="basis-[19%]">
-                                <p>{user.phone}</p>
-                            </li>
-                            <li className="basis-[12%]">
-                                <p>
-                                    {user?.DoB
-                                        ? new Date(
-                                              user?.DoB
-                                          ).toLocaleDateString("en-GB", {
-                                              day: "numeric",
-                                              month: "short",
-                                              year: "numeric",
-                                          })
-                                        : ""}
-                                </p>
-                            </li>
-                            <li className="basis-[10%]">
-                                <p>{user.purchases_count}</p>
-                            </li>
-                            <li className="basis-[5%]">
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button
-                                            className={`p-1 rounded-md ${
-                                                darkMode
-                                                    ? "hover:bg-gray-600"
-                                                    : "hover:bg-gray-100"
-                                            } outline-none`}
+                    {loading ? (
+                        Array.from({ length: 10 }).map((_, idx) => (
+                            <SkeletonCard key={idx} />
+                        ))
+                    ) : users.length > 0 ? (
+                        users.map((user) => (
+                            <ul
+                                className={`flex items-center px-3 py-3 border-b ${
+                                    darkMode
+                                        ? "border-b-gray-700"
+                                        : "border-b-gray-300"
+                                } my-2`}
+                            >
+                                <li className="basis-[4%] ">
+                                    <div className="flex gap-1 items-center">
+                                        {user.id}{" "}
+                                        {Number(user.banned) === 1 ? (
+                                            <BanIcon
+                                                className="text-red-600"
+                                                size={18}
+                                            />
+                                        ) : (
+                                            ""
+                                        )}
+                                    </div>
+                                </li>
+                                <li className="basis-[20%]">
+                                    <h1 className="font-medium">{user.name}</h1>
+                                </li>
+                                <li className="basis-[30%]">
+                                    <p>{user.email}</p>
+                                </li>
+                                <li className="basis-[19%]">
+                                    <p>{user.phone}</p>
+                                </li>
+                                <li className="basis-[12%]">
+                                    <p>
+                                        {user?.DoB
+                                            ? new Date(
+                                                  user?.DoB
+                                              ).toLocaleDateString("en-GB", {
+                                                  day: "numeric",
+                                                  month: "short",
+                                                  year: "numeric",
+                                              })
+                                            : ""}
+                                    </p>
+                                </li>
+                                <li className="basis-[10%]">
+                                    <p>{user.purchases_count}</p>
+                                </li>
+                                <li className="basis-[5%]">
+                                    <DropdownMenu modal={false}>
+                                        <DropdownMenuTrigger asChild>
+                                            <button
+                                                className={`p-1 rounded-md ${
+                                                    darkMode
+                                                        ? "hover:bg-gray-600"
+                                                        : "hover:bg-gray-100"
+                                                } outline-none`}
+                                            >
+                                                <Ellipsis size={20} />
+                                            </button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent
+                                            align="end"
+                                            className="w-40"
                                         >
-                                            <Ellipsis size={20} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Link
-                                            to={`/admin/${slugify(
-                                                user.name
-                                            )}/details`}
-                                        >
-                                            <DropdownMenuItem>
-                                                View Details
+                                            <Link
+                                                to={`/admin/${slugify(
+                                                    user.name
+                                                )}/details`}
+                                            >
+                                                <DropdownMenuItem>
+                                                    View Details
+                                                </DropdownMenuItem>
+                                            </Link>
+                                            <DropdownMenuItem
+                                                onClick={() =>
+                                                    banUser(
+                                                        user.id,
+                                                        Number(user.banned)
+                                                    )
+                                                }
+                                                className={
+                                                    Number(user.banned) === 1
+                                                        ? "text-green-500"
+                                                        : "text-yellow-500"
+                                                }
+                                            >
+                                                {Number(user.banned) === 1
+                                                    ? "Re-activate"
+                                                    : "Ban"}
                                             </DropdownMenuItem>
-                                        </Link>
-                                        <DropdownMenuItem
-                                            onClick={() =>
-                                                banUser(
-                                                    user.id,
-                                                    Number(user.banned)
-                                                )
-                                            }
-                                            className={
-                                                Number(user.banned) === 1
-                                                    ? "text-green-500"
-                                                    : "text-yellow-500"
-                                            }
-                                        >
-                                            {Number(user.banned) === 1
-                                                ? "Re-activate"
-                                                : "Ban"}
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </li>
-                        </ul>
-                    ))}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </li>
+                            </ul>
+                        ))
+                    ) : (
+                        <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-5">
+                            <img
+                                src={Empty}
+                                alt="No blogs"
+                                className="w-32 h-32 mb-4 object-contain"
+                            />
+                            <h2 className="text-xl font-semibold mb-2">
+                                No users Found
+                            </h2>
+                            <p className="text-gray-500 text-center">
+                                Sorry, there are no user created.
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="mt-8 flex">

@@ -35,18 +35,23 @@ import axios from "axios";
 
 export default function Subscribers() {
     let [subscribers, setSubscribers] = useState([]);
+    // state for loading
+    const [loading, setLoading] = useState(true);
     // state for filter
     const [selectedFilter, setSelectedFilter] = useState("newest");
 
     const { darkMode } = useOutletContext();
 
     let getSubscribers = async () => {
+        setLoading(true);
         try {
             let res = await axios.get("/api/subscribers");
             let data = res.data;
             setSubscribers(data.subscribes);
         } catch (error) {
             console.error("Failed to fetch subscribers:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -92,6 +97,38 @@ export default function Subscribers() {
             setCurrentPage(page);
         }
     };
+
+    const SkeletonCard = () => (
+        <ul
+            className={`flex items-center px-3 py-3 border-b ${
+                darkMode ? "border-b-gray-700" : "border-b-gray-300"
+            } my-2`}
+        >
+            <li className="basis-[5%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[35%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-full" />
+            </li>
+
+            <li className="basis-[15%] pl-2">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[25%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[15%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[5%]">
+                <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse" />
+            </li>
+        </ul>
+    );
 
     return (
         <div>
@@ -166,64 +203,86 @@ export default function Subscribers() {
                         <li className="basis-[15%]">Status</li>
                         <li className="basis-[5%]"></li>
                     </ul>
-                    {currentSubscribers?.map((subscriber) => (
-                        <ul
-                            className={`flex items-center px-3 py-3 border-b ${
-                                darkMode
-                                    ? "border-b-gray-700"
-                                    : "border-b-gray-300"
-                            } my-2`}
-                        >
-                            <li className="basis-[5%]">{subscriber.id}</li>
-                            <li className="basis-[35%]">{subscriber.email}</li>
-                            <li className="basis-[15%] pl-2">46</li>
-                            <li className="basis-[25%]">
-                                {new Date(
-                                    subscriber.created_at
-                                ).toLocaleDateString("en-GB", {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                })}
-                            </li>
-                            <li className="basis-[15%]">
-                                <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
-                                    Subscribed
-                                </span>
-                            </li>
-                            <li className="basis-[5%]">
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button
-                                            className={`p-1 rounded-md ${
-                                                darkMode
-                                                    ? "hover:bg-gray-600"
-                                                    : "hover:bg-gray-100"
-                                            } outline-none`}
-                                        >
-                                            <Ellipsis size={20} />
-                                        </button>
-                                    </DropdownMenuTrigger>
+                    {loading ? (
+                        Array.from({ length: 10 }).map((_, idx) => (
+                            <SkeletonCard key={idx} />
+                        ))
+                    ) : currentSubscribers.length > 0 ? (
+                        currentSubscribers?.map((subscriber) => (
+                            <ul
+                                className={`flex items-center px-3 py-3 border-b ${
+                                    darkMode
+                                        ? "border-b-gray-700"
+                                        : "border-b-gray-300"
+                                } my-2`}
+                            >
+                                <li className="basis-[5%]">{subscriber.id}</li>
+                                <li className="basis-[35%]">
+                                    {subscriber.email}
+                                </li>
+                                <li className="basis-[15%] pl-2">46</li>
+                                <li className="basis-[25%]">
+                                    {new Date(
+                                        subscriber.created_at
+                                    ).toLocaleDateString("en-GB", {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                    })}
+                                </li>
+                                <li className="basis-[15%]">
+                                    <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-md">
+                                        Subscribed
+                                    </span>
+                                </li>
+                                <li className="basis-[5%]">
+                                    <DropdownMenu modal={false}>
+                                        <DropdownMenuTrigger asChild>
+                                            <button
+                                                className={`p-1 rounded-md ${
+                                                    darkMode
+                                                        ? "hover:bg-gray-600"
+                                                        : "hover:bg-gray-100"
+                                                } outline-none`}
+                                            >
+                                                <Ellipsis size={20} />
+                                            </button>
+                                        </DropdownMenuTrigger>
 
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <DropdownMenuItem
-                                            onClick={() =>
-                                                navigator.clipboard.writeText(
-                                                    subscriber.email
-                                                )
-                                            }
-                                            className="cursor-pointer"
+                                        <DropdownMenuContent
+                                            align="end"
+                                            className="w-40"
                                         >
-                                            Copy Email
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </li>
-                        </ul>
-                    ))}
+                                            <DropdownMenuItem
+                                                onClick={() =>
+                                                    navigator.clipboard.writeText(
+                                                        subscriber.email
+                                                    )
+                                                }
+                                                className="cursor-pointer"
+                                            >
+                                                Copy Email
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </li>
+                            </ul>
+                        ))
+                    ) : (
+                        <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-5">
+                            <img
+                                src={Empty}
+                                alt="No blogs"
+                                className="w-32 h-32 mb-4 object-contain"
+                            />
+                            <h2 className="text-xl font-semibold mb-2">
+                                No subscribers Found
+                            </h2>
+                            <p className="text-gray-500 text-center">
+                                Sorry, there are no subscriber created.
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="mt-8 flex">
