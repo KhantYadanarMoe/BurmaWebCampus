@@ -41,17 +41,21 @@ export default function CoursesList() {
     const [courses, setCourses] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedFilter, setSelectedFilter] = useState("newest");
 
     const rowsPerPage = 10;
 
     const getCourses = async () => {
+        setLoading(true);
         try {
             const res = await axios.get("/api/courses");
             setCourses(res.data.courses);
         } catch (error) {
             console.error("Failed to fetch courses:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -143,157 +147,181 @@ export default function CoursesList() {
         return `${hours}h ${minutes}m`;
     };
 
+    const SkeletonCard = () => (
+        <ul
+            className={`flex items-center px-3 py-3 border-b ${
+                darkMode ? "border-b-gray-700" : "border-b-gray-300"
+            } my-2`}
+        >
+            <li className="basis-[5%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[33%] flex items-center gap-2">
+                <div className="w-10 h-10 bg-gray-300 rounded-md animate-pulse flex-shrink-0" />
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-1/2" />
+            </li>
+
+            <li className="basis-[13%] pl-2">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[14%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[10%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[10%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[10%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[5%]">
+                <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse" />
+            </li>
+        </ul>
+    );
+
     return (
         <div>
-            {filteredCourses.length === 0 ? (
-                <div className="w-full h-[80vh] flex items-center justify-center">
-                    <div className="flex flex-col items-center justify-center text-center">
-                        <img
-                            src={Empty}
-                            alt="Empty"
-                            className="w-48 opacity-80 mx-auto"
-                        />
-                        <h2 className="text-xl font-semibold text-gray-600 mt-4">
-                            No courses found
-                        </h2>
-                        <p className="text-gray-500 text-sm mb-4">
-                            Try changing filters or create a new course.
-                        </p>
-                        <Link to="/admin/courses/create">
-                            <Button>
-                                <Plus size={16} /> Add Course
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            ) : (
-                <>
-                    <h1 className="text-xl font-medium">Courses</h1>
+            <>
+                <h1 className="text-xl font-medium">Courses</h1>
 
-                    <div className="flex flex-col md:flex-row justify-between my-4">
-                        <div className="flex items-center gap-2">
+                <div className="flex flex-col md:flex-row justify-between my-4">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => {
+                                setSelectedCategory(null);
+                                setCurrentPage(1);
+                            }}
+                            className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
+                                !selectedCategory
+                                    ? "bg-gray-800 text-white border-gray-800"
+                                    : "border-gray-500"
+                            }`}
+                        >
+                            All
+                        </button>
+                        {categories.map((category) => (
                             <button
+                                key={category.id}
                                 onClick={() => {
-                                    setSelectedCategory(null);
+                                    setSelectedCategory(category.id);
                                     setCurrentPage(1);
                                 }}
                                 className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
-                                    !selectedCategory
+                                    selectedCategory === category.id
                                         ? "bg-gray-800 text-white border-gray-800"
                                         : "border-gray-500"
                                 }`}
                             >
-                                All
+                                {category.name}
                             </button>
-                            {categories.map((category) => (
-                                <button
-                                    key={category.id}
-                                    onClick={() => {
-                                        setSelectedCategory(category.id);
-                                        setCurrentPage(1);
-                                    }}
-                                    className={`px-2 py-1 text-xs md:text-sm border rounded-lg ${
-                                        selectedCategory === category.id
-                                            ? "bg-gray-800 text-white border-gray-800"
-                                            : "border-gray-500"
-                                    }`}
-                                >
-                                    {category.name}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="flex items-center justify-end md:justify-normal gap-2">
-                            <div className="hidden md:block">
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button
-                                            className={`flex gap-1 items-center px-2 py-1 border ${
-                                                darkMode
-                                                    ? "border-gray-300"
-                                                    : "border-gray-800"
-                                            } rounded-md`}
-                                        >
-                                            {
-                                                {
-                                                    newest: "Filter By Newest",
-                                                    oldest: "Filter By Oldest",
-                                                    "a-z": "Filter By A-Z",
-                                                    "z-a": "Filter By Z-A",
-                                                }[selectedFilter]
-                                            }
-                                            <ChevronDown size={16} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                        avoidCollisions={false}
-                                    >
-                                        <DropdownMenuItem
-                                            onSelect={() =>
-                                                handleFilterChange("newest")
-                                            }
-                                            className="cursor-pointer"
-                                        >
-                                            Filter By Newest
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onSelect={() =>
-                                                handleFilterChange("oldest")
-                                            }
-                                            className="cursor-pointer"
-                                        >
-                                            Filter By Oldest
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onSelect={() =>
-                                                handleFilterChange("a-z")
-                                            }
-                                            className="cursor-pointer"
-                                        >
-                                            Filter By A-Z
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onSelect={() =>
-                                                handleFilterChange("z-a")
-                                            }
-                                            className="cursor-pointer"
-                                        >
-                                            Filter By Z-A
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                            <Link to="/admin/courses/create">
-                                <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
-                                    <Plus /> Create
-                                </Button>
-                            </Link>
-                        </div>
+                        ))}
                     </div>
 
-                    <div className="overflow-x-auto w-full">
-                        <div className="min-w-[920px]">
-                            <ul
-                                className={`flex items-center px-3 py-4 border-b ${
-                                    darkMode
-                                        ? "border-b-gray-200"
-                                        : "border-b-gray-700"
-                                } my-3`}
-                            >
-                                <li className="basis-[5%]">ID</li>
-                                <li className="basis-[33%]">Course Name</li>
-                                <li className="basis-[13%] pl-2">Category</li>
-                                <li className="basis-[14%]">Price</li>
-                                <li className="basis-[10%]">Enrolled</li>
-                                <li className="basis-[10%]">Certified</li>
-                                <li className="basis-[10%]">Time</li>
-                                <li className="basis-[5%]"></li>
-                            </ul>
+                    <div className="flex items-center justify-end md:justify-normal gap-2">
+                        <div className="hidden md:block">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button
+                                        className={`flex gap-1 items-center px-2 py-1 border ${
+                                            darkMode
+                                                ? "border-gray-300"
+                                                : "border-gray-800"
+                                        } rounded-md`}
+                                    >
+                                        {
+                                            {
+                                                newest: "Filter By Newest",
+                                                oldest: "Filter By Oldest",
+                                                "a-z": "Filter By A-Z",
+                                                "z-a": "Filter By Z-A",
+                                            }[selectedFilter]
+                                        }
+                                        <ChevronDown size={16} />
+                                    </button>
+                                </DropdownMenuTrigger>
 
-                            {currentCourses.map((course) => (
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="w-40"
+                                    avoidCollisions={false}
+                                >
+                                    <DropdownMenuItem
+                                        onSelect={() =>
+                                            handleFilterChange("newest")
+                                        }
+                                        className="cursor-pointer"
+                                    >
+                                        Filter By Newest
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={() =>
+                                            handleFilterChange("oldest")
+                                        }
+                                        className="cursor-pointer"
+                                    >
+                                        Filter By Oldest
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={() =>
+                                            handleFilterChange("a-z")
+                                        }
+                                        className="cursor-pointer"
+                                    >
+                                        Filter By A-Z
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={() =>
+                                            handleFilterChange("z-a")
+                                        }
+                                        className="cursor-pointer"
+                                    >
+                                        Filter By Z-A
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                        <Link to="/admin/courses/create">
+                            <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
+                                <Plus /> Create
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto w-full">
+                    <div className="min-w-[920px]">
+                        <ul
+                            className={`flex items-center px-3 py-4 border-b ${
+                                darkMode
+                                    ? "border-b-gray-200"
+                                    : "border-b-gray-700"
+                            } my-3`}
+                        >
+                            <li className="basis-[5%]">ID</li>
+                            <li className="basis-[33%]">Course Name</li>
+                            <li className="basis-[13%] pl-2">Category</li>
+                            <li className="basis-[14%]">Price</li>
+                            <li className="basis-[10%]">Enrolled</li>
+                            <li className="basis-[10%]">Certified</li>
+                            <li className="basis-[10%]">Time</li>
+                            <li className="basis-[5%]"></li>
+                        </ul>
+
+                        {loading ? (
+                            Array.from({ length: 10 }).map((_, idx) => (
+                                <SkeletonCard key={idx} />
+                            ))
+                        ) : currentCourses.length > 0 ? (
+                            currentCourses.map((course) => (
                                 <ul
                                     key={course.id}
                                     className={`flex items-center px-3 py-3 border-b ${
@@ -406,77 +434,90 @@ export default function CoursesList() {
                                         </DropdownMenu>
                                     </li>
                                 </ul>
-                            ))}
-                        </div>
+                            ))
+                        ) : (
+                            <div className="w-full h-[80vh] flex items-center justify-center">
+                                <div className="flex flex-col items-center justify-center text-center">
+                                    <img
+                                        src={Empty}
+                                        alt="Empty"
+                                        className="w-48 opacity-80 mx-auto"
+                                    />
+                                    <h2 className="text-xl font-semibold text-gray-600 mt-4">
+                                        No courses found
+                                    </h2>
+                                    <p className="text-gray-500 text-sm mb-4">
+                                        Try changing filters or create a new
+                                        course.
+                                    </p>
+                                    <Link to="/admin/courses/create">
+                                        <Button>
+                                            <Plus size={16} /> Add Course
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
                     </div>
+                </div>
 
-                    <div className="mt-8 flex">
-                        <div className="ml-auto">
-                            <Pagination className="text-accentRed">
-                                <PaginationContent>
-                                    <PaginationItem>
-                                        <PaginationPrevious
-                                            onClick={() =>
-                                                handlePageChange(
-                                                    currentPage - 1
-                                                )
-                                            }
-                                            disabled={currentPage === 1}
-                                            className={`cursor-pointer ${
-                                                currentPage === 1
-                                                    ? "opacity-50 cursor-not-allowed"
-                                                    : ""
-                                            }`}
-                                        />
-                                    </PaginationItem>
-                                    {Array.from(
-                                        {
-                                            length: Math.ceil(
-                                                courses.length / rowsPerPage
-                                            ),
-                                        },
-                                        (_, index) => (
-                                            <PaginationItem key={index}>
-                                                <PaginationLink
-                                                    onClick={() =>
-                                                        handlePageChange(
-                                                            index + 1
-                                                        )
-                                                    }
-                                                    isActive={
-                                                        currentPage ===
-                                                        index + 1
-                                                    }
-                                                    className="cursor-pointer"
-                                                >
-                                                    {index + 1}
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                        )
-                                    )}
-                                    <PaginationItem>
-                                        <PaginationNext
-                                            onClick={() =>
-                                                handlePageChange(
-                                                    currentPage + 1
-                                                )
-                                            }
-                                            className={`cursor-pointer ${
-                                                currentPage === totalPages
-                                                    ? "opacity-50 cursor-not-allowed"
-                                                    : ""
-                                            }`}
-                                            disabled={
-                                                currentPage === totalPages
-                                            }
-                                        />
-                                    </PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
-                        </div>
+                <div className="mt-8 flex">
+                    <div className="ml-auto">
+                        <Pagination className="text-accentRed">
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        onClick={() =>
+                                            handlePageChange(currentPage - 1)
+                                        }
+                                        disabled={currentPage === 1}
+                                        className={`cursor-pointer ${
+                                            currentPage === 1
+                                                ? "opacity-50 cursor-not-allowed"
+                                                : ""
+                                        }`}
+                                    />
+                                </PaginationItem>
+                                {Array.from(
+                                    {
+                                        length: Math.ceil(
+                                            courses.length / rowsPerPage
+                                        ),
+                                    },
+                                    (_, index) => (
+                                        <PaginationItem key={index}>
+                                            <PaginationLink
+                                                onClick={() =>
+                                                    handlePageChange(index + 1)
+                                                }
+                                                isActive={
+                                                    currentPage === index + 1
+                                                }
+                                                className="cursor-pointer"
+                                            >
+                                                {index + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    )
+                                )}
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={() =>
+                                            handlePageChange(currentPage + 1)
+                                        }
+                                        className={`cursor-pointer ${
+                                            currentPage === totalPages
+                                                ? "opacity-50 cursor-not-allowed"
+                                                : ""
+                                        }`}
+                                        disabled={currentPage === totalPages}
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
                     </div>
-                </>
-            )}
+                </div>
+            </>
         </div>
     );
 }
