@@ -61,6 +61,8 @@ Route::post('/api/logout', [AuthController::class, 'logout']);
 Route::get('/api/users', [AuthController::class, 'index']);
 Route::get('/api/user/{name}/details', [AuthController::class, 'show']);
 
+Route::get('/api/course/purchase', [PurchaseController::class, 'index']);
+
 Route::get('/api/course/categories', [CourseCategoryController::class, 'index']);
 Route::get('/api/course/category/{id}', [CourseCategoryController::class, 'show']);
 
@@ -87,7 +89,6 @@ Route::post("/api/contact", [ContactController::class, 'store']);
 Route::middleware(['auth:sanctum', 'user'])->group(function () {
     Route::post('/api/user/default-payment', [AuthController::class, 'setDefaultPayment']);
 
-    Route::get('/api/course/purchase', [PurchaseController::class, 'index']);
     Route::post('/api/course/purchase/create', [PurchaseController::class, 'store']);
     Route::get('/api/user/purchases', [PurchaseController::class, 'purchaseHistory']);
 

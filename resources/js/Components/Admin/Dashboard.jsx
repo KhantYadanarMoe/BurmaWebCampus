@@ -10,7 +10,6 @@ import {
     Legend,
     ReferenceLine,
 } from "recharts";
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Bell, BookCopy, Ellipsis, Users, Wallet } from "lucide-react";
 import CourseImg from "../../../assets/Courses.jpg";
@@ -32,16 +31,13 @@ import {
     DialogTitle,
 } from "../ui/dialog";
 
-export default function UserGrowthChart({
-    data,
-    height = 220,
-    compact = false,
-}) {
+export default function Dashboard({ data, height = 220, compact = false }) {
     const [open, setOpen] = useState(false);
     const [courses, setCourses] = useState([]);
     let [users, setUsers] = useState([]);
     let [purchases, setPurchases] = useState([]);
     let [subscribers, setSubscribers] = useState([]);
+    const [loading, setLoading] = useState(true);
     const { darkMode } = useOutletContext();
 
     const getCourses = async () => {
@@ -103,10 +99,16 @@ export default function UserGrowthChart({
     };
 
     useEffect(() => {
-        getUsers();
-        getCourses();
-        getPurchases();
-        getSubscribers();
+        setLoading(true);
+
+        Promise.all([
+            getUsers(),
+            getCourses(),
+            getPurchases(),
+            getSubscribers(),
+        ]).finally(() => {
+            setLoading(false);
+        });
     }, []);
 
     const chartData = useMemo(() => {
@@ -155,7 +157,34 @@ export default function UserGrowthChart({
         }
     };
 
-    console.log("Dark mode:", darkMode);
+    if (loading) {
+        return (
+            <div>
+                <h1 className="text-lg font-medium">Dashboard</h1>
+
+                <div className="my-5 md:grid md:grid-cols-4 gap-2">
+                    {Array(4)
+                        .fill(0)
+                        .map((_, idx) => (
+                            <div
+                                key={idx}
+                                className="h-28 md:h-32 w-full bg-gray-300 animate-pulse rounded-lg"
+                            />
+                        ))}
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-2 my-5">
+                    <div className="md:w-3/5 h-80 bg-gray-300 animate-pulse rounded-lg" />
+                    <div className="md:w-2/5 h-80 bg-gray-300 animate-pulse rounded-lg" />
+                </div>
+
+                {/* Latest Purchases */}
+                <div className="my-5">
+                    <div className="h-64 w-full bg-gray-300 animate-pulse rounded-lg" />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div>
