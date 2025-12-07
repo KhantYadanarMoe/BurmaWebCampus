@@ -41,6 +41,8 @@ export default function BlogsList() {
 
     const [blogs, setBlogs] = useState([]);
 
+    const [loading, setLoading] = useState(true);
+
     const [currentPage, setCurrentPage] = useState(1);
 
     const rowsPerPage = 10;
@@ -61,11 +63,14 @@ export default function BlogsList() {
     }, []);
 
     const getBlogs = async () => {
+        setLoading(true);
         try {
             const res = await axios.get("/api/blogs");
             setBlogs(res.data.blogs);
         } catch (error) {
             console.error("Failed to fetch blogs:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -134,6 +139,45 @@ export default function BlogsList() {
             console.log(e);
         }
     };
+
+    const SkeletonCard = () => (
+        <ul
+            key={idx}
+            className={`flex items-center px-3 py-3 border-b ${
+                darkMode ? "border-b-gray-700" : "border-b-gray-300"
+            } my-2`}
+        >
+            <li className="basis-[4%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[40%] flex items-center gap-2">
+                <div className="w-12 h-12 bg-gray-300 rounded-md animate-pulse flex-shrink-0" />
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-1/2" />
+            </li>
+
+            <li className="basis-[13%] pl-2">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            <li className="basis-[13%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[10%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-2/3" />
+            </li>
+
+            <li className="basis-[14%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4 mb-1" />
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-1/2" />
+            </li>
+
+            <li className="basis-[6%]">
+                <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse" />
+            </li>
+        </ul>
+    );
 
     return (
         <div>
@@ -282,146 +326,174 @@ export default function BlogsList() {
                                 <li className="basis-[14%]">Created at</li>
                                 <li className="basis-[6%]"></li>
                             </ul>
-                            {currentBlogs.map((blog) => (
-                                <ul
-                                    className={`flex items-center px-3 py-3 border-b ${
-                                        darkMode
-                                            ? "border-b-gray-700"
-                                            : "border-b-gray-300"
-                                    } my-2`}
-                                >
-                                    <li className="basis-[4%]">{blog.id}</li>
-                                    <li className="basis-[40%] flex items-center gap-2">
-                                        {blog.cover && (
-                                            <img
-                                                src={`/storage/${blog.cover}`}
-                                                alt={blog.title}
-                                                className="w-12 h-12 object-cover rounded-md flex-shrink-0"
-                                            />
-                                        )}
+                            {loading ? (
+                                Array.from({ length: 10 }).map((_, idx) => (
+                                    <SkeletonCard key={idx} />
+                                ))
+                            ) : currentBlogs.length > 0 ? (
+                                currentBlogs.map((blog) => (
+                                    <ul
+                                        className={`flex items-center px-3 py-3 border-b ${
+                                            darkMode
+                                                ? "border-b-gray-700"
+                                                : "border-b-gray-300"
+                                        } my-2`}
+                                    >
+                                        <li className="basis-[4%]">
+                                            {blog.id}
+                                        </li>
+                                        <li className="basis-[40%] flex items-center gap-2">
+                                            {blog.cover && (
+                                                <img
+                                                    src={`/storage/${blog.cover}`}
+                                                    alt={blog.title}
+                                                    className="w-12 h-12 object-cover rounded-md flex-shrink-0"
+                                                />
+                                            )}
 
-                                        <p className="text-sm font-medium">
-                                            {blog.title}
-                                        </p>
-                                    </li>
-                                    <li className="basis-[13%] pl-2">
-                                        <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
-                                            {blog.category?.name}
-                                        </span>
-                                    </li>
-                                    <li className="basis-[13%]">
-                                        <span
-                                            className={`px-2 py-1 text-xs rounded-lg ${
-                                                blog.visibility
-                                                    ? "bg-green-200 text-green-700"
-                                                    : "bg-gray-200 text-gray-700"
-                                            }`}
-                                        >
-                                            {blog.visibility
-                                                ? "Public"
-                                                : "Draft"}
-                                        </span>
-                                    </li>
-                                    <li className="basis-[10%]">
-                                        {blog.view || 0}
-                                    </li>
-                                    <li className="basis-[14%]">
-                                        <p className="text-sm">
-                                            {new Date(
-                                                blog.created_at
-                                            ).toLocaleDateString()}
-                                        </p>
-                                        <p className="text-sm">
-                                            {new Date(
-                                                blog.created_at
-                                            ).toLocaleTimeString([], {
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                            })}
-                                        </p>
-                                    </li>
-                                    <li className="basis-[6%]">
-                                        <DropdownMenu modal={false}>
-                                            <DropdownMenuTrigger asChild>
-                                                <button
-                                                    className={`p-1 rounded-md ${
-                                                        darkMode
-                                                            ? "hover:bg-gray-600"
-                                                            : "hover:bg-gray-100"
-                                                    } outline-none`}
-                                                >
-                                                    <Ellipsis size={20} />
-                                                </button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent
-                                                align="end"
-                                                className="w-40"
+                                            <p className="text-sm font-medium">
+                                                {blog.title}
+                                            </p>
+                                        </li>
+                                        <li className="basis-[13%] pl-2">
+                                            <span className="px-2 py-1 text-xs border border-gray-500 rounded-lg">
+                                                {blog.category?.name}
+                                            </span>
+                                        </li>
+                                        <li className="basis-[13%]">
+                                            <span
+                                                className={`px-2 py-1 text-xs rounded-lg ${
+                                                    blog.visibility
+                                                        ? "bg-green-200 text-green-700"
+                                                        : "bg-gray-200 text-gray-700"
+                                                }`}
                                             >
-                                                <Link to={`/blog/${blog.id}`}>
-                                                    <DropdownMenuItem>
-                                                        Read
-                                                    </DropdownMenuItem>
-                                                </Link>
-                                                <DropdownMenuItem>
-                                                    <Link
-                                                        to={`/admin/blogs/${slugify(
-                                                            blog.title
-                                                        )}/edit`}
+                                                {blog.visibility
+                                                    ? "Public"
+                                                    : "Draft"}
+                                            </span>
+                                        </li>
+                                        <li className="basis-[10%]">
+                                            {blog.view || 0}
+                                        </li>
+                                        <li className="basis-[14%]">
+                                            <p className="text-sm">
+                                                {new Date(
+                                                    blog.created_at
+                                                ).toLocaleDateString()}
+                                            </p>
+                                            <p className="text-sm">
+                                                {new Date(
+                                                    blog.created_at
+                                                ).toLocaleTimeString([], {
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                })}
+                                            </p>
+                                        </li>
+                                        <li className="basis-[6%]">
+                                            <DropdownMenu modal={false}>
+                                                <DropdownMenuTrigger asChild>
+                                                    <button
+                                                        className={`p-1 rounded-md ${
+                                                            darkMode
+                                                                ? "hover:bg-gray-600"
+                                                                : "hover:bg-gray-100"
+                                                        } outline-none`}
                                                     >
-                                                        Edit
+                                                        <Ellipsis size={20} />
+                                                    </button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent
+                                                    align="end"
+                                                    className="w-40"
+                                                >
+                                                    <Link
+                                                        to={`/blog/${blog.id}`}
+                                                    >
+                                                        <DropdownMenuItem>
+                                                            Read
+                                                        </DropdownMenuItem>
                                                     </Link>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem asChild>
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger
-                                                            asChild
+                                                    <DropdownMenuItem>
+                                                        <Link
+                                                            to={`/admin/blogs/${slugify(
+                                                                blog.title
+                                                            )}/edit`}
                                                         >
-                                                            <button
-                                                                className={`text-accentRed ${
-                                                                    darkMode
-                                                                        ? "bg-[#09090B] hover:bg-[#212121]"
-                                                                        : "bg-white hover:bg-gray-100"
-                                                                } w-full text-left text-sm px-2 py-2 rounded-md`}
+                                                            Edit
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem asChild>
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger
+                                                                asChild
                                                             >
-                                                                Delete
-                                                            </button>
-                                                        </AlertDialogTrigger>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader>
-                                                                <AlertDialogTitle>
-                                                                    Are you sure
-                                                                    you want to
-                                                                    delete this
-                                                                    menu?
-                                                                </AlertDialogTitle>
-                                                                <AlertDialogDescription>
-                                                                    This action
-                                                                    cannot be
-                                                                    undone.
-                                                                </AlertDialogDescription>
-                                                            </AlertDialogHeader>
-                                                            <AlertDialogFooter>
-                                                                <AlertDialogCancel>
-                                                                    Cancel
-                                                                </AlertDialogCancel>
-                                                                <AlertDialogAction
-                                                                    onClick={() =>
-                                                                        deleteBlog(
-                                                                            blog.id
-                                                                        )
-                                                                    }
+                                                                <button
+                                                                    className={`text-accentRed ${
+                                                                        darkMode
+                                                                            ? "bg-[#09090B] hover:bg-[#212121]"
+                                                                            : "bg-white hover:bg-gray-100"
+                                                                    } w-full text-left text-sm px-2 py-2 rounded-md`}
                                                                 >
                                                                     Delete
-                                                                </AlertDialogAction>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialog>
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </li>
-                                </ul>
-                            ))}
+                                                                </button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>
+                                                                        Are you
+                                                                        sure you
+                                                                        want to
+                                                                        delete
+                                                                        this
+                                                                        menu?
+                                                                    </AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This
+                                                                        action
+                                                                        cannot
+                                                                        be
+                                                                        undone.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>
+                                                                        Cancel
+                                                                    </AlertDialogCancel>
+                                                                    <AlertDialogAction
+                                                                        onClick={() =>
+                                                                            deleteBlog(
+                                                                                blog.id
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Delete
+                                                                    </AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </li>
+                                    </ul>
+                                ))
+                            ) : (
+                                <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-5">
+                                    <img
+                                        src={Empty}
+                                        alt="No blogs"
+                                        className="w-32 h-32 mb-4 object-contain"
+                                    />
+                                    <h2 className="text-xl font-semibold mb-2">
+                                        No Blogs Found
+                                    </h2>
+                                    <p className="text-gray-500 text-center">
+                                        Sorry, there are no blog created.
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="mt-8 flex">

@@ -68,6 +68,8 @@ export default function BlogsCategory() {
 
     const [editId, setEditId] = useState(null);
 
+    const [loading, setLoading] = useState(true);
+
     let [categoryDetail, setCategoryDetails] = useState(null);
 
     const [selectedFilter, setSelectedFilter] = useState("newest");
@@ -156,6 +158,7 @@ export default function BlogsCategory() {
     };
 
     let getCategories = async () => {
+        setLoading(true);
         try {
             let res = await axios.get("/api/blog/categories");
             let data = res.data;
@@ -169,6 +172,8 @@ export default function BlogsCategory() {
             setVisibility(visibilityMap);
         } catch (error) {
             console.error("Failed to fetch categories:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -273,6 +278,43 @@ export default function BlogsCategory() {
             console.log(e);
         }
     };
+
+    const SkeletonCard = () => (
+        <ul
+            className={`flex items-center px-3 py-3 border-b ${
+                darkMode ? "border-b-gray-600" : "border-b-gray-300"
+            }`}
+        >
+            {/* ID */}
+            <li className="basis-[5%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            {/* Category Name with Icon */}
+            <li className="basis-[40%]">
+                <div className="flex gap-2 items-center">
+                    <div className="w-8 h-8 bg-gray-300 rounded-md animate-pulse" />
+                    <div className="h-4 bg-gray-300 rounded-md animate-pulse w-1/2" />
+                </div>
+            </li>
+
+            {/* Courses Count */}
+            <li className="basis-[30%]">
+                <div className="h-4 bg-gray-300 rounded-md animate-pulse w-3/4" />
+            </li>
+
+            {/* Switch */}
+            <li className="basis-[20%]">
+                <div className="w-10 h-5 bg-gray-300 rounded-full animate-pulse" />
+            </li>
+
+            {/* Dropdown / Actions */}
+            <li className="basis-[5%]">
+                <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse" />
+            </li>
+        </ul>
+    );
+
     return (
         <div>
             <h1 className="text-lg font-medium">Add new category</h1>
@@ -391,200 +433,237 @@ export default function BlogsCategory() {
                         <li className="basis-[20%]">Visibility</li>
                         <li className="basis-[5%]"></li>
                     </ul>
-                    {categories.map((category) => (
-                        <ul
-                            key={category.id}
-                            className={`flex items-center px-3 py-3 border-b ${
-                                darkMode
-                                    ? "border-b-gray-600"
-                                    : "border-b-gray-300"
-                            } my-2`}
-                        >
-                            <li className="basis-[5%]">{category.id}</li>
-                            <li className="basis-[40%]">
-                                <div className="flex gap-2 items-center">
-                                    <img
-                                        src={`/storage/${category.icon}`}
-                                        alt=""
-                                        className="w-8 h-8 object-cover rounded-lg"
+                    {loading ? (
+                        Array.from({ length: 10 }).map((_, idx) => (
+                            <SkeletonCard key={idx} />
+                        ))
+                    ) : categories.length > 0 ? (
+                        categories.map((category) => (
+                            <ul
+                                key={category.id}
+                                className={`flex items-center px-3 py-3 border-b ${
+                                    darkMode
+                                        ? "border-b-gray-600"
+                                        : "border-b-gray-300"
+                                } my-2`}
+                            >
+                                <li className="basis-[5%]">{category.id}</li>
+                                <li className="basis-[40%]">
+                                    <div className="flex gap-2 items-center">
+                                        <img
+                                            src={`/storage/${category.icon}`}
+                                            alt=""
+                                            className="w-8 h-8 object-cover rounded-lg"
+                                        />
+                                        <span className="font-medium">
+                                            {category.name}
+                                        </span>
+                                    </div>
+                                </li>
+                                <li className="basis-[30%]">
+                                    {category.blogs_count}
+                                </li>
+                                <li className="basis-[20%]">
+                                    <Switch
+                                        checked={
+                                            visibility.hasOwnProperty(
+                                                category.id
+                                            )
+                                                ? visibility[category.id]
+                                                : false
+                                        }
+                                        onCheckedChange={(checked) =>
+                                            toggleVisibility(
+                                                category.id,
+                                                checked
+                                            )
+                                        }
                                     />
-                                    <span className="font-medium">
-                                        {category.name}
-                                    </span>
-                                </div>
-                            </li>
-                            <li className="basis-[30%]">
-                                {category.blogs_count}
-                            </li>
-                            <li className="basis-[20%]">
-                                <Switch
-                                    checked={
-                                        visibility.hasOwnProperty(category.id)
-                                            ? visibility[category.id]
-                                            : false
-                                    }
-                                    onCheckedChange={(checked) =>
-                                        toggleVisibility(category.id, checked)
-                                    }
-                                />
-                            </li>
-                            <li className="basis-[5%]">
-                                <DropdownMenu modal={false}>
-                                    <DropdownMenuTrigger asChild>
-                                        <button
-                                            className={`p-1 rounded-md ${
-                                                darkMode
-                                                    ? "hover:bg-gray-600"
-                                                    : "hover:bg-gray-100"
-                                            } outline-none`}
+                                </li>
+                                <li className="basis-[5%]">
+                                    <DropdownMenu modal={false}>
+                                        <DropdownMenuTrigger asChild>
+                                            <button
+                                                className={`p-1 rounded-md ${
+                                                    darkMode
+                                                        ? "hover:bg-gray-600"
+                                                        : "hover:bg-gray-100"
+                                                } outline-none`}
+                                            >
+                                                <Ellipsis size={20} />
+                                            </button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent
+                                            align="end"
+                                            className="w-40"
                                         >
-                                            <Ellipsis size={20} />
-                                        </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="w-40"
-                                    >
-                                        <Dialog
-                                            open={editDialogOpen}
-                                            onOpenChange={(isOpen) => {
-                                                setEditDialogOpen(isOpen);
-                                                if (isOpen) {
-                                                    setEditId(category.id);
-                                                } else {
-                                                    setEditId(null);
-                                                    setErrors({});
-                                                    setForm({
-                                                        icon: "",
-                                                        name: "",
-                                                    }); // reset when dialog closes
-                                                }
-                                            }}
-                                        >
-                                            <DialogTrigger asChild>
-                                                <Button className="text-accentYellow px-2 py-0 bg-white shadow-none hover:bg-white">
-                                                    Edit
-                                                </Button>
-                                            </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogHeader>
-                                                    <DialogTitle>
-                                                        Edit Category
-                                                    </DialogTitle>
-                                                    <DialogDescription>
-                                                        Update the category of
-                                                        blog below.
-                                                    </DialogDescription>
-                                                </DialogHeader>
-                                                <div className="flex flex-col gap-4 py-4">
-                                                    <div>
-                                                        <Label>
-                                                            Category Icon
-                                                        </Label>
-                                                        <div className="flex items-center gap-1 mt-1">
-                                                            <img
-                                                                src={`/storage/${category.icon}`}
-                                                                alt=""
-                                                                className="w-9 h-9 object-cover rounded-md"
-                                                            />
+                                            <Dialog
+                                                open={editDialogOpen}
+                                                onOpenChange={(isOpen) => {
+                                                    setEditDialogOpen(isOpen);
+                                                    if (isOpen) {
+                                                        setEditId(category.id);
+                                                    } else {
+                                                        setEditId(null);
+                                                        setErrors({});
+                                                        setForm({
+                                                            icon: "",
+                                                            name: "",
+                                                        }); // reset when dialog closes
+                                                    }
+                                                }}
+                                            >
+                                                <DialogTrigger asChild>
+                                                    <Button className="text-accentYellow px-2 py-0 bg-white shadow-none hover:bg-white">
+                                                        Edit
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader>
+                                                        <DialogTitle>
+                                                            Edit Category
+                                                        </DialogTitle>
+                                                        <DialogDescription>
+                                                            Update the category
+                                                            of blog below.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="flex flex-col gap-4 py-4">
+                                                        <div>
+                                                            <Label>
+                                                                Category Icon
+                                                            </Label>
+                                                            <div className="flex items-center gap-1 mt-1">
+                                                                <img
+                                                                    src={`/storage/${category.icon}`}
+                                                                    alt=""
+                                                                    className="w-9 h-9 object-cover rounded-md"
+                                                                />
+                                                                <Input
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    id="icon"
+                                                                    name="icon"
+                                                                    onChange={
+                                                                        uploadImg
+                                                                    }
+                                                                    className="border-gray-400 mt-1"
+                                                                />
+                                                            </div>
+                                                            <p className="text-xs text-gray-500 mt-1">
+                                                                Upload an icon
+                                                                (PNG, JPG, or
+                                                                SVG)
+                                                            </p>
+                                                            {errors.icon && (
+                                                                <p className="text-red-500 mt-1 text-sm">
+                                                                    {
+                                                                        errors
+                                                                            .icon[0]
+                                                                    }
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <Label>
+                                                                Category Name
+                                                            </Label>
                                                             <Input
-                                                                type="file"
-                                                                accept="image/*"
-                                                                id="icon"
-                                                                name="icon"
-                                                                onChange={
-                                                                    uploadImg
+                                                                id="name"
+                                                                name="name"
+                                                                value={
+                                                                    form.name
+                                                                }
+                                                                onChange={(e) =>
+                                                                    setForm({
+                                                                        ...form,
+                                                                        name: e
+                                                                            .target
+                                                                            .value,
+                                                                    })
                                                                 }
                                                                 className="border-gray-400 mt-1"
+                                                                placeholder="Write category name"
                                                             />
+                                                            {errors.name && (
+                                                                <p className="text-red-500 mt-1 text-sm">
+                                                                    {
+                                                                        errors
+                                                                            .name[0]
+                                                                    }
+                                                                </p>
+                                                            )}
                                                         </div>
-                                                        <p className="text-xs text-gray-500 mt-1">
-                                                            Upload an icon (PNG,
-                                                            JPG, or SVG)
-                                                        </p>
-                                                        {errors.icon && (
-                                                            <p className="text-red-500 mt-1 text-sm">
-                                                                {errors.icon[0]}
-                                                            </p>
-                                                        )}
                                                     </div>
-                                                    <div>
-                                                        <Label>
-                                                            Category Name
-                                                        </Label>
-                                                        <Input
-                                                            id="name"
-                                                            name="name"
-                                                            value={form.name}
-                                                            onChange={(e) =>
-                                                                setForm({
-                                                                    ...form,
-                                                                    name: e
-                                                                        .target
-                                                                        .value,
-                                                                })
-                                                            }
-                                                            className="border-gray-400 mt-1"
-                                                            placeholder="Write category name"
-                                                        />
-                                                        {errors.name && (
-                                                            <p className="text-red-500 mt-1 text-sm">
-                                                                {errors.name[0]}
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button variant="secondary">
-                                                        Cancel
-                                                    </Button>
-                                                    <Button onClick={submit}>
-                                                        Update
-                                                    </Button>
-                                                </DialogFooter>
-                                            </DialogContent>
-                                        </Dialog>
-                                        <DropdownMenuItem asChild>
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <button className="text-red-600 bg-white w-full text-left px-2 py-2">
-                                                        Delete
-                                                    </button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>
-                                                            Are you sure you
-                                                            want to delete this
-                                                            menu?
-                                                        </AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            This action cannot
-                                                            be undone.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>
+                                                    <DialogFooter>
+                                                        <Button variant="secondary">
                                                             Cancel
-                                                        </AlertDialogCancel>
-                                                        <AlertDialogAction
-                                                            onClick={() =>
-                                                                deleteCategory(
-                                                                    category.id
-                                                                )
-                                                            }
+                                                        </Button>
+                                                        <Button
+                                                            onClick={submit}
                                                         >
+                                                            Update
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
+                                            <DropdownMenuItem asChild>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <button className="text-red-600 bg-white w-full text-left px-2 py-2">
                                                             Delete
-                                                        </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </li>
-                        </ul>
-                    ))}
+                                                        </button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>
+                                                                Are you sure you
+                                                                want to delete
+                                                                this menu?
+                                                            </AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This action
+                                                                cannot be
+                                                                undone.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>
+                                                                Cancel
+                                                            </AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                onClick={() =>
+                                                                    deleteCategory(
+                                                                        category.id
+                                                                    )
+                                                                }
+                                                            >
+                                                                Delete
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </li>
+                            </ul>
+                        ))
+                    ) : (
+                        <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-5">
+                            <img
+                                src={Empty}
+                                alt="No blogs"
+                                className="w-32 h-32 mb-4 object-contain"
+                            />
+                            <h2 className="text-xl font-semibold mb-2">
+                                No Categories Found
+                            </h2>
+                            <p className="text-gray-500 text-center">
+                                Sorry, there are no blog categories created.
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="mt-8 flex">
