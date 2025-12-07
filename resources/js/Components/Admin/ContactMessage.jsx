@@ -204,21 +204,65 @@ export default function ContactMessage() {
                         ))}
                 </div>
 
-                {/* Right message panel */}
                 <div className="lg:w-2/3 px-3 pb-4 space-y-4">
-                    {/* Panel header */}
-                    <div className="flex justify-between items-center animate-pulse">
-                        <div className="w-1/3 h-6 bg-gray-200 rounded-md" />
-                        <div className="flex gap-2">
-                            <div className="w-6 h-6 bg-gray-200 rounded-full" />
-                            <div className="w-6 h-6 bg-gray-200 rounded-full" />
-                            <div className="w-6 h-6 bg-gray-200 rounded-full" />
+                    <div
+                        className={`flex items-center justify-between ${
+                            darkMode ? "text-gray-200" : "text-gray-600"
+                        } px-3 py-3 pl-6 lg:pl-0`}
+                    >
+                        <button>
+                            <Flag className="w-5 h-5" />
+                        </button>
+                        <div className="flex gap-1 items-center">
+                            <button>
+                                <ChevronLeft size={18} />
+                            </button>
+                            <span className="text-sm text-gray-600">
+                                {contacts.length > 0
+                                    ? `${currentIndex + 1} of ${
+                                          contacts.length
+                                      }`
+                                    : "0 of 0"}
+                            </span>
+                            <button className="p-1 rounded">
+                                <ChevronRight size={18} />
+                            </button>
                         </div>
+
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <button className="">
+                                    <Trash size={18} />
+                                </button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you sure you want to delete this
+                                        menu?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={() =>
+                                            deleteContact(contact.id)
+                                        }
+                                    >
+                                        Delete
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
 
                     <hr className="border-t-gray-300" />
 
-                    {/* User info */}
                     <div className="flex gap-2 items-center animate-pulse">
                         <div className="w-12 h-12 rounded-full bg-gray-300" />
                         <div className="flex-1 space-y-2 py-1">
