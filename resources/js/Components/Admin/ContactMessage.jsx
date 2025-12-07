@@ -37,6 +37,8 @@ export default function ContactMessage() {
     const [open, setOpen] = useState(false);
     const [showReply, setShowReply] = useState(false);
 
+    const [loading, setLoading] = useState(true);
+
     let [contacts, setContacts] = useState([]);
 
     let [contact, setContact] = useState([]);
@@ -52,12 +54,15 @@ export default function ContactMessage() {
     );
 
     let getContacts = async () => {
+        setLoading(true);
         try {
             let res = await axios.get("/api/contact");
             let data = res.data;
             setContacts(data.contacts);
         } catch (error) {
             console.error("Failed to fetch contacts:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -172,6 +177,75 @@ export default function ContactMessage() {
             console.error("Failed to send reply:", err);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex gap-2 pt-2 lg:pt-4">
+                <div className="lg:w-1/3 relative border-r border-r-gray-300 space-y-2">
+                    <div className="px-3 py-3 animate-pulse">
+                        <h1 className="text-lg font-medium">
+                            Contact Messages
+                        </h1>
+                    </div>
+
+                    {Array(5)
+                        .fill(0)
+                        .map((_, idx) => (
+                            <div
+                                key={idx}
+                                className="flex gap-2 w-full px-3 py-3 rounded-lg animate-pulse bg-gray-200"
+                            >
+                                <div className="w-11 h-11 rounded-full bg-gray-300" />
+                                <div className="flex-1 space-y-2 py-1">
+                                    <div className="w-1/2 h-4 bg-gray-300 rounded-md" />
+                                    <div className="w-full h-3 bg-gray-300 rounded-md" />
+                                </div>
+                            </div>
+                        ))}
+                </div>
+
+                {/* Right message panel */}
+                <div className="lg:w-2/3 px-3 pb-4 space-y-4">
+                    {/* Panel header */}
+                    <div className="flex justify-between items-center animate-pulse">
+                        <div className="w-1/3 h-6 bg-gray-200 rounded-md" />
+                        <div className="flex gap-2">
+                            <div className="w-6 h-6 bg-gray-200 rounded-full" />
+                            <div className="w-6 h-6 bg-gray-200 rounded-full" />
+                            <div className="w-6 h-6 bg-gray-200 rounded-full" />
+                        </div>
+                    </div>
+
+                    <hr className="border-t-gray-300" />
+
+                    {/* User info */}
+                    <div className="flex gap-2 items-center animate-pulse">
+                        <div className="w-12 h-12 rounded-full bg-gray-300" />
+                        <div className="flex-1 space-y-2 py-1">
+                            <div className="w-1/3 h-4 bg-gray-300 rounded-md" />
+                            <div className="w-1/2 h-3 bg-gray-300 rounded-md" />
+                        </div>
+                    </div>
+
+                    {/* Message body */}
+                    <div className="space-y-2 bg-gray-200 rounded-md p-4 animate-pulse">
+                        <div className="w-full h-3 bg-gray-300 rounded-md" />
+                        <div className="w-full h-3 bg-gray-300 rounded-md" />
+                        <div className="w-3/4 h-3 bg-gray-300 rounded-md" />
+                        <div className="w-1/2 h-3 bg-gray-300 rounded-md" />
+                    </div>
+
+                    {/* Reply button */}
+                    <div className="flex justify-end animate-pulse">
+                        <div className="w-20 h-8 bg-gray-200 rounded-md" />
+                    </div>
+
+                    {/* Footer */}
+                    <div className="h-6 bg-gray-200 rounded-md animate-pulse text-center text-xs py-3" />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex gap-2 pt-2 lg:pt-4">

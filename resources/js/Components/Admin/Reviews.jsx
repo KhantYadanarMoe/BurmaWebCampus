@@ -1,11 +1,4 @@
 import React from "react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select";
 import { Link, useOutletContext } from "react-router-dom";
 import { Card, CardContent } from "../ui/card";
 import { ChevronDown, EllipsisVertical, Flag, Star } from "lucide-react";
@@ -37,10 +30,13 @@ import {
 } from "../ui/pagination";
 import { useState } from "react";
 import axios from "axios";
+import Empty from "../../../assets/Empty.png";
 import { useEffect } from "react";
 
 export default function Reviews() {
     let [reviews, setReviews] = useState([]);
+
+    const [loading, setLoading] = useState(true);
 
     const [selectedFilter, setSelectedFilter] = useState("newest");
 
@@ -51,12 +47,15 @@ export default function Reviews() {
     const rowsPerPage = 10;
 
     let getReviews = async () => {
+        setLoading(true);
         try {
             let res = await axios.get("/api/reviews");
             let data = res.data;
             setReviews(data.reviews);
         } catch (error) {
             console.error("Failed to fetch reviews:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -142,6 +141,42 @@ export default function Reviews() {
     };
 
     const { darkMode } = useOutletContext();
+
+    const SkeletonCard = () => (
+        <Card className="relative border border-gray-600 shadow-lg rounded-lg">
+            <CardContent className="p-4 space-y-4">
+                <div className="flex justify-between">
+                    <div className="flex gap-1 items-center mb-4">
+                        <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse" />
+                        <div className="w-6 h-4 bg-gray-300 rounded-md animate-pulse" />
+                    </div>
+                    <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse" />
+                </div>
+
+                <div className="h-20 bg-gray-300 rounded-md animate-pulse w-full" />
+
+                <hr className="my-4 border-t-gray-400" />
+
+                {/* Footer: User Info and Status */}
+                <div className="flex items-center justify-between">
+                    <div className="flex gap-2 items-center w-4/5">
+                        <div className="w-12 h-12 bg-gray-300 rounded-full animate-pulse" />
+                        <div className="space-y-2 flex-1">
+                            <div className="w-1/2 h-4 bg-gray-300 rounded-md animate-pulse" />
+                            <div className="flex gap-2 mt-2">
+                                <div className="w-1/3 h-3 bg-gray-300 rounded-md animate-pulse" />
+                                <div className="w-2/3 h-3 bg-gray-300 rounded-md animate-pulse" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-1/5 flex flex-col gap-2 items-end">
+                        <div className="w-16 h-4 bg-gray-300 rounded-md animate-pulse" />
+                        <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse" />
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
 
     return (
         <div>
@@ -233,133 +268,163 @@ export default function Reviews() {
                 ))}
             </ul>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5 md:mt-0">
-                {currentReviews.map((review) => (
-                    <Card className="relative border border-gray-600 shadow-lg rounded-lg">
-                        <CardContent className="p-4">
-                            <div className="flex justify-between">
-                                <div className="flex gap-1 items-center mb-4">
-                                    <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
-                                    <span className="font-medium">
-                                        {review.rating}
-                                    </span>
-                                </div>
-                                <div>
-                                    <DropdownMenu modal={false}>
-                                        <DropdownMenuTrigger asChild>
-                                            <button
-                                                className={`p-1 rounded-md ${
-                                                    darkMode
-                                                        ? "hover:bg-gray-600"
-                                                        : "hover:bg-gray-100"
-                                                } outline-none`}
+                {loading ? (
+                    Array.from({ length: 10 }).map((_, idx) => (
+                        <SkeletonCard key={idx} />
+                    ))
+                ) : currentReviews.length > 0 ? (
+                    currentReviews.map((review) => (
+                        <Card className="relative border border-gray-600 shadow-lg rounded-lg">
+                            <CardContent className="p-4">
+                                <div className="flex justify-between">
+                                    <div className="flex gap-1 items-center mb-4">
+                                        <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 stroke-yellow-400" />{" "}
+                                        <span className="font-medium">
+                                            {review.rating}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <DropdownMenu modal={false}>
+                                            <DropdownMenuTrigger asChild>
+                                                <button
+                                                    className={`p-1 rounded-md ${
+                                                        darkMode
+                                                            ? "hover:bg-gray-600"
+                                                            : "hover:bg-gray-100"
+                                                    } outline-none`}
+                                                >
+                                                    <EllipsisVertical
+                                                        size={18}
+                                                    />
+                                                </button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent
+                                                align="end"
+                                                className="w-40"
                                             >
-                                                <EllipsisVertical size={18} />
-                                            </button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent
-                                            align="end"
-                                            className="w-40"
-                                        >
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    publishReview(
-                                                        review.id,
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        publishReview(
+                                                            review.id,
+                                                            Number(
+                                                                review.visibility
+                                                            )
+                                                        )
+                                                    }
+                                                    className={
                                                         Number(
                                                             review.visibility
-                                                        )
-                                                    )
-                                                }
-                                                className={
-                                                    Number(
+                                                        ) === 1
+                                                            ? "text-accentRed cursor-pointer"
+                                                            : "text-accentGreen cursor-pointer"
+                                                    }
+                                                >
+                                                    {Number(
                                                         review.visibility
                                                     ) === 1
-                                                        ? "text-accentRed cursor-pointer"
-                                                        : "text-accentGreen cursor-pointer"
-                                                }
-                                            >
-                                                {Number(review.visibility) === 1
-                                                    ? "Unpublish"
-                                                    : "Publish"}
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    markReview(
-                                                        review.id,
-                                                        Number(review.marked)
-                                                    )
-                                                }
-                                                className={
-                                                    Number(review.marked) === 1
-                                                        ? "text-accentRed cursor-pointer"
-                                                        : "text-accentGreen cursor-pointer"
-                                                }
-                                            >
-                                                {Number(review.marked) === 1
-                                                    ? "Remove Mark"
-                                                    : "Mark"}
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-                            </div>
-                            <q
-                                className={`${
-                                    darkMode ? "text-gray-200" : "text-gray-800"
-                                } text-sm`}
-                            >
-                                {review.review}
-                            </q>
-                            <hr className="my-4 border-t-gray-400" />
-                            <div className="flex items-center justify-between">
-                                <div className="flex gap-2 items-center w-4/5">
-                                    <img
-                                        src={Profile}
-                                        alt=""
-                                        className="w-12 h-12 object-cover rounded-full"
-                                    />
-                                    <div>
-                                        <h1 className="text-sm font-medium">
-                                            {review.name}
-                                        </h1>
-                                        <div className="flex gap-2 items-start mt-2">
-                                            <p
-                                                className={`w-1/3 text-xs ${
-                                                    darkMode
-                                                        ? "text-gray-400"
-                                                        : "text-gray-800"
-                                                }`}
-                                            >
-                                                Review to:
-                                            </p>
-                                            <p
-                                                className={`w-2/3 text-xs ${
-                                                    darkMode
-                                                        ? "text-gray-300"
-                                                        : "text-gray-800"
-                                                } font-medium`}
-                                            >
-                                                {review.course?.title || ""}
-                                            </p>
-                                        </div>
+                                                        ? "Unpublish"
+                                                        : "Publish"}
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        markReview(
+                                                            review.id,
+                                                            Number(
+                                                                review.marked
+                                                            )
+                                                        )
+                                                    }
+                                                    className={
+                                                        Number(
+                                                            review.marked
+                                                        ) === 1
+                                                            ? "text-accentRed cursor-pointer"
+                                                            : "text-accentGreen cursor-pointer"
+                                                    }
+                                                >
+                                                    {Number(review.marked) === 1
+                                                        ? "Remove Mark"
+                                                        : "Mark"}
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </div>
                                 </div>
-                                <div className="w-1/5 flex gap-1 flex-col justify-end items-end">
-                                    {Number(review.visibility) === 1 ? (
-                                        <span className="p-1 text-green-600 bg-green-100 text-xs rounded-md">
-                                            Published
-                                        </span>
-                                    ) : null}
-                                    {Number(review.marked) === 1 ? (
-                                        <Flag
-                                            size={16}
-                                            className="text-yellow-400 fill-yellow-400"
+                                <q
+                                    className={`${
+                                        darkMode
+                                            ? "text-gray-200"
+                                            : "text-gray-800"
+                                    } text-sm`}
+                                >
+                                    {review.review}
+                                </q>
+                                <hr className="my-4 border-t-gray-400" />
+                                <div className="flex items-center justify-between">
+                                    <div className="flex gap-2 items-center w-4/5">
+                                        <img
+                                            src={Profile}
+                                            alt=""
+                                            className="w-12 h-12 object-cover rounded-full"
                                         />
-                                    ) : null}
+                                        <div>
+                                            <h1 className="text-sm font-medium">
+                                                {review.name}
+                                            </h1>
+                                            <div className="flex gap-2 items-start mt-2">
+                                                <p
+                                                    className={`w-1/3 text-xs ${
+                                                        darkMode
+                                                            ? "text-gray-400"
+                                                            : "text-gray-800"
+                                                    }`}
+                                                >
+                                                    Review to:
+                                                </p>
+                                                <p
+                                                    className={`w-2/3 text-xs ${
+                                                        darkMode
+                                                            ? "text-gray-300"
+                                                            : "text-gray-800"
+                                                    } font-medium`}
+                                                >
+                                                    {review.course?.title || ""}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="w-1/5 flex gap-1 flex-col justify-end items-end">
+                                        {Number(review.visibility) === 1 ? (
+                                            <span className="p-1 text-green-600 bg-green-100 text-xs rounded-md">
+                                                Published
+                                            </span>
+                                        ) : null}
+                                        {Number(review.marked) === 1 ? (
+                                            <Flag
+                                                size={16}
+                                                className="text-yellow-400 fill-yellow-400"
+                                            />
+                                        ) : null}
+                                    </div>
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                            </CardContent>
+                        </Card>
+                    ))
+                ) : (
+                    <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-5">
+                        <img
+                            src={Empty}
+                            alt="No blogs"
+                            className="w-32 h-32 mb-4 object-contain"
+                        />
+                        <h2 className="text-xl font-semibold mb-2">
+                            No reviews Found
+                        </h2>
+                        <p className="text-gray-500 text-center">
+                            Sorry, there are no review created.
+                        </p>
+                    </div>
+                )}
             </div>
             <div className="mt-8 flex">
                 <div className="ml-auto">
