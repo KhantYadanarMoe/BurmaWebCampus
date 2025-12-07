@@ -178,9 +178,8 @@ export default function Dashboard({ data, height = 220, compact = false }) {
                     <div className="md:w-2/5 h-80 bg-gray-300 animate-pulse rounded-lg" />
                 </div>
 
-                {/* Latest Purchases */}
                 <div className="my-5">
-                    <div className="h-64 w-full bg-gray-300 animate-pulse rounded-lg" />
+                    <div className="h-80 w-full bg-gray-300 animate-pulse rounded-lg" />
                 </div>
             </div>
         );
