@@ -395,6 +395,7 @@ export default function QuizDetails() {
                 <ReviewModal
                     open={showReview}
                     onClose={() => setShowReview(false)}
+                    course={course}
                 />
             )}
         </div>

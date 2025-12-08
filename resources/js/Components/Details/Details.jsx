@@ -362,15 +362,17 @@ export default function Details() {
                             </Button>
                         </div>
                     </div>
-                    <iframe
-                        id="videoPlayer"
-                        src={`https://www.youtube.com/embed/${selectedSubtitle?.video_path}?enablejsapi=1`}
-                        width="100%"
-                        height="450"
-                        frameBorder="0"
-                        allowFullScreen
-                        className="mt-2 rounded-md"
-                    ></iframe>
+                    {selectedSubtitle && (
+                        <iframe
+                            id="videoPlayer"
+                            src={`https://www.youtube.com/embed/${selectedSubtitle.video_path}?enablejsapi=1`}
+                            width="100%"
+                            height="450"
+                            frameBorder="0"
+                            allowFullScreen
+                            className="mt-2 rounded-md"
+                        ></iframe>
+                    )}
 
                     {/* <div className="my-3">
                         <h1 className="text-lg font-medium">Resources</h1>

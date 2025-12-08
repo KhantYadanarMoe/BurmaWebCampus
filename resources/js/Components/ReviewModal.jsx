@@ -22,25 +22,11 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function ReviewModal({ open, onClose }) {
+export default function ReviewModal({ open, onClose, course }) {
     const [rating, setRating] = useState(0);
-    const [courses, setCourses] = useState([]);
     const [form, setForm] = useState({ name: "", phone: "", review: "" });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
-
-    const getCourses = async () => {
-        try {
-            const res = await axios.get("/api/courses");
-            setCourses(res.data.courses);
-        } catch (error) {
-            console.error("Failed to fetch courses:", error);
-        }
-    };
-
-    useEffect(() => {
-        getCourses();
-    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -57,7 +43,7 @@ export default function ReviewModal({ open, onClose }) {
         const formData = new FormData();
         formData.append("rating", rating);
         formData.append("name", form.name);
-        formData.append("course_id", form.course_id);
+        formData.append("course_id", course?.id);
         formData.append("review", form.review);
 
         try {
@@ -125,28 +111,12 @@ export default function ReviewModal({ open, onClose }) {
 
                     <div className="space-y-1">
                         <Label htmlFor="course">Course</Label>
-                        <Select
-                            onValueChange={(value) =>
-                                handleCustomChange(
-                                    "course_id",
-                                    parseInt(value, 10)
-                                )
-                            }
-                        >
-                            <SelectTrigger className="mt-1 border-gray-400 w-96">
-                                <SelectValue placeholder="Select Course Category" />
-                            </SelectTrigger>
-                            <SelectContent className="w-96 max-h-60">
-                                {courses.map((course) => (
-                                    <SelectItem
-                                        key={course.id}
-                                        value={String(course.id)}
-                                    >
-                                        {course?.title}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <input
+                            type="text"
+                            value={course?.title || ""}
+                            disabled
+                            className="mt-1 border-gray-400 w-96 px-2 py-1 rounded-md bg-gray-100 text-gray-700"
+                        />
                     </div>
 
                     <div className="space-y-1">
