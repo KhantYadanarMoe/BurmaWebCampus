@@ -7,16 +7,26 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const fetchUser = async () => {
+        try {
+            const res = await axios.get("/api/user", { withCredentials: true });
+            setUser(res.data);
+        } catch (err) {
+            setUser(null);
+        }
+    };
+
     useEffect(() => {
-        axios
-            .get("/api/user", { withCredentials: true })
-            .then((res) => setUser(res.data))
-            .catch(() => setUser(null))
-            .finally(() => setLoading(false));
+        fetchUser().finally(() => setLoading(false));
     }, []);
 
+    // 👇 Add refreshUser function
+    const refreshUser = async () => {
+        await fetchUser();
+    };
+
     return (
-        <AuthContext.Provider value={{ user, setUser, loading }}>
+        <AuthContext.Provider value={{ user, setUser, loading, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

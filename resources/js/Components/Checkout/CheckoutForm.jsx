@@ -42,7 +42,7 @@ export default function CheckoutForm() {
     const [errors, setErrors] = useState({});
     const [invoiceNumber, setInvoiceNumber] = useState("");
     const [showPaymentDialog, setShowPaymentDialog] = useState(false);
-    const { user, setUser } = useAuth();
+    const { user, refreshUser } = useAuth();
     const [selectedPayment, setSelectedPayment] = useState(
         user?.default_payment || ""
     );
@@ -140,6 +140,7 @@ export default function CheckoutForm() {
             if (res.data.message === "Course purchased successfully.") {
                 localStorage.removeItem("enrolledCourses");
                 localStorage.removeItem("invoiceNumber");
+                await refreshUser();
                 navigate("/thank-you");
             }
         } catch (error) {

@@ -69,7 +69,11 @@ export default function YourCourses() {
 
     const uniqueCourses = Array.from(
         new Map(user.courses.map((c) => [c.id, c])).values()
-    );
+    ).sort((a, b) => {
+        const aDate = a?.pivot?.created_at ? new Date(a.pivot.created_at) : 0;
+        const bDate = b?.pivot?.created_at ? new Date(b.pivot.created_at) : 0;
+        return bDate - aDate; // newest first
+    });
 
     function slugify(text) {
         return text
