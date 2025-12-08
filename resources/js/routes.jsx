@@ -88,10 +88,6 @@ const routes = createBrowserRouter([
                 path: "/:slug/quiz",
                 element: <Quiz />,
             },
-            {
-                path: "/review", //it should be course name
-                element: <ReviewModal />,
-            },
         ],
     },
     {

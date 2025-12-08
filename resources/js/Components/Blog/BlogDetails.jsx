@@ -3,6 +3,7 @@ import BlogImg from "../../../assets/Blog.jpg";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Empty from "../../../assets/Empty.png";
 import { useEffect } from "react";
 
 export default function BlogDetails() {
@@ -20,6 +21,7 @@ export default function BlogDetails() {
 
     useEffect(() => {
         const loadBlog = async () => {
+            setLoading(true);
             try {
                 // 1) Fetch all blogs
                 const res = await axios.get("/api/blogs");
@@ -50,8 +52,47 @@ export default function BlogDetails() {
         loadBlog();
     }, [slug]);
 
-    if (loading) return <p>Loading...</p>;
-    if (!blog) return <p>Blog not found.</p>;
+    const SkeletonBlog = () => (
+        <div className="px-4 md:px-5 lg:px-8 w-full md:w-[90%] lg:w-[80%] mx-auto animate-pulse">
+            <div className="h-6 w-24 bg-gray-300 rounded-full mb-4" />{" "}
+            {/* Category */}
+            <div className="h-4 w-32 bg-gray-300 rounded mb-2" /> {/* Date */}
+            <div className="h-10 md:h-12 w-full bg-gray-300 rounded mb-6" />{" "}
+            {/* Title */}
+            <div className="w-full h-72 bg-gray-300 rounded-bl-3xl rounded-br-3xl mb-6" />{" "}
+            {/* Cover Image */}
+            <div className="space-y-4 mb-6">
+                <div className="h-4 w-full bg-gray-300 rounded" />
+                <div className="h-4 w-full bg-gray-300 rounded" />
+                <div className="h-4 w-5/6 bg-gray-300 rounded" />
+            </div>
+            <div className="flex gap-2 mb-6">
+                <div className="w-1/2 aspect-video bg-gray-300 rounded-bl-3xl rounded-br-3xl" />
+                <div className="w-1/2 aspect-video bg-gray-300 rounded-bl-3xl rounded-br-3xl" />
+            </div>
+            <div className="space-y-4">
+                <div className="h-4 w-full bg-gray-300 rounded" />
+                <div className="h-4 w-full bg-gray-300 rounded" />
+                <div className="h-4 w-5/6 bg-gray-300 rounded" />
+            </div>
+        </div>
+    );
+
+    if (loading) return <SkeletonBlog />;
+    if (!blog)
+        return (
+            <div className="col-span-full flex flex-col items-center justify-center p-10 border border-gray-300 rounded-lg bg-gray-50 mt-5">
+                <img
+                    src={Empty}
+                    alt="No blogs"
+                    className="w-32 h-32 mb-4 object-contain"
+                />
+                <h2 className="text-xl font-semibold mb-2">No Blog Found</h2>
+                <p className="text-gray-500 text-center">
+                    Sorry, the blog you're searching for is no longer exist!
+                </p>
+            </div>
+        );
 
     const words = (blog.paragraph || "").split(/\s+/);
     const mid = Math.ceil(words.length / 2);

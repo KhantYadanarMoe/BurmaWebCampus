@@ -5,7 +5,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -23,18 +22,11 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function ReviewModal() {
+export default function ReviewModal({ open, onClose }) {
     const [rating, setRating] = useState(0);
     const [courses, setCourses] = useState([]);
-
-    const [form, setForm] = useState({
-        name: "",
-        phone: "",
-        review: "",
-    });
-
+    const [form, setForm] = useState({ name: "", phone: "", review: "" });
     const [errors, setErrors] = useState({});
-
     const navigate = useNavigate();
 
     const getCourses = async () => {
@@ -52,46 +44,28 @@ export default function ReviewModal() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setForm((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
+        setForm((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleCustomChange = (name, value) => {
-        setForm((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setForm((prev) => ({ ...prev, [name]: value }));
     };
 
     const submit = async (e) => {
         e.preventDefault();
 
-        let url = "/api/review";
-        let method = "post";
-
-        let formData = new FormData();
-
-        console.log("Form Data before submitting:", form);
-
+        const formData = new FormData();
         formData.append("rating", rating);
         formData.append("name", form.name);
         formData.append("course_id", form.course_id);
         formData.append("review", form.review);
-
-        console.log("Form data after appending:", formData);
 
         try {
             const csrfToken = document
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content");
 
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ": " + pair[1]);
-            }
-
-            const res = await axios[method](url, formData, {
+            const res = await axios.post("/api/review", formData, {
                 headers: {
                     "X-CSRF-TOKEN": csrfToken,
                     "Content-Type": "multipart/form-data",
@@ -99,17 +73,13 @@ export default function ReviewModal() {
             });
 
             if (res.data.message === "Review sent successfully.") {
-                navigate("/");
-                setForm({
-                    name: "",
-                    phone: "",
-                    review: "",
-                });
+                setForm({ name: "", phone: "", review: "" });
                 setRating(0);
+                onClose(); // close the modal after submission
+                navigate("/");
             }
         } catch (error) {
             console.error("Error sending review:", error);
-
             if (error.response && error.response.status === 422) {
                 setErrors(error.response.data.errors);
             }
@@ -117,16 +87,12 @@ export default function ReviewModal() {
     };
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button>Leave a Review</Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>Write a Review</DialogTitle>
                 </DialogHeader>
                 <form className="space-y-4">
-                    {/* Star Rating */}
                     <div className="flex items-center gap-1">
                         <Rating
                             initialRating={rating}
@@ -144,7 +110,6 @@ export default function ReviewModal() {
                         />
                     </div>
 
-                    {/* Name Input */}
                     <div className="space-y-1">
                         <Label htmlFor="name">Name</Label>
                         <Input
@@ -157,6 +122,7 @@ export default function ReviewModal() {
                             placeholder="Enter your name"
                         />
                     </div>
+
                     <div className="space-y-1">
                         <Label htmlFor="course">Course</Label>
                         <Select
@@ -170,7 +136,6 @@ export default function ReviewModal() {
                             <SelectTrigger className="mt-1 border-gray-400 w-96">
                                 <SelectValue placeholder="Select Course Category" />
                             </SelectTrigger>
-
                             <SelectContent className="w-96 max-h-60">
                                 {courses.map((course) => (
                                     <SelectItem
@@ -184,7 +149,6 @@ export default function ReviewModal() {
                         </Select>
                     </div>
 
-                    {/* Review Text */}
                     <div className="space-y-1">
                         <Label htmlFor="review">Review</Label>
                         <Textarea

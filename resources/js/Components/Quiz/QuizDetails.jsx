@@ -19,6 +19,7 @@ import Logo from "../../../assets/Logo.png";
 import CertiBg from "../../../assets/CertiBg.jpg";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSetting } from "../Admin/contexts/SiteInfoContext";
+import ReviewModal from "../ReviewModal";
 
 export default function QuizDetails() {
     const { form } = useSetting();
@@ -34,6 +35,8 @@ export default function QuizDetails() {
     const [selectedAnswers, setSelectedAnswers] = useState({});
 
     const [certificateOpen, setCertificateOpen] = useState(false);
+
+    const [showReview, setShowReview] = useState(false);
 
     const quizRefs = useRef({});
 
@@ -182,7 +185,11 @@ export default function QuizDetails() {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(link.href);
-        navigate("/");
+        setCertificateOpen(false);
+
+        setTimeout(() => {
+            setShowReview(true);
+        }, 300);
     }
 
     return (
@@ -383,6 +390,13 @@ export default function QuizDetails() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            {showReview && (
+                <ReviewModal
+                    open={showReview}
+                    onClose={() => setShowReview(false)}
+                />
+            )}
         </div>
     );
 }
