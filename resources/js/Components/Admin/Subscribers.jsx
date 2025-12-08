@@ -229,7 +229,11 @@ export default function Subscribers() {
                                 <li className="basis-[35%]">
                                     {subscriber.email}
                                 </li>
-                                <li className="basis-[15%] pl-2">46</li>
+                                <li className="basis-[15%] pl-2">
+                                    {subscriber.user_id
+                                        ? subscriber.user_id
+                                        : "-"}
+                                </li>
                                 <li className="basis-[25%]">
                                     {new Date(
                                         subscriber.created_at

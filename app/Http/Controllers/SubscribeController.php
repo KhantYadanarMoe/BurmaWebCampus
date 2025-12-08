@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Subscribe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SubscribeController extends Controller
@@ -24,6 +25,7 @@ class SubscribeController extends Controller
         // store the rest of the data
         $subscribes = Subscribe::create([
             'email' => request('email'),
+            'user_id' => Auth::check() ? Auth::id() : null,
         ]);
 
         // return when the data is successfully created.
@@ -33,21 +35,30 @@ class SubscribeController extends Controller
         ]);
     }
 
-    public function index(Request $request){
-        $sort = $request->query('sort', 'newest'); // Default to 'newest' if no data is provided
-        $query = Subscribe::query();
+   public function index(Request $request){
+        $sort = $request->query('sort', 'newest'); 
 
-        // Apply sorting based on the requested sort option
+        $query = Subscribe::with('user'); 
+
         switch ($sort) {
             case 'oldest':
                 $query->orderBy('created_at', 'asc');
                 break;
+
             case 'a-z':
-                $query->orderBy('email', 'asc');
+                // Sort by user name ascending
+                $query->join('users', 'subscribes.user_id', '=', 'users.id')
+                    ->orderBy('users.name', 'asc')
+                    ->select('subscribes.*');
                 break;
+
             case 'z-a':
-                $query->orderBy('email', 'desc');
+                // Sort by user name descending
+                $query->join('users', 'subscribes.user_id', '=', 'users.id')
+                    ->orderBy('users.name', 'desc')
+                    ->select('subscribes.*');
                 break;
+
             case 'newest':
             default:
                 $query->orderBy('created_at', 'desc');
@@ -56,10 +67,8 @@ class SubscribeController extends Controller
 
         $subscribes = $query->get();
 
-        // Send data to frontend
         return response()->json([
             'subscribes' => $subscribes
         ]);
     }
-
 }
