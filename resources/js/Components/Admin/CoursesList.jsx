@@ -35,6 +35,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { useSearch } from "@/contexts/SearchContext";
 
 export default function CoursesList() {
     const { darkMode } = useOutletContext();
@@ -44,6 +45,7 @@ export default function CoursesList() {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedFilter, setSelectedFilter] = useState("newest");
+    const { query } = useSearch();
 
     const rowsPerPage = 10;
 
@@ -83,9 +85,13 @@ export default function CoursesList() {
             .replace(/(^-|-$)/g, "");
     }
 
-    const filteredCourses = selectedCategory
-        ? courses.filter((course) => course.category?.id === selectedCategory)
-        : courses;
+    const filteredCourses = courses
+        .filter((course) =>
+            selectedCategory ? course.category?.id === selectedCategory : true
+        )
+        .filter((course) =>
+            course.title?.toLowerCase().includes(query.toLowerCase())
+        );
 
     const indexOfLastCourse = currentPage * rowsPerPage;
     const indexOfFirstCourse = indexOfLastCourse - rowsPerPage;
@@ -95,6 +101,10 @@ export default function CoursesList() {
     );
 
     const totalPages = Math.ceil(filteredCourses.length / rowsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [query]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {

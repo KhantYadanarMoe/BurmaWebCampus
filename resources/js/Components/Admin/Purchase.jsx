@@ -39,6 +39,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../ui/dialog";
+import { useSearch } from "@/contexts/SearchContext";
 
 export default function Purchase() {
     const { darkMode } = useOutletContext();
@@ -46,6 +47,7 @@ export default function Purchase() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [selectedFilter, setSelectedFilter] = useState("newest");
+    const { query } = useSearch();
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -88,13 +90,26 @@ export default function Purchase() {
         handleFilterChange("newest");
     }, []);
 
+    const filteredPurchases = purchases.filter((purchase) => {
+        const q = query.toLowerCase();
+        return (
+            purchase.course.title.toLowerCase().includes(q) ||
+            purchase.invoice_no.toLowerCase().includes(q) ||
+            purchase.name.toLowerCase().includes(q)
+        );
+    });
+
     const indexOfLastPurchase = currentPage * rowsPerPage;
     const indexOfFirstPurchase = indexOfLastPurchase - rowsPerPage;
-    const currentPurchases = purchases.slice(
+    const currentPurchases = filteredPurchases.slice(
         indexOfFirstPurchase,
         indexOfLastPurchase
     );
-    const totalPages = Math.ceil(purchases.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredPurchases.length / rowsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [query]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {

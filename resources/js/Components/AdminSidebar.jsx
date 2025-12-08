@@ -29,6 +29,7 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useSetting } from "./Admin/contexts/SiteInfoContext";
+import { useSearch } from "@/contexts/SearchContext";
 
 export default function AdminSidebar({
     isSidebarOpen,
@@ -37,6 +38,7 @@ export default function AdminSidebar({
     setDarkMode,
 }) {
     const { form } = useSetting();
+    const { setQuery } = useSearch();
     return (
         <motion.div
             initial={{ x: -100, opacity: 0 }}
@@ -280,6 +282,7 @@ export default function AdminSidebar({
                             type="text"
                             placeholder="Search..."
                             className="mt-1 border-gray-400 pl-8 pr-4"
+                            onChange={(e) => setQuery(e.target.value)}
                         />
                     </div>
                 </div>

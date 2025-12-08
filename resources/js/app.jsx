@@ -8,20 +8,23 @@ import { SiteInfoProvider } from "./Components/Admin/contexts/SiteInfoContext";
 import { AppearanceProvider } from "./Components/Admin/contexts/AppearanceContext";
 import { EmailProvider } from "./Components/Admin/contexts/EmailContext";
 import { SecurityProvider } from "./Components/Admin/contexts/SecurityContext";
+import { SearchProvider } from "./contexts/SearchContext";
 
 export default function App() {
     return (
-        <AuthProvider>
-            <SiteInfoProvider>
-                <AppearanceProvider>
-                    <EmailProvider>
-                        <SecurityProvider>
-                            <AppContent />
-                        </SecurityProvider>
-                    </EmailProvider>
-                </AppearanceProvider>
-            </SiteInfoProvider>
-        </AuthProvider>
+        <SearchProvider>
+            <AuthProvider>
+                <SiteInfoProvider>
+                    <AppearanceProvider>
+                        <EmailProvider>
+                            <SecurityProvider>
+                                <AppContent />
+                            </SecurityProvider>
+                        </EmailProvider>
+                    </AppearanceProvider>
+                </SiteInfoProvider>
+            </AuthProvider>
+        </SearchProvider>
     );
 }
 
