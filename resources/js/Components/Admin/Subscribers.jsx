@@ -32,6 +32,8 @@ import { Link, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import Empty from "../../../assets/Empty.png";
+import { useSearch } from "@/contexts/SearchContext";
 
 export default function Subscribers() {
     let [subscribers, setSubscribers] = useState([]);
@@ -39,6 +41,8 @@ export default function Subscribers() {
     const [loading, setLoading] = useState(true);
     // state for filter
     const [selectedFilter, setSelectedFilter] = useState("newest");
+
+    const { query } = useSearch();
 
     const { darkMode } = useOutletContext();
 
@@ -83,14 +87,19 @@ export default function Subscribers() {
 
     const rowsPerPage = 10;
 
+    const filteredSubscribers = subscribers.filter((subscriber) => {
+        const q = query.toLowerCase();
+        return subscriber.email.toLowerCase().includes(q);
+    });
+
     const indexOfLastSubscriber = currentPage * rowsPerPage;
     const indexOfFirstSubscriber = indexOfLastSubscriber - rowsPerPage;
-    const currentSubscribers = subscribers?.slice(
+    const currentSubscribers = filteredSubscribers?.slice(
         indexOfFirstSubscriber,
         indexOfLastSubscriber
     );
 
-    const totalPages = Math.ceil(subscribers?.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredSubscribers?.length / rowsPerPage);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {

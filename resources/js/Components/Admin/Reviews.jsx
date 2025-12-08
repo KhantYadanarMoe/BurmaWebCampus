@@ -32,6 +32,7 @@ import { useState } from "react";
 import axios from "axios";
 import Empty from "../../../assets/Empty.png";
 import { useEffect } from "react";
+import { useSearch } from "@/contexts/SearchContext";
 
 export default function Reviews() {
     let [reviews, setReviews] = useState([]);
@@ -43,6 +44,8 @@ export default function Reviews() {
     const [activeTab, setActiveTab] = useState("all");
 
     const [currentPage, setCurrentPage] = useState(1);
+
+    const { query } = useSearch();
 
     const rowsPerPage = 10;
 
@@ -84,9 +87,19 @@ export default function Reviews() {
     }, []);
 
     const filteredReviews = reviews.filter((review, index) => {
-        if (activeTab === "all") return true;
-        if (activeTab === "unread") return index < 10;
-        if (activeTab === "published") return Number(review.visibility) === 1;
+        // Filter by activeTab
+        if (activeTab === "unread" && index >= 10) return false;
+        if (activeTab === "published" && Number(review.visibility) !== 1)
+            return false;
+
+        // Filter by search query
+        const q = query.toLowerCase();
+        if (
+            !review.name.toLowerCase().includes(q) &&
+            !review.course.title.toLowerCase().includes(q)
+        )
+            return false;
+
         return true;
     });
 

@@ -43,6 +43,8 @@ import {
     DialogTrigger,
 } from "../ui/dialog";
 import { useRef } from "react";
+import { useSearch } from "@/contexts/SearchContext";
+import Empty from "../../../assets/Empty.png";
 
 export default function BlogsCategory() {
     const [form, setForm] = useState({
@@ -73,6 +75,8 @@ export default function BlogsCategory() {
     let [categoryDetail, setCategoryDetails] = useState(null);
 
     const [selectedFilter, setSelectedFilter] = useState("newest");
+
+    const { query } = useSearch();
 
     const { darkMode } = useOutletContext();
 
@@ -199,7 +203,7 @@ export default function BlogsCategory() {
     const rowsPerPage = 10;
 
     const filteredCategories = categories.filter((category) =>
-        category.category?.toLowerCase().includes(query.toLowerCase())
+        category.name?.toLowerCase().includes(query.toLowerCase())
     );
 
     const indexOfLastCategory = currentPage * rowsPerPage;
@@ -437,8 +441,8 @@ export default function BlogsCategory() {
                         Array.from({ length: 10 }).map((_, idx) => (
                             <SkeletonCard key={idx} />
                         ))
-                    ) : categories.length > 0 ? (
-                        categories.map((category) => (
+                    ) : currentCategories.length > 0 ? (
+                        currentCategories.map((category) => (
                             <ul
                                 key={category.id}
                                 className={`flex items-center px-3 py-3 border-b ${
@@ -670,6 +674,7 @@ export default function BlogsCategory() {
                 <div className="ml-auto">
                     <Pagination className="text-accentRed">
                         <PaginationContent>
+                            {/* Previous Button */}
                             <PaginationItem>
                                 <PaginationPrevious
                                     onClick={() =>
@@ -683,42 +688,34 @@ export default function BlogsCategory() {
                                     }`}
                                 />
                             </PaginationItem>
-                            {Array.from(
-                                {
-                                    length: Math.ceil(
-                                        categories.length / rowsPerPage
-                                    ),
-                                },
-                                (_, index) => (
-                                    <PaginationItem key={index}>
-                                        <PaginationLink
-                                            onClick={() =>
-                                                handlePageChange(index + 1)
-                                            }
-                                            isActive={currentPage === index + 1}
-                                            className="cursor-pointer"
-                                        >
-                                            {index + 1}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                )
-                            )}
+
+                            {/* Page Numbers */}
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <PaginationItem key={index}>
+                                    <PaginationLink
+                                        onClick={() =>
+                                            handlePageChange(index + 1)
+                                        }
+                                        isActive={currentPage === index + 1}
+                                        className="cursor-pointer"
+                                    >
+                                        {index + 1}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            ))}
+
+                            {/* Next Button */}
                             <PaginationItem>
                                 <PaginationNext
                                     onClick={() =>
                                         handlePageChange(currentPage + 1)
                                     }
+                                    disabled={currentPage === totalPages}
                                     className={`cursor-pointer ${
                                         currentPage === totalPages
                                             ? "opacity-50 cursor-not-allowed"
                                             : ""
                                     }`}
-                                    disabled={
-                                        currentPage ===
-                                        Math.ceil(
-                                            categories.length / rowsPerPage
-                                        )
-                                    }
                                 />
                             </PaginationItem>
                         </PaginationContent>

@@ -31,6 +31,7 @@ import { Link, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import { useSearch } from "@/contexts/SearchContext";
 
 export default function BlogsList() {
     const [categories, setCategories] = useState([]);
@@ -46,6 +47,8 @@ export default function BlogsList() {
     const [currentPage, setCurrentPage] = useState(1);
 
     const rowsPerPage = 10;
+
+    const { query } = useSearch();
 
     const { darkMode } = useOutletContext();
 
@@ -78,15 +81,23 @@ export default function BlogsList() {
         getBlogs();
     }, []);
 
-    const filteredBlogs = selectedCategory
-        ? blogs.filter((blog) => blog.category?.id === selectedCategory)
-        : blogs;
+    const filteredBlogs = blogs
+        .filter((blog) =>
+            selectedCategory ? blog.category?.id === selectedCategory : true
+        )
+        .filter((blog) =>
+            blog.title?.toLowerCase().includes(query.toLowerCase())
+        );
 
     const indexOfLastBlog = currentPage * rowsPerPage;
     const indexOfFirstBlog = indexOfLastBlog - rowsPerPage;
     const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
 
     const totalPages = Math.ceil(filteredBlogs.length / rowsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [query]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {

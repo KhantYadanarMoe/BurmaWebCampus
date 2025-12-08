@@ -27,6 +27,7 @@ import { Link, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import { useSearch } from "@/contexts/SearchContext";
 
 export default function UsersList() {
     // state to store users
@@ -41,6 +42,8 @@ export default function UsersList() {
     const rowsPerPage = 10;
     // state for filter
     const [selectedFilter, setSelectedFilter] = useState("newest");
+
+    const { query } = useSearch();
 
     const { darkMode } = useOutletContext();
 
@@ -104,11 +107,23 @@ export default function UsersList() {
         handleFilterChange("newest"); // initial load
     }, []);
 
+    const filteredUsers = users.filter((user) => {
+        const q = query.toLowerCase();
+        return (
+            user.name.toLowerCase().includes(q) ||
+            user.email.toLowerCase().includes(q)
+        );
+    });
+
     const indexOfLastUser = currentPage * rowsPerPage;
     const indexOfFirstUser = indexOfLastUser - rowsPerPage;
-    const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+    const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-    const totalPages = Math.ceil(users.length / rowsPerPage);
+    const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [query]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -268,8 +283,8 @@ export default function UsersList() {
                         Array.from({ length: 10 }).map((_, idx) => (
                             <SkeletonCard key={idx} />
                         ))
-                    ) : users.length > 0 ? (
-                        users.map((user) => (
+                    ) : currentUsers.length > 0 ? (
+                        currentUsers.map((user) => (
                             <ul
                                 className={`flex items-center px-3 py-3 border-b ${
                                     darkMode
