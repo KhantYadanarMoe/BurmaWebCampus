@@ -45,8 +45,11 @@ export default function Settings() {
                 } rounded-md py-1 px-1`}
             >
                 <li>
-                    <Link
-                        to=""
+                    <button
+                        onClick={() => {
+                            const el = document.getElementById("siteInfo");
+                            if (el) el.scrollIntoView({ behavior: "smooth" });
+                        }}
                         className={`whitespace-nowrap px-2 py-2 rounded-md ${
                             darkMode
                                 ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
@@ -54,11 +57,14 @@ export default function Settings() {
                         } duration-300 block`}
                     >
                         Site info
-                    </Link>
+                    </button>
                 </li>
                 <li>
-                    <Link
-                        to=""
+                    <button
+                        onClick={() => {
+                            const el = document.getElementById("appearance");
+                            if (el) el.scrollIntoView({ behavior: "smooth" });
+                        }}
                         className={`whitespace-nowrap px-2 py-2 rounded-md ${
                             darkMode
                                 ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
@@ -66,23 +72,29 @@ export default function Settings() {
                         } duration-300 block`}
                     >
                         Appearance
-                    </Link>
+                    </button>
                 </li>
                 <li>
-                    <Link
-                        to=""
+                    <button
+                        onClick={() => {
+                            const el = document.getElementById("email");
+                            if (el) el.scrollIntoView({ behavior: "smooth" });
+                        }}
                         className={`whitespace-nowrap px-2 py-2 rounded-md ${
                             darkMode
                                 ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
                                 : "bg-gray-100 hover:bg-gray-200 text-gray-800"
                         } duration-300 block`}
                     >
-                        Notifications
-                    </Link>
+                        Email
+                    </button>
                 </li>
                 <li>
-                    <Link
-                        to=""
+                    <button
+                        onClick={() => {
+                            const el = document.getElementById("security");
+                            if (el) el.scrollIntoView({ behavior: "smooth" });
+                        }}
                         className={`whitespace-nowrap px-2 py-2 rounded-md ${
                             darkMode
                                 ? "bg-gray-800 hover:bg-gray-900 text-gray-200"
@@ -90,20 +102,28 @@ export default function Settings() {
                         } duration-300 block`}
                     >
                         Security
-                    </Link>
+                    </button>
                 </li>
             </ul>
-            <SiteInfo />
+            <div id="siteInfo" className="scroll-mt-24">
+                <SiteInfo />
+            </div>
             <hr className="border-t-gray-700 my-8" />
-            <Appearance />
+            <div id="appearance" className="scroll-mt-24">
+                <Appearance />
+            </div>
             <hr className="border-t-gray-700 my-8" />
-            <Email />
+            <div id="email" className="scroll-mt-24">
+                <Email />
+            </div>
             <hr
                 className={`${
                     darkMode ? "border-t-gray-600" : "border-t-gray-300"
                 } my-8`}
             />
-            <Security />
+            <div id="security" className="scroll-mt-24">
+                <Security />
+            </div>
         </div>
     );
 }

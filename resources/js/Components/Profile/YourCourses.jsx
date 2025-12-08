@@ -114,13 +114,15 @@ export default function YourCourses() {
                     >
                         <div
                             className={`absolute top-0 left-6 h-24 w-10 flex items-center justify-center clip-bookmark ${
-                                course.completed
+                                course.progress === 100
                                     ? "bg-green-600"
                                     : "bg-yellow-600"
                             }`}
                         >
                             <span className="text-white text-xs font-semibold rotate-[-90deg] tracking-wide">
-                                {course.completed ? "Completed" : "Enrolled"}
+                                {course.progress === 100
+                                    ? "Completed"
+                                    : "Enrolled"}
                             </span>
                         </div>
 

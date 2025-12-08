@@ -20,6 +20,8 @@ export default function UserProfile() {
         }
     };
 
+    console.log(user);
+
     useEffect(() => {
         getDetails();
     }, [slug]);
@@ -110,7 +112,7 @@ export default function UserProfile() {
                                 </h1>
                                 <span className="flex gap-1 items-center mt-2">
                                     <p className="text-xl font-medium">
-                                        {user?.purchases_count}
+                                        {user?.purchases?.length ?? 0}
                                     </p>
                                     <p>courses</p>
                                 </span>
