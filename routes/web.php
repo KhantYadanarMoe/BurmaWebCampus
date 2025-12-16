@@ -24,33 +24,12 @@ use App\Models\Subscribe;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
 
 Route::middleware(['web', 'guest'])->group(function () {
     Route::get('auth/google', [AuthController::class, 'redirectToGoogle']);
     Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 });
 
-
-Route::get('/{any}', function () {
-    return view('app');
-})->where('any', '^(?!api).*');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
 Route::middleware('auth:sanctum')->get('/api/user', [AuthController::class, 'details']);
 
@@ -102,7 +81,7 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
 });
 
 Route::get('/api/settings/info', [siteInfoSettingController::class, 'show']);
-    Route::get('/api/settings/appearance', [appearanceSettingController::class, 'show']);
+    Route::get('/api/settings/appearance', [AppearanceSettingController::class, 'show']);
     Route::get('/api/settings/security', [securitySettingController::class, 'show']);
     Route::get('/api/settings/email', [emailSettingController::class, 'show']);
 
@@ -150,5 +129,8 @@ Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
     Route::post('/api/settings/security', [securitySettingController::class, 'update']);
 });
 
+Route::get('/{any}', function () {
+    return view('app');
+})->where('any', '^(?!api).*');
 
 require __DIR__.'/auth.php';

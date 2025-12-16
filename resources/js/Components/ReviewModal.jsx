@@ -33,10 +33,6 @@ export default function ReviewModal({ open, onClose, course }) {
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleCustomChange = (name, value) => {
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
-
     const submit = async (e) => {
         e.preventDefault();
 

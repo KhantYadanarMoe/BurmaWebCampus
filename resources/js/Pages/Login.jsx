@@ -160,19 +160,21 @@ export default function Login() {
                         </span>
                         <div className="flex-grow border-t border-gray-500"></div>
                     </div>
-                    <a href="/auth/google">
-                        <Button
-                            type="button"
-                            className=" bg-white text-black w-full border border-gray-700 hover:bg-gray-50"
-                        >
-                            <img
-                                src={Google}
-                                alt="Google Logo"
-                                className="w-5 h-5 object-cover"
-                            />
-                            Signin with Google
-                        </Button>
-                    </a>
+                    <Button
+                        type="button"
+                        className="bg-white text-black w-full border border-gray-700 hover:bg-gray-50"
+                        onClick={() =>
+                            (window.location.href =
+                                "http://localhost:8000/auth/google")
+                        }
+                    >
+                        <img
+                            src={Google}
+                            alt="Google Logo"
+                            className="w-5 h-5 object-cover"
+                        />
+                        Signup with Google
+                    </Button>
                 </div>
                 <div className="flex gap-1 items-center justify-center text-sm">
                     <span className="text-gray-700">

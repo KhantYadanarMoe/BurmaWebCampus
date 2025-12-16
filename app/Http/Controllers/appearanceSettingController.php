@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\appearanceSetting;
+use App\Models\AppearanceSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,7 +20,7 @@ class appearanceSettingController extends Controller
             ], 422);
         }
 
-        $setting = appearanceSetting::first() ?? new appearanceSetting();
+        $setting = AppearanceSetting::first() ?? new appearanceSetting();
 
         $googleFontUrl = $request->google_font_url;
         $fontFamily = $this->extractFontFamily($googleFontUrl);
