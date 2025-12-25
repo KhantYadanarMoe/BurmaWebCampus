@@ -347,7 +347,7 @@ export default function BlogForm() {
                         </div>
                     </div>
 
-                    <div className="hidden md:flex gap-2 my-4">
+                    <div className="flex gap-2 my-4">
                         {cover || coverUrl ? (
                             <div className="relative w-2/4 h-40">
                                 <img

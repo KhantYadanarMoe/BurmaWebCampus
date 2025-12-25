@@ -200,7 +200,7 @@ export default function BlogsList() {
         <div>
             <>
                 <h1 className="text-xl font-medium">Blogs</h1>
-                <div className="flex flex-col md:flex-row justify-between items-center my-4">
+                <div className="md:flex flex-col md:flex-row justify-between items-center my-4">
                     <div className="flex gap-2 flex-wrap">
                         <button
                             onClick={() => {
@@ -296,12 +296,14 @@ export default function BlogsList() {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
-                        <Link to="/admin/blogs/create">
-                            <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
-                                <Plus />
-                                Create
-                            </Button>
-                        </Link>
+                        <div>
+                            <Link to="/admin/blogs/create">
+                                <Button className="flex gap-1 -mt-8 md:-mt-0 items-center">
+                                    <Plus />
+                                    Create
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
                 <div className="overflow-x-auto w-full">

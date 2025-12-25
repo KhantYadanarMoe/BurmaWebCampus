@@ -115,14 +115,23 @@ class BlogController extends Controller
         }
     }
 
-     public function update($slug){
-        $blog = Blog::all()->first(function ($blog) use ($slug) {
-        return Str::slug($blog->title) === $slug;
-    });
+    private function slugifyPhp($text){
+        if (!$text) return '';
 
-    if (!$blog) {
-        abort(404, 'Blog not found');
+        $text = strtolower($text);
+        $text = preg_replace("/[^a-z0-9]+/", "-", $text); // replace non-alphanumerics with dash
+        $text = trim($text, "-"); // remove leading/trailing dashes
+        return $text;
     }
+
+    public function update($slug){
+        $blog = Blog::all()->first(function ($blog) use ($slug) {
+            return $this->slugifyPhp($blog->title) === $slug;
+        });
+
+        if (!$blog) {
+            abort(404, 'Blog not found');
+        }
 
         $validator = Validator::make(request()->all(), [
             "title" => ["required"],
