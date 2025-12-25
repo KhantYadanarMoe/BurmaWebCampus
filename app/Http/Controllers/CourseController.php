@@ -98,7 +98,9 @@ class CourseController extends Controller
             'outlines.subtitles.progress',
             'quizzes.options',
             'purchases'
-        ])->withCount([
+        ])->whereHas('category', function ($q) {
+            $q->where('is_visible', true);
+        })->withCount([
             'purchases',
 
         ]);

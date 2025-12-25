@@ -16,20 +16,19 @@ export default function Hero() {
     let getCategories = async () => {
         try {
             let res = await axios.get("/api/course/categories");
-            let data = res.data;
+            let data = res.data.categories || [];
 
-            setCategories(data.categories);
-            const sorted = [...data.categories]
-                .sort((a, b) => b.courses_count - a.courses_count)
-                .slice(0, 2);
+            const visibleCategories = data.filter(
+                (cat) => Number(cat.is_visible) === 1
+            );
 
-            setTopCategories(sorted);
+            const sortedVisible = [...visibleCategories].sort(
+                (a, b) => b.courses_count - a.courses_count
+            );
 
-            const visibilityMap = {};
-            data.categories.forEach((cat) => {
-                visibilityMap[cat.id] = !!+cat.is_visible;
-            });
-            setVisibility(visibilityMap);
+            setTopCategories(sortedVisible.slice(0, 2));
+
+            setCategories(visibleCategories);
         } catch (error) {
             console.error("Failed to fetch categories:", error);
         }

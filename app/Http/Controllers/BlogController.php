@@ -75,7 +75,9 @@ class BlogController extends Controller
         $sort = $request->query('sort', 'newest'); // Default to 'newest' if not provided
 
         // Start the query with the relationship eager-loaded
-        $query = Blog::with('category');
+        $query = Blog::with('category')->whereHas('category', function ($q) {
+            $q->where('is_visible', true);
+        });
 
         // Apply sorting based on the requested sort option
         switch ($sort) {
