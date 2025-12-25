@@ -6,6 +6,7 @@ use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -114,7 +115,15 @@ class BlogController extends Controller
         }
     }
 
-     public function update(Blog $blog){
+     public function update($slug){
+        $blog = Blog::all()->first(function ($blog) use ($slug) {
+        return Str::slug($blog->title) === $slug;
+    });
+
+    if (!$blog) {
+        abort(404, 'Blog not found');
+    }
+
         $validator = Validator::make(request()->all(), [
             "title" => ["required"],
             "category_id" => ["required", "exists:blog_categories,id"],

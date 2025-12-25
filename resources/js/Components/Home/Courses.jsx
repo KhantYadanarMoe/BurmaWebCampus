@@ -22,6 +22,7 @@ import {
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import Empty from "../../../assets/Empty.png";
 
 export default function Courses() {
     const { user } = useAuth();

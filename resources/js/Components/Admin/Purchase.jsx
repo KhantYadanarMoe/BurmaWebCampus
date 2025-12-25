@@ -40,6 +40,7 @@ import {
     DialogTrigger,
 } from "../ui/dialog";
 import { useSearch } from "@/contexts/SearchContext";
+import Empty from "../../../assets/Empty.png";
 
 export default function Purchase() {
     const { darkMode } = useOutletContext();

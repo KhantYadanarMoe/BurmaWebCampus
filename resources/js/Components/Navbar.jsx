@@ -139,9 +139,43 @@ export default function Navbar() {
                         </div>
 
                         <div className="flex space-x-2 md:hidden text-gray-700 focus:outline-none">
-                            <a href="#">
-                                <LogIn size={20} />
-                            </a>
+                            {user ? (
+                                <div className="relative">
+                                    <div
+                                        onClick={() =>
+                                            setDropdownOpen(!dropdownOpen)
+                                        }
+                                        className="bg-white hover:bg-gray-100 duration-300 border-l-2 border-accentRed px-2 py-1 flex items-center space-x-2 cursor-pointer"
+                                    >
+                                        <span>{user.name}</span>
+                                        <ChevronDown
+                                            size={16}
+                                            className="text-gray-700"
+                                        />
+                                    </div>
+
+                                    {/* Dropdown Menu */}
+                                    {dropdownOpen && (
+                                        <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg z-50">
+                                            <Link to="/user">
+                                                <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                                                    Profile
+                                                </button>
+                                            </Link>
+                                            <button
+                                                onClick={logout}
+                                                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <Link to="/login">
+                                    <LogIn size={20} />
+                                </Link>
+                            )}
                         </div>
                     </div>
 
@@ -193,7 +227,7 @@ export default function Navbar() {
                                         to="/admin"
                                         className="hover:text-gray-950"
                                     >
-                                        Admin
+                                        <span>Admin</span>
                                     </Link>
                                 </li>
                             )}

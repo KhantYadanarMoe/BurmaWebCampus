@@ -33,99 +33,170 @@
 It combines a **Laravel-powered backend** with a **React (Vite) frontend**, providing structured courses, quizzes, blogs, certificates, and admin management tools.
 
 The platform is built to support:
-- Interactive learning
-- Progress tracking
-- Content management
-- Community engagement
+
+-   Interactive learning
+-   Progress tracking
+-   Content management
+-   Community engagement
 
 ---
 
 ## ✨ Features
 
 ### 🔐 Authentication & Learning
-- User authentication
-- Courses listing
-- Units & sub-units
-- Course enrollment
-- Progress tracking per course
-- Final quiz & score calculation
-- Course certificates
-- Comment system for each sub-unit
+
+-   User authentication
+-   Courses listing
+-   Units & sub-units
+-   Course enrollment
+-   Progress tracking per course
+-   Final quiz & score calculation
+-   Course certificates
+-   Comment system for each sub-unit
 
 ### 📝 Blogs & Community
-- Blogs listing
-- Blog details page
-- Related blogs
-- Reviews & ratings
-- Contact messages
-- Email subscription feature
+
+-   Blogs listing
+-   Blog details page
+-   Related blogs
+-   Reviews & ratings
+-   Contact messages
+-   Email subscription feature
 
 ---
 
 ## 👤 User Profile
-- Edit profile information
-- Change password
-- Enrolled courses with progress status
-- Certificates listing
-- Default payment setup
-- Billing history
+
+-   Edit profile information
+-   Change password
+-   Enrolled courses with progress status
+-   Certificates listing
+-   Default payment setup
+-   Billing history
 
 ---
 
 ## 🛠️ Admin Panel
 
 ### Courses
-- Create course categories
-- Create courses
-- Delete courses
+
+-   Create course categories
+-   Create courses
+-   Delete courses
 
 ### Blogs
-- Create blog categories
-- Create blogs
-- Edit blogs
-- Delete blogs
+
+-   Create blog categories
+-   Create blogs
+-   Edit blogs
+-   Delete blogs
 
 ### Management
-- Users listing
-- Subscribers listing
-- Reviews listing
-- Publish / mark reviews
-- Contact messages listing
-- Reply, mark, or delete contact messages
-- Comment notifications
+
+-   Users listing
+-   Subscribers listing
+-   Reviews listing
+-   Publish / mark reviews
+-   Contact messages listing
+-   Reply, mark, or delete contact messages
+-   Comment notifications
 
 ### Admin Settings
-- Edit profile information
-- Change password
-- Application settings
-- Dark mode support
+
+-   Edit profile information
+-   Change password
+-   Application settings
+-   Dark mode support
 
 ---
 
 ## 🔍 Additional Features
-- Search & filter across courses and blogs
-- Responsive UI
-- Dark mode
+
+-   Search & filter across courses and blogs
+-   Responsive UI
+-   Dark mode
 
 ---
 
 ## 🧰 Tech Stack
 
 ### Frontend
-- React (Vite)
-- Tailwind CSS
+
+-   React (Vite)
+-   Tailwind CSS
 
 ### Backend
-- Laravel (PHP)
+
+-   Laravel (PHP)
 
 ### Database
-- MySQL
+
+-   MySQL
 
 ---
 
 ## 📦 Installation
 
 ### 1️⃣ Clone the repository
+
 ```bash
 git clone https://github.com/KhantYadanarMoe/BurmaWebCampus.git
 cd BurmaWebCampus
+```
+
+### 2️⃣ Install dependencies
+
+```bash
+composer install
+npm install
+```
+
+### 3️⃣ Environment setup
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+### Update your .env file with the correct database credentials:
+
+```env
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_user
+DB_PASSWORD=your_database_password
+```
+
+### 4️⃣ Run database migrations
+
+```bash
+php artisan migrate
+```
+
+### (Optional: Seed demo data)
+
+```bash
+php artisan db:seed
+```
+
+### 5️⃣ Start development servers
+
+```bash
+npm run dev
+php artisan serve
+```
+
+Visit the application in your browser:
+
+👉 http://127.0.0.1:8000
+
+---
+
+## 📄 License
+
+This project is open-source software licensed under the **MIT License**.
+
+---
+
+<p align="center">
+  Made with ❤️ using Laravel & React
+</p>

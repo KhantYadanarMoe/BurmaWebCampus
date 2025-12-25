@@ -6,6 +6,7 @@ import UAB from "../../../assets/UABPay.jpg";
 import CB from "../../../assets/CBPay.jpg";
 import { Card, CardContent } from "../ui/card";
 import { Link } from "react-router-dom";
+import Empty from "../../../assets/Empty.png";
 import axios from "axios";
 
 export default function BillingHistories() {

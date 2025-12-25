@@ -7,6 +7,7 @@ import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import Empty from "../../../assets/Empty.png";
 
 export default function Reviews() {
     let [reviews, setReviews] = useState([]);

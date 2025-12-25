@@ -19,6 +19,11 @@ class Blog extends Model
         'view',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     // Relationship: a blog belongs to one category
     public function category()
     {

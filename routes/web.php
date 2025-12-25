@@ -67,6 +67,9 @@ Route::post("/api/contact", [ContactController::class, 'store']);
 
 Route::middleware(['auth:sanctum', 'user'])->group(function () {
     Route::post('/api/user/default-payment', [AuthController::class, 'setDefaultPayment']);
+    
+    Route::put('/api/user/{user}', [AuthController::class, 'updateUser']);
+    Route::put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
 
     Route::post('/api/course/purchase/create', [PurchaseController::class, 'store']);
     Route::get('/api/user/purchases', [PurchaseController::class, 'purchaseHistory']);
@@ -86,8 +89,6 @@ Route::get('/api/settings/info', [siteInfoSettingController::class, 'show']);
     Route::get('/api/settings/email', [emailSettingController::class, 'show']);
 
 Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
-    Route::put('/api/user/{user}', [AuthController::class, 'updateUser']);
-    Route::put('/api/user/{user}/changePassword', [AuthController::class, 'changePassword']);
     Route::post('/api/users/banned/{id}', [AuthController::class, 'ban']);
 
     Route::post("/api/course/category/create", [CourseCategoryController::class, 'store']);
@@ -104,7 +105,7 @@ Route::middleware(['auth:sanctum', IsAdmin::class])->group(function () {
     Route::delete('/api/blog/category/{category}', [BlogCategoryController::class, 'delete']);
 
     Route::post("/api/blog/create", [BlogController::class, 'store']);
-    Route::put('/api/blog/{blog}', [BlogController::class, 'update']);
+    Route::put('/api/blog/{slug}', [BlogController::class, 'update']);
     Route::delete('/api/blog/{blog}', [BlogController::class, 'delete']);
 
     Route::get('/api/subscribers', [SubscribeController::class, 'index']);

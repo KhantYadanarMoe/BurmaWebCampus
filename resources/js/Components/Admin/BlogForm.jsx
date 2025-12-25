@@ -125,7 +125,7 @@ export default function BlogForm() {
     const submit = async (e) => {
         e.preventDefault();
 
-        let url = isEdit ? "/api/blog/" + id : "/api/blog/create";
+        let url = isEdit ? "/api/blog/" + slug : "/api/blog/create";
         let method = "post";
 
         let formData = new FormData();

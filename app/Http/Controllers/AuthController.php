@@ -188,42 +188,29 @@ class AuthController extends Controller
         ]);
     }
 
-    private function getYoutubeVideoDuration(string $videoId): int
-{
-    if (empty($videoId)) {
+    private function getYoutubeVideoDuration($videoId){
+        if (!$videoId) return 0;
+
+        $apiKey = env('YOUTUBE_API_KEY');
+        $url = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id={$videoId}&key={$apiKey}";
+        
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+        
+        if (empty($data['items'])) return 0;
+
+        $duration = $data['items'][0]['contentDetails']['duration'];
+
+        if (preg_match('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', $duration, $matches)) {
+            $hours = isset($matches[1]) ? (int)$matches[1] : 0;
+            $minutes = isset($matches[2]) ? (int)$matches[2] : 0;
+            $seconds = isset($matches[3]) ? (int)$matches[3] : 0;
+
+            return $hours * 3600 + $minutes * 60 + $seconds;
+        }
+
         return 0;
     }
-
-    $response = Http::timeout(10)->get(
-        'https://www.googleapis.com/youtube/v3/videos',
-        [
-            'part' => 'contentDetails',
-            'id'   => $videoId,
-            'key'  => config('services.youtube.key'),
-        ]
-    );
-
-    if ($response->failed()) {
-        return 0; // prevent crashing your app
-    }
-
-    $data = $response->json();
-
-    if (empty($data['items'][0]['contentDetails']['duration'])) {
-        return 0;
-    }
-
-    $duration = $data['items'][0]['contentDetails']['duration'];
-
-    preg_match('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', $duration, $matches);
-
-    $hours   = (int) ($matches[1] ?? 0);
-    $minutes = (int) ($matches[2] ?? 0);
-    $seconds = (int) ($matches[3] ?? 0);
-
-    return ($hours * 3600) + ($minutes * 60) + $seconds;
-}
-
 
     public function details(Request $request){
         $user = $request->user();

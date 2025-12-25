@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Empty from "../../../assets/Empty.png";
 
 export default function YourCertificates() {
     const [certificates, setCertificates] = useState([]);
